@@ -21,21 +21,16 @@ export default async function handler(
     return;
   }
 
-  try {
-    var u = await prisma.user.findUnique({
-      where: {
-        email: query.email as string,
-      },
-    });
-  } catch (error) {
-    res.status(500).end(error);
-    return;
-  }
+  let u = await prisma.user.findUnique({
+    where: {
+      email: query.email as string,
+    },
+  });
 
   if (!u || query.password !== u.password) {
     res.status(403).end("Wrong email or password");
     return;
   }
 
-  res.status(202).json({ msg: `Welcome ${u.name} (id:${u.id})` });
+  res.status(202).json({ msg: `Welcome ${u.username} (id:${u.id})` });
 }

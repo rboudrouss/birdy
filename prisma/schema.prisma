@@ -11,18 +11,30 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String   @db.VarChar(20)
-  posts   Post[]
-  bio     String   @db.VarChar(256)
+  id       Int      @id @default(autoincrement())
+  email    String   @unique @db.VarChar(255)
+  password String   @db.VarChar(16)
+  name     String   @db.VarChar(20)
+  posts    Post[]
+  bio      String?  @db.VarChar(256)
+  followers   Follows[] @relation("follower")
+  following   Follows[] @relation("following")
 }
 
 model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   content   String   @db.VarChar(256)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+}
+
+model Follows {
+  follower    User     @relation("following", fields: [followerId], references: [id])
+  followerId  Int
+  following   User     @relation("follower", fields: [followingId], references: [id])
+  followingId Int
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
 }

@@ -3,11 +3,15 @@ import { fetchWrapper } from "./fetchwrapper";
 import { User } from "./interfaces";
 
 const userService = {
+  get userId() {
+    return localStorage.getItem("user"); // TODO maybe use cookies
+  },
   login,
   logout,
   register,
   getById,
   getAll,
+  createPost,
 };
 
 async function login(email: string, password: string) {
@@ -17,12 +21,14 @@ async function login(email: string, password: string) {
       password,
     })
     .then((u: User) => {
+      // TODO set session cookie
       localStorage.setItem("User", String(u.id)); // TODO make a real connection token
-      return u;
+      Router.push("/");
     });
 }
 
 function logout() {
+  console.log("Loging out");
   localStorage.removeItem("user");
   Router.push("/login");
 }
@@ -39,6 +45,13 @@ async function getById(id: string | number) {
 }
 async function getAll() {
   return fetchWrapper.get("api/user/all");
+}
+
+async function createPost(content: string, author?: string) {
+  return fetchWrapper.post("api/post/create", {
+    author: author ? Number(author) : userService.userId,
+    content: content,
+  });
 }
 
 export default userService;

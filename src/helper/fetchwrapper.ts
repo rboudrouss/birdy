@@ -1,4 +1,5 @@
 import { json } from "stream/consumers";
+import userService from "./user.service";
 
 export const fetchWrapper = {
   get,
@@ -60,17 +61,14 @@ async function _delete(url: string) {
 
 async function handleResponse(response: Response) {
   const text = await response.text();
-  let data: any = text; // TODO change this to automatic parsing
-  try {
-    data = JSON.parse(text);
-  } catch (e) {}
+  let data: any = text;
+  data = data && JSON.parse(text);
   if (!response.ok) {
-    // if ([401, 403].includes(response.status) && userService.userValue) {
-    //     // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-    //     userService.logout();
-    // }
+    // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+    if ([401, 403].includes(response.status) && userService.userId)
+      userService.logout();
     const error = (data && data.message) || response.statusText;
     return Promise.reject(error);
-  } 
+  }
   return data;
 }

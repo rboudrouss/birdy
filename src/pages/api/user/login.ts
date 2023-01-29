@@ -6,13 +6,15 @@ type Data = {
   error?: string;
 };
 
-export default async function handler(
+export default async function loginHandler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  res.setHeader("Allow", ["POST"]);
+
   const { method, body } = req;
+
   if (method != "POST") {
-    res.setHeader("Allow", ["POST"]);
     res.status(405).json({ error: `Method ${method} Not Allowed` });
     return;
   }

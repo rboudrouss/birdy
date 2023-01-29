@@ -8,12 +8,13 @@ type Data = {
   user?: User;
 };
 
-export default async function handler(
+export default async function registerHandler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { body, method } = req;
   res.setHeader("Allow", ["POST"]);
+
+  const { body, method } = req;
 
   if (method != "POST") {
     res.status(405).json({ error: `Method ${method} Not Allowed` });

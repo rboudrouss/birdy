@@ -4,8 +4,10 @@ import { prisma } from "../(helper)";
 
 export default async function userHandler(
   req: NextApiRequest,
-  res: NextApiResponse<User>
+  res: NextApiResponse<User | { error: string }>
 ) {
+  res.setHeader("Allow", ["GET", "PUT"]);
+
   const { query, method } = req;
   const id = parseInt(query.id as string, 10);
 
@@ -16,7 +18,7 @@ export default async function userHandler(
   });
 
   if (!u) {
-    res.status(404).end("User Not Found");
+    res.status(404).json({ error: "User Not Found" });
     return;
   }
 
@@ -43,6 +45,5 @@ export default async function userHandler(
     return;
   }
 
-  res.setHeader("Allow", ["GET", "PUT"]);
-  res.status(405).end(`Method ${method} Not Allowed`);
+  res.status(405).json({ error: `Method ${method} Not Allowed` });
 }

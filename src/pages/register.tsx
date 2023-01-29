@@ -1,4 +1,4 @@
-import userService from "@/helper/user.service";
+import userService from "@/helper/userService";
 import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
 

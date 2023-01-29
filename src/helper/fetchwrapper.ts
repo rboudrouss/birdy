@@ -1,5 +1,5 @@
 import { json } from "stream/consumers";
-import userService from "./user.service";
+import userService from "./userService";
 
 export const fetchWrapper = {
   get,

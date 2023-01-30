@@ -1,11 +1,7 @@
-import { Post, Prisma } from "@prisma/client";
+import cookiewrapper from "@/helper/cookiewrapper";
+import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../(helper)";
-
-function checkValidCookie(cookies: Partial<{ [key: string]: string }>) {
-  // TODO
-  return true;
-}
 
 // TODO maybe remove the author id in the request
 export default async function postHandler(
@@ -35,7 +31,7 @@ export default async function postHandler(
     return;
   }
 
-  if (!checkValidCookie(req.cookies)) {
+  if (!cookiewrapper.checkValidUser(req.cookies, parseInt(body.author))) {
     res.status(403).json({ error: "wrong cookie, wrong account" });
     return;
   }
@@ -45,7 +41,6 @@ export default async function postHandler(
   if (author < 1) {
     res.status(400).json({ error: "wrong author number" });
   }
-
 
   let p = await prisma.post.create({
     data: {

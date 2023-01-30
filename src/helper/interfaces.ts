@@ -5,6 +5,9 @@ export interface User {
   password?: string;
   username: string;
   bio?: String | null;
+  posts?: Post[];
+  followers?: User[];
+  following?: User[];
 }
 
 export interface Post {
@@ -13,3 +16,4 @@ export interface Post {
   content: string;
   author: number;
 }
+

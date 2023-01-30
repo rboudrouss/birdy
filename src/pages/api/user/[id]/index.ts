@@ -1,6 +1,6 @@
 import { User } from "@/helper/interfaces";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../(helper)";
+import { prisma } from "../../(helper)";
 
 export default async function userHandler(
   req: NextApiRequest,
@@ -14,6 +14,11 @@ export default async function userHandler(
   let u = await prisma.user.findUnique({
     where: {
       id,
+    },
+    include: {
+      posts: true,
+      followers: true,
+      following: true,
     },
   });
 

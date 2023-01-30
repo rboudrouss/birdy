@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique @db.VarChar(255)
-  password String   @db.VarChar(16)
-  username String   @db.VarChar(20)
-  posts    Post[]
-  bio      String?  @db.VarChar(256)
-  followers   Follows[] @relation("follower")
-  following   Follows[] @relation("following")
+  id        Int       @id @default(autoincrement())
+  email     String    @unique @db.VarChar(255)
+  password  String    @db.VarChar(16)
+  username  String    @db.VarChar(20)
+  posts     Post[]
+  bio       String?   @db.VarChar(256)
+  followers Follows[] @relation("follower")
+  following Follows[] @relation("following")
+  Likes     Likes[]
 }
 
 model Post {
@@ -27,6 +28,10 @@ model Post {
   content   String   @db.VarChar(256)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
+  Likes     Likes[]
+  replyTo   Post?    @relation("replies", fields: [replyId], references: [id])
+  replies   Post[]   @relation("replies")
+  replyId    Int?
 }
 
 model Follows {
@@ -37,4 +42,13 @@ model Follows {
   createdAt   DateTime @default(now())
 
   @@id([followerId, followingId])
+}
+
+model Likes {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+
+  @@id([userId, postId])
 }

@@ -1,5 +1,6 @@
+"use client";
+
 import userService from "@/helper/userService";
-import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
 
 export default function Register() {

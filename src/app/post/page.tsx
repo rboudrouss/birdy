@@ -1,5 +1,6 @@
+"use client";
+
 import userService from "@/helper/userService";
-import { useRouter } from "next/router";
 import { MouseEvent, useState } from "react";
 
 export default function Post() {
@@ -16,9 +17,17 @@ export default function Post() {
     <main>
       <form onSubmit={post}>
         <p>Author</p>
-        <input type="number" required={true} onChange={(e) => setAuthor(e.target.value)} />
+        <input
+          type="number"
+          required={true}
+          onChange={(e) => setAuthor(e.target.value)}
+        />
         <p>content</p>
-        <input type="text" required={true} onChange={(e) => setContent(e.target.value)} />
+        <input
+          type="text"
+          required={true}
+          onChange={(e) => setContent(e.target.value)}
+        />
         <button type="submit" onClick={post}>
           Post
         </button>

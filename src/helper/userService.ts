@@ -1,6 +1,5 @@
-import Router from "next/router";
 import { fetchWrapper } from "./fetchwrapper";
-import { User } from "./interfaces";
+import { Post, User } from "./interfaces";
 
 const userService = {
   get userId() {
@@ -23,20 +22,21 @@ async function login(email: string, password: string) {
     .then((u: User) => {
       // TODO set session cookie
       localStorage.setItem("User", String(u.id)); // TODO make a real connection token
-      Router.push("/");
+      console.log("Logged in !");
+      window.location.href = "/";
+      return u;
     });
 }
 
 function logout() {
   console.log("Loging out");
   localStorage.removeItem("user");
-  Router.push("/login");
+  window.location.href = "/login";
 }
 
 async function register(user: User) {
   return fetchWrapper.post(`api/user/register`, user).then((u) => {
-    Router.push("/login");
-    return u;
+    window.location.href = "/login";
   });
 }
 
@@ -48,10 +48,14 @@ async function getAll() {
 }
 
 async function createPost(content: string, author?: string) {
-  return fetchWrapper.post("api/post/create", {
-    author: author ? Number(author) : userService.userId,
-    content: content,
-  });
+  return fetchWrapper
+    .post("api/post/create", {
+      author: author ? Number(author) : userService.userId,
+      content: content,
+    })
+    .then((p: Post) => {
+      window.location.href = `post/${p.id}`;
+    });
 }
 
 export default userService;

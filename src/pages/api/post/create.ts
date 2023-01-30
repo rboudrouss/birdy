@@ -1,10 +1,10 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../(helper)";
+import { prisma } from "@/helper/instances";
 
 // TODO maybe remove the author id in the request
-export default async function postHandler(
+export default async function postCreate(
   req: NextApiRequest,
   res: NextApiResponse<Post | { error: string }>
 ) {

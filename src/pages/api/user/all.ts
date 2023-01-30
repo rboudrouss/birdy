@@ -1,6 +1,6 @@
+import { prisma } from "@/helper/instances";
 import { User } from "@/helper/interfaces";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../(helper)";
 
 export default async function userAll(
   req: NextApiRequest,

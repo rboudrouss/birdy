@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Follows} from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../../(helper)";
+import { prisma } from "@/helper/instances";
 
 // TODO maybe remove the author id in the request
 export default async function followHandler(

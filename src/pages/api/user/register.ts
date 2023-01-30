@@ -1,6 +1,6 @@
+import { prisma } from "@/helper/instances";
 import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "../(helper)";
 
 type Data = {
   msg?: string;

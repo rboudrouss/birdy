@@ -10,7 +10,12 @@ export default async function userAll(
 
   const { method } = req;
 
-  let u = await prisma.user.findMany();
+  try {
+    var u = await prisma.user.findMany();
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (method == "GET") {
     res.status(200).json(u);

@@ -24,11 +24,16 @@ export default async function loginHandler(
     return;
   }
 
-  let u = await prisma.user.findUnique({
-    where: {
-      email: body.email as string,
-    },
-  });
+  try {
+    var u = await prisma.user.findUnique({
+      where: {
+        email: body.email as string,
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!u || body.password !== u.password) {
     res.status(403).json({ error: "Wrong email or password" });

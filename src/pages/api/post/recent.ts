@@ -25,12 +25,17 @@ export default async function postList(
     return;
   }
 
-  let p = await prisma.post.findMany({
-    take: n,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  try {
+    var p = await prisma.post.findMany({
+      take: n,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!p) {
     res.status(404).json({ error: "No Posts in Database" });

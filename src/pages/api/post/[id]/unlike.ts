@@ -26,11 +26,16 @@ export default async function unlikeHandler(
     return;
   }
 
-  let p = await prisma.post.findUnique({
-    where: {
-      id: parseInt(query.id as string),
-    },
-  });
+  try {
+    var p = await prisma.post.findUnique({
+      where: {
+        id: parseInt(query.id as string),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!p) {
     res.status(404).json({ error: "Post not found" });

@@ -26,25 +26,35 @@ export default async function registerHandler(
     return;
   }
 
-  let old = await prisma.user.findUnique({
-    where: {
-      email: body.email as string,
-    },
-  });
+  try {
+    var old = await prisma.user.findUnique({
+      where: {
+        email: body.email as string,
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (old) {
     res.status(403).json({ error: "email already used" });
     return;
   }
 
-  let u = await prisma.user.create({
-    data: {
-      email: body.email as string,
-      username: body.username as string,
-      password: body.password as string,
-      bio: (body.bio as string | undefined) ?? null,
-    },
-  });
+  try {
+    var u = await prisma.user.create({
+      data: {
+        email: body.email as string,
+        username: body.username as string,
+        password: body.password as string,
+        bio: (body.bio as string | undefined) ?? null,
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   res
     .status(201)

@@ -1,5 +1,5 @@
 import cookieWrapper from "@/helper/cookiewrapper";
-import { Follows} from "@prisma/client";
+import { Follows } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/helper/instances";
 
@@ -27,23 +27,33 @@ export default async function followHandler(
     return;
   }
 
-  let u = await prisma.user.findUnique({
-    where: {
-      id: parseInt(query.id as string),
-    },
-  });
+  try {
+    var u = await prisma.user.findUnique({
+      where: {
+        id: parseInt(query.id as string),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!u) {
     res.status(404).json({ error: "Post not found" });
     return;
   }
 
-  let f = await prisma.follows.create({
-    data: {
-      followingId: parseInt(query.id as string),
-      followerId: parseInt(body.author),
-    },
-  });
+  try {
+    var f = await prisma.follows.create({
+      data: {
+        followingId: parseInt(query.id as string),
+        followerId: parseInt(body.author),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   res.status(201).json(f);
 }

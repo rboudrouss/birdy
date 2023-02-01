@@ -27,23 +27,33 @@ export default async function likeHandler(
     return;
   }
 
-  let p = await prisma.post.findUnique({
-    where: {
-      id: parseInt(query.id as string),
-    },
-  });
+  try {
+    var p = await prisma.post.findUnique({
+      where: {
+        id: parseInt(query.id as string),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!p) {
     res.status(404).json({ error: "Post not found" });
     return;
   }
 
-  let l = await prisma.likes.create({
-    data: {
-      postId: parseInt(query.id as string),
-      userId: parseInt(body.author),
-    },
-  });
+  try {
+    var l = await prisma.likes.create({
+      data: {
+        postId: parseInt(query.id as string),
+        userId: parseInt(body.author),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   res.status(201).json(l);
 }

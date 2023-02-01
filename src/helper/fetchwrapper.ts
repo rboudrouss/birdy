@@ -1,4 +1,3 @@
-import { json } from "stream/consumers";
 import userService from "./userService";
 
 export const fetchWrapper = {
@@ -61,13 +60,13 @@ async function _delete(url: string) {
 
 async function handleResponse(response: Response) {
   const text = await response.text();
-  let data: any = text;
-  data = data && JSON.parse(text);
+  let data: any = text && JSON.parse(text);
   if (!response.ok) {
     // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
     if ([401, 403].includes(response.status) && userService.userId)
       userService.logout();
-    const error = (data && data.message) || response.statusText;
+    const error = data.error as string
+    alert(error) // TODO remove this in production
     return Promise.reject(error);
   }
   return data;

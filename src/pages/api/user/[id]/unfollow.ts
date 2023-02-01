@@ -27,25 +27,35 @@ export default async function unfollowHandler(
     return;
   }
 
-  let u = await prisma.user.findUnique({
-    where: {
-      id: parseInt(query.id as string),
-    },
-  });
+  try {
+    var u = await prisma.user.findUnique({
+      where: {
+        id: parseInt(query.id as string),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!u) {
     res.status(404).json({ error: "Post not found" });
     return;
   }
 
-  let f = await prisma.follows.delete({
-    where: {
-      followerId_followingId: {
-        followingId: parseInt(query.id as string),
-        followerId: parseInt(body.author),
+  try {
+    var f = await prisma.follows.delete({
+      where: {
+        followerId_followingId: {
+          followingId: parseInt(query.id as string),
+          followerId: parseInt(body.author),
+        },
       },
-    },
-  });
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   res.status(201).json({ msg: "Done !" });
 }

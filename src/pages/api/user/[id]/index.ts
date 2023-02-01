@@ -11,16 +11,21 @@ export default async function userHandler(
   const { query, method } = req;
   const id = parseInt(query.id as string, 10);
 
-  let u = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      posts: true,
-      followers: true,
-      following: true,
-    },
-  });
+  try {
+    var u = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        posts: true,
+        followers: true,
+        following: true,
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!u) {
     res.status(404).json({ error: "User Not Found" });
@@ -34,17 +39,22 @@ export default async function userHandler(
   }
 
   if (method == "PUT") {
-    let u2 = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        email: (query.email as string) ?? u.email,
-        username: (query.username as string) ?? u.username,
-        password: (query.password as string) ?? u.password,
-        bio: (query.bio as string) ?? u.bio,
-      },
-    });
+    try {
+      var u2 = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          email: (query.email as string) ?? u.email,
+          username: (query.username as string) ?? u.username,
+          password: (query.password as string) ?? u.password,
+          bio: (query.bio as string) ?? u.bio,
+        },
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+      return;
+    }
 
     res.status(200).json(u2);
     return;

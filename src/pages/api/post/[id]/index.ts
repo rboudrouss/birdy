@@ -2,7 +2,6 @@ import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/helper/instances";
 
-
 // TODO maybe remove the author id in the request
 export default async function postHandler(
   req: NextApiRequest,
@@ -17,11 +16,16 @@ export default async function postHandler(
     return;
   }
 
-  let p = await prisma.post.findUnique({
-    where: {
-      id: parseInt(query.id as string),
-    },
-  });
+  try {
+    var p = await prisma.post.findUnique({
+      where: {
+        id: parseInt(query.id as string),
+      },
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+    return;
+  }
 
   if (!p) {
     res.status(404).json({ error: "Post not found" });

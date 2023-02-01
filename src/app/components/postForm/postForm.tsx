@@ -1,16 +1,20 @@
 "use client";
 
 import userService from "@/helper/userService";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
+import styles from "./loginForm.module.css";
 
-export default function Post() {
+export default function postForm(props: {
+  parentPost: number;
+  author: number;
+}) {
   let [author, setAuthor] = useState("");
   let [content, setContent] = useState("");
 
   const post = async (e: any) => {
     e.preventDefault();
     console.log(author, content);
-    await userService.createPost(content, author);
+    let resp = await userService.createPost(content, author);
   };
 
   return (

@@ -1,10 +1,10 @@
-import { User } from "@/helper/interfaces";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/helper/instances";
+import { User } from "@prisma/client";
 
 export default async function userHandler(
   req: NextApiRequest,
-  res: NextApiResponse<User | { error: string }>
+  res: NextApiResponse<ApiResponse<User>>
 ) {
   res.setHeader("Allow", ["GET", "PUT"]);
 
@@ -23,18 +23,27 @@ export default async function userHandler(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
   if (!u) {
-    res.status(404).json({ error: "User Not Found" });
+    let code = HttpCodes.NOT_FOUND;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "User Not Found" });
     return;
   }
 
   if (method == "GET") {
-    const { id, email, username, bio } = u;
-    res.status(200).json({ id, email, username, bio });
+    let code = HttpCodes.OK;
+    res.status(code).json({
+      isError: false,
+      status: code,
+      message: "OK !",
+      data: u,
+    });
     return;
   }
 
@@ -52,13 +61,24 @@ export default async function userHandler(
         },
       });
     } catch (e: any) {
-      res.status(500).json({ error: e.message });
+      let code = HttpCodes.INTERNAL_ERROR;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: e.message });
       return;
     }
 
-    res.status(200).json(u2);
+    let code = HttpCodes.ACCEPTED;
+    res
+      .status(code)
+      .json({ isError: false, status: code, message: "changed !", data: u2 });
     return;
   }
 
-  res.status(405).json({ error: `Method ${method} Not Allowed` });
+  let code = HttpCodes.WRONG_METHOD;
+  res.status(code).json({
+    isError: true,
+    status: code,
+    message: `Method ${method} Not Allowed`,
+  });
 }

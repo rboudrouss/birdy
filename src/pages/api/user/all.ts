@@ -1,26 +1,37 @@
-import { prisma } from "@/helper/instances";
-import { User } from "@/helper/interfaces";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
+import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { connected } from "process";
 
 export default async function userAll(
   req: NextApiRequest,
-  res: NextApiResponse<User[] | { error: string }>
+  res: NextApiResponse<ApiResponse<User[]>>
 ) {
   res.setHeader("Allow", ["GET"]);
 
   const { method } = req;
 
+  if (method !== "GET") {
+    let code = HttpCodes.WRONG_METHOD;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Method ${method} Not Allowed`,
+    });
+    return;
+  }
+
   try {
     var u = await prisma.user.findMany();
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
-  if (method == "GET") {
-    res.status(200).json(u);
-    return;
-  }
-
-  res.status(405).json({ error: `Method ${method} Not Allowed` });
+  let code = HttpCodes.OK;
+  res
+    .status(code)
+    .json({ isError: false, status: code, message: "OK !", data: u });
+  return;
 }

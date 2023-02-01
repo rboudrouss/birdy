@@ -1,28 +1,36 @@
-import { prisma } from "@/helper/instances";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  msg?: string;
-  error?: string;
-  user?: User;
-};
-
 export default async function registerHandler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ApiResponse<User>>
 ) {
   res.setHeader("Allow", ["POST"]);
 
   const { body, method } = req;
 
   if (method != "POST") {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    let code = HttpCodes.WRONG_METHOD;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Method ${method} Not Allowed`,
+    });
     return;
   }
 
-  if (!(body.password && body.email && body.username)) {
-    res.status(400).json({ error: "need a password, an email and a name" });
+  if (
+    !(body.password && body.email && body.username) ||
+    (body.bio && body.bio.length > 256)
+  ) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message:
+        "need a password, an email and a name. Optionnaly a bio with less than 256 characters",
+    });
     return;
   }
 
@@ -33,12 +41,16 @@ export default async function registerHandler(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
   if (old) {
-    res.status(403).json({ error: "email already used" });
+    let code = HttpCodes.UNAUTHORIZED;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "email already used" });
     return;
   }
 
@@ -52,11 +64,16 @@ export default async function registerHandler(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
-  res
-    .status(201)
-    .json({ msg: `User ${u.username} with id ${u.id} was created !`, user: u });
+  let code = HttpCodes.CREATED;
+  res.status(code).json({
+    isError: false,
+    status: code,
+    message: `User ${u.username} with id ${u.id} was created !`,
+    data: u,
+  });
 }

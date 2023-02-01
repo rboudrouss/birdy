@@ -1,5 +1,5 @@
+import { Post, User } from "@prisma/client";
 import { fetchWrapper } from "./fetchwrapper";
-import { Post, User } from "./interfaces";
 
 const userService = {
   get userId() {
@@ -34,8 +34,13 @@ function logout() {
   window.location.href = "/login";
 }
 
-async function register(user: User) {
-  return fetchWrapper.post(`api/user/register`, user).then((u) => {
+async function register(user: {
+  email: string;
+  password: string;
+  username: string;
+  bio?: string;
+}) {
+  return fetchWrapper.post(`api/user/register`, user).then(() => {
     window.location.href = "/login";
   });
 }

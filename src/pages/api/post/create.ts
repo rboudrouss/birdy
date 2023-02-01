@@ -1,19 +1,26 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/helper/instances";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 
 // TODO maybe remove the author id in the request
 export default async function postCreate(
   req: NextApiRequest,
-  res: NextApiResponse<Post | { error: string }>
+  res: NextApiResponse<ApiResponse<Post>>
 ) {
   res.setHeader("Allow", ["POST"]);
 
   const { body, method } = req;
 
   if (method != "POST") {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    let code = HttpCodes.WRONG_METHOD;
+    res
+      .status(code)
+      .json({
+        isError: true,
+        status: code,
+        message: `Method ${method} Not Allowed`,
+      });
     return;
   }
 
@@ -25,21 +32,36 @@ export default async function postCreate(
       body.content.length > 0
     )
   ) {
+    let code = HttpCodes.BAD_REQ;
     res
-      .status(400)
-      .json({ error: "need an author, and a content under 256 characters" });
+      .status(code)
+      .json({
+        isError: true,
+        status: code,
+        message: "need an author, and a content under 256 characters",
+      });
     return;
   }
 
   if (!cookiewrapper.checkValidUser(req.cookies, parseInt(body.author))) {
-    res.status(403).json({ error: "wrong cookie, wrong account" });
+    let code = HttpCodes.FORBIDDEN;
+    res
+      .status(code)
+      .json({
+        isError: true,
+        status: code,
+        message: "wrong cookie, wrong account",
+      });
     return;
   }
 
   let author = Number(body.author as string);
 
   if (author < 1) {
-    res.status(400).json({ error: "wrong author number" });
+    let code = HttpCodes.BAD_REQ;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "wrong author number" });
   }
 
   try {
@@ -50,9 +72,13 @@ export default async function postCreate(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
-  res.status(201).json(p);
+  let code = HttpCodes.CREATED;
+  res
+    .status(code)
+    .json({ isError: false, status: code, message: "Created !", data: p });
 }

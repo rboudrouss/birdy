@@ -1,20 +1,24 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/helper/instances";
-import { idText } from "typescript";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 
 // TODO maybe remove the author id in the request
 export default async function postCreate(
   req: NextApiRequest,
-  res: NextApiResponse<Post | { error: string }>
+  res: NextApiResponse<ApiResponse<Post>>
 ) {
   res.setHeader("Allow", ["POST"]);
 
   const { body, method, query } = req;
 
   if (method != "POST") {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    let code = HttpCodes.WRONG_METHOD;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Method ${method} Not Allowed`,
+    });
     return;
   }
 
@@ -27,9 +31,12 @@ export default async function postCreate(
       body.content.length > 0
     )
   ) {
-    res
-      .status(400)
-      .json({ error: "need an author, and a content under 256 characters" });
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "need an author, and a content under 256 characters",
+    });
     return;
   }
 
@@ -37,12 +44,22 @@ export default async function postCreate(
   let replyTo = Number(query.id);
 
   if (author < 1 || replyTo < 1) {
-    res.status(400).json({ error: "wrong author or id number" });
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "wrong author or id number",
+    });
     return;
   }
 
   if (!cookiewrapper.checkValidUser(req.cookies, parseInt(body.author))) {
-    res.status(403).json({ error: "wrong cookie, wrong account" });
+    let code = HttpCodes.FORBIDDEN;
+    res.status(403).json({
+      isError: true,
+      status: code,
+      message: "wrong cookie, wrong account",
+    });
     return;
   }
 
@@ -53,7 +70,10 @@ export default async function postCreate(
   });
 
   if (!p) {
-    res.status(404).json({ error: "Parent post not found" });
+    let code = HttpCodes.NOT_FOUND;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "Parent post not found" });
     return;
   }
 
@@ -66,9 +86,18 @@ export default async function postCreate(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(500).json({ isError: true, status: code, message: e.message });
     return;
   }
 
-  res.status(201).json(p);
+  let code = HttpCodes.CREATED;
+  res
+    .status(code)
+    .json({
+      isError: false,
+      status: code,
+      message: `User n°${p.authorId} replied to post n°${p.replyId} with post n°${p.id}`,
+      data: p,
+    });
 }

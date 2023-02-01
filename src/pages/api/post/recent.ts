@@ -1,14 +1,14 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/helper/instances";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 
 const DEFAULT_N = 20;
 
 // TODO maybe remove the author id in the request
 export default async function postList(
   req: NextApiRequest,
-  res: NextApiResponse<Post[] | { error: string }>
+  res: NextApiResponse<ApiResponse<Post[]>>
 ) {
   res.setHeader("Allow", ["GET"]);
 
@@ -16,12 +16,22 @@ export default async function postList(
   const n = query.n ? parseInt(query.n as string) : DEFAULT_N;
 
   if (method != "GET") {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    let code = HttpCodes.WRONG_METHOD;
+    res
+      .status(code)
+      .json({
+        isError: true,
+        status: code,
+        message: `Method ${method} Not Allowed`,
+      });
     return;
   }
 
   if (!cookieWrapper.isConnected(req.cookies)) {
-    res.status(403).json({ error: "Not connected" });
+    let code = HttpCodes.FORBIDDEN;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "Not connected" });
     return;
   }
 
@@ -33,14 +43,21 @@ export default async function postList(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
   if (!p) {
-    res.status(404).json({ error: "No Posts in Database" });
+    let code = HttpCodes.NOT_FOUND;
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "No Posts in Database" });
     return;
   }
 
-  res.status(201).json(p);
+  let code = HttpCodes.OK;
+  res
+    .status(code)
+    .json({ isError: false, status: code, message: "Ok !", data: p });
 }

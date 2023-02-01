@@ -1,18 +1,23 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/helper/instances";
+import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
 
 // TODO maybe remove the author id in the request
 export default async function postHandler(
   req: NextApiRequest,
-  res: NextApiResponse<Post | { error: string }>
+  res: NextApiResponse<ApiResponse<Post>>
 ) {
   res.setHeader("Allow", ["GET"]);
 
   const { method, query } = req;
 
   if (method != "GET") {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
+    let code = HttpCodes.WRONG_METHOD;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Methode ${method} Not allowed`,
+    });
     return;
   }
 
@@ -23,14 +28,30 @@ export default async function postHandler(
       },
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: e.message as string,
+    });
     return;
   }
 
   if (!p) {
-    res.status(404).json({ error: "Post not found" });
+    let code = HttpCodes.NOT_FOUND;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "Post Not Found",
+    });
     return;
   }
 
-  res.status(201).json(p);
+  let code = HttpCodes.OK;
+  res.status(code).json({
+    isError: false,
+    data: p,
+    status: code,
+    message: `Info of post with is ${query.id}`,
+  });
 }

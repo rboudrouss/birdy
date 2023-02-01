@@ -2,9 +2,9 @@
 
 import userService from "@/helper/userService";
 import { useState } from "react";
-import styles from "./loginForm.module.css";
+import styles from "./PostForm.module.css";
 
-export default function postForm(props: {
+export default function PostForm(props: {
   parentPost: number;
   author: number;
 }) {

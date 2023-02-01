@@ -2,9 +2,9 @@
 
 import userService from "@/helper/userService";
 import { MouseEvent, useState } from "react";
-import styles from "./registerForm.module.css";
+import styles from "./RegisterForm.module.css";
 
-export default function registerForm() {
+export default function RegisterForm() {
   let [email, setEmail] = useState("");
   let [passw, setPassw] = useState("");
   let [bio, setBio] = useState("");

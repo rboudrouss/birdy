@@ -2,9 +2,9 @@
 
 import userService from "@/helper/userService";
 import { useState } from "react";
-import styles from "./loginForm.module.css";
+import styles from "./LoginForm.module.css";
 
-export default function loginForm() {
+export default function LoginForm() {
   let [author, setAuthor] = useState("");
   let [content, setContent] = useState("");
 

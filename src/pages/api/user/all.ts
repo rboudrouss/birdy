@@ -1,11 +1,11 @@
-import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
-import { User } from "@prisma/client";
+import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
+import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { connected } from "process";
 
 export default async function userAll(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<User[]>>
+  res: NextApiResponse<ApiResponse<UserWithoutPass[]>>
 ) {
   res.setHeader("Allow", ["GET"]);
 
@@ -29,9 +29,11 @@ export default async function userAll(
     return;
   }
 
+  let out = u.map(removePassw)
+
   let code = HttpCodes.OK;
   res
     .status(code)
-    .json({ isError: false, status: code, message: "OK !", data: u });
+    .json({ isError: false, status: code, message: "OK !", data: out });
   return;
 }

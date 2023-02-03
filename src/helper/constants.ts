@@ -1,4 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+
+export const APILINK = "/api"
+export const USERAPI = APILINK + "/user"
+export const POSTAPI = APILINK + "/post"
 
 export interface OKApiResponse<T> {
   data: T;
@@ -8,6 +11,7 @@ export interface ErrorApiResponse {
   data?: null;
   isError: true;
 }
+
 export type ApiResponse<T> = { message: string; status: number } & (
   | OKApiResponse<T>
   | ErrorApiResponse
@@ -25,7 +29,6 @@ export enum HttpCodes {
   INTERNAL_ERROR = 500,
 }
 
-export const prisma = new PrismaClient();
 
 // TODO add relations
 // export interface User {

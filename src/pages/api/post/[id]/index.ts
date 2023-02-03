@@ -1,6 +1,7 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { prisma } from "@/helper/instances";
 
 // TODO maybe remove the author id in the request
 export default async function postHandler(

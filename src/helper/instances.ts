@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { PrismaClient } from "@prisma/client";
+export const prisma = new PrismaClient();
+
 // Return true if request is correct else false
 export function checkValidReq<T>(
   req: NextApiRequest,

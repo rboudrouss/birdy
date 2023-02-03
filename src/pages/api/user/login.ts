@@ -1,10 +1,11 @@
-import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
-import { User } from "@prisma/client";
+import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
+import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function loginHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<User>>
+  res: NextApiResponse<ApiResponse<UserWithoutPass>>
 ) {
   res.setHeader("Allow", ["POST"]);
 
@@ -53,12 +54,10 @@ export default async function loginHandler(
   }
 
   let code = HttpCodes.ACCEPTED;
-  res
-    .status(code)
-    .json({
-      isError: false,
-      status: code,
-      data: u,
-      message: `Welcome ${u.username} (id:${u.id})`,
-    });
+  res.status(code).json({
+    isError: false,
+    status: code,
+    data: removePassw(u),
+    message: `Welcome ${u.username} (id:${u.id})`,
+  });
 }

@@ -1,10 +1,11 @@
-import { ApiResponse, HttpCodes, prisma } from "@/helper/constants";
+import { ApiResponse, HttpCodes, } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "@prisma/client";
+import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
+import { prisma } from "@/helper/instances";
 
 export default async function userHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<User>>
+  res: NextApiResponse<ApiResponse<UserWithoutPass>>
 ) {
   res.setHeader("Allow", ["GET", "PUT"]);
 
@@ -42,7 +43,7 @@ export default async function userHandler(
       isError: false,
       status: code,
       message: "OK !",
-      data: u,
+      data: removePassw(u),
     });
     return;
   }
@@ -71,7 +72,12 @@ export default async function userHandler(
     let code = HttpCodes.ACCEPTED;
     res
       .status(code)
-      .json({ isError: false, status: code, message: "changed !", data: u2 });
+      .json({
+        isError: false,
+        status: code,
+        message: "changed !",
+        data: removePassw(u2),
+      });
     return;
   }
 

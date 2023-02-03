@@ -1,0 +1,16 @@
+.main {
+  width: 100%;
+  display: flex;
+  flex-basis: auto;
+}
+.navbar {
+  width: 25%;
+}
+
+.followers {
+  width: 25%;
+}
+
+.posts {
+  width: 50%;
+}

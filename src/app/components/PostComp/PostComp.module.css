@@ -1,0 +1,32 @@
+.wrapper{
+  /* min-height: 10%; */
+  width: 100%;
+  margin: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  outline: dashed blue 1px;
+
+}
+
+.userDiv {
+  padding-bottom: 10px;
+}
+
+.username {
+  padding: 5px;
+  font-weight: bold;
+}
+
+/* .wrapper * {
+  outline: dashed red 1px;
+} */
+
+.content, .username{
+  padding: 5px;
+}
+
+.buttonDiv {
+  width: 100%;
+  margin: 10px 5px;
+  display: flex;
+}

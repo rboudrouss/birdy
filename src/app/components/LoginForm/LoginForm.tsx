@@ -1,38 +1,40 @@
 "use client";
 
 import userService from "@/helper/userService";
-import { useState } from "react";
+
 import styles from "./LoginForm.module.css";
 
-export default function LoginForm() {
-  let [author, setAuthor] = useState("");
-  let [content, setContent] = useState("");
+import { useState } from "react";
 
-  const post = async (e: any) => {
+export default function LoginForm() {
+  let [email, setEmail] = useState("");
+  let [passw, setPassw] = useState("");
+
+  const login = async (e: any) => {
     e.preventDefault();
-    console.log(author, content);
-    await userService.createPost(content, author);
+    console.log(email, passw);
+    await userService.login(email, passw);
   };
 
   return (
-    <main>
-      <form onSubmit={post}>
-        <p>Author</p>
+    <form onSubmit={login}>
+      <div className={styles.wrapper}>
+        <p>Email</p>
         <input
-          type="number"
+          type="email"
           required={true}
-          onChange={(e) => setAuthor(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <p>content</p>
+        <p>password</p>
         <input
           type="text"
           required={true}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => setPassw(e.target.value)}
         />
-        <button type="submit" onClick={post}>
-          Post
+        <button type="submit" onClick={login}>
+          Login
         </button>
-      </form>
-    </main>
+      </div>
+    </form>
   );
 }

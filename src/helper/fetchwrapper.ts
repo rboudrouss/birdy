@@ -7,7 +7,8 @@ export const fetchWrapper = {
   delete: _delete,
 };
 
-export async function get(url: string) {
+async function get(url: string) {
+  console.log("getting ", url);
   const requestOptions = {
     method: "GET",
   };
@@ -16,6 +17,7 @@ export async function get(url: string) {
 }
 
 async function post(url: string, body: any) {
+  console.log("posting ", url);
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,6 +28,7 @@ async function post(url: string, body: any) {
 }
 
 async function put(url: string, body: any) {
+  console.log("putting ", url);
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -37,6 +40,7 @@ async function put(url: string, body: any) {
 
 // prefixed with underscored because delete is a reserved word in javascript
 async function _delete(url: string) {
+  console.log("deleting ", url);
   const requestOptions = {
     method: "DELETE",
   };
@@ -65,8 +69,8 @@ async function handleResponse(response: Response) {
     // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
     if ([401, 403].includes(response.status) && userService.userId)
       userService.logout();
-    const error = data.message as string
-    alert(error) // TODO remove this in production
+    const error = data.message as string;
+    alert(error); // TODO remove this in production
     return Promise.reject(error);
   }
   return data;

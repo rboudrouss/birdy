@@ -2,9 +2,12 @@
 
 import { PostJson, PostObj } from "@/helper/DBtoObj";
 import styles from "./PostComp.module.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { useState } from "react";
 export default function PostComp(props: { data: PostJson }) {
+  const [liked, setLiked] = useState(false);
+
   return (
     <article className={styles.wrapper}>
       <a href={props.data.postLink}>
@@ -16,7 +19,18 @@ export default function PostComp(props: { data: PostJson }) {
         </div>
       </a>
       <div className={styles.buttonDiv}>
-        <FontAwesomeIcon icon={faHeart}/>
+        <button>
+          <FontAwesomeIcon icon={faHeart} />
+        </button>
+        <button>
+          <FontAwesomeIcon icon={faHeart} />
+        </button>
+        <button>
+          <FontAwesomeIcon icon={faHeart} />
+        </button>
+        <button>
+          <FontAwesomeIcon icon={faHeart} />
+        </button>
       </div>
     </article>
   );

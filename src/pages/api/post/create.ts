@@ -1,7 +1,7 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function postCreate(
@@ -14,13 +14,11 @@ export default async function postCreate(
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: `Method ${method} Not Allowed`,
-      });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Method ${method} Not Allowed`,
+    });
     return;
   }
 
@@ -33,25 +31,21 @@ export default async function postCreate(
     )
   ) {
     let code = HttpCodes.BAD_REQ;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: "need an author, and a content under 256 characters",
-      });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "need an author, and a content under 256 characters",
+    });
     return;
   }
 
   if (!cookiewrapper.back.checkValidUser(req.cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: "wrong cookie, wrong account",
-      });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "wrong cookie, wrong account",
+    });
     return;
   }
 

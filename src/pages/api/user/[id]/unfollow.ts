@@ -1,6 +1,6 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function unfollowHandler(
@@ -75,12 +75,10 @@ export default async function unfollowHandler(
   }
 
   let code = HttpCodes.CREATED;
-  res
-    .status(code)
-    .json({
-      isError: false,
-      status: code,
-      message: "Unfollowed !",
-      data: null,
-    });
+  res.status(code).json({
+    isError: false,
+    status: code,
+    message: "Unfollowed !",
+    data: null,
+  });
 }

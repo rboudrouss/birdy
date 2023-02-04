@@ -26,7 +26,7 @@ export default function PostId({ params }: { params: { id: number } }) {
   return (
     <main className={styles.main}>
       {post && <PostComp data={post} />}
-      {post && <PostForm parentPost={post.id}/>}
+      {post && <PostForm parentPost={post.id} />}
     </main>
   );
 }

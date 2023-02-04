@@ -74,12 +74,10 @@ export default async function likeHandler(
   }
 
   let code = HttpCodes.OK;
-  res
-    .status(code)
-    .json({
-      isError: false,
-      status: code,
-      data: l,
-      message: `User n°${l.postId} likes post n°${l.postId}`,
-    });
+  res.status(code).json({
+    isError: false,
+    status: code,
+    data: l,
+    message: `User n°${l.postId} likes post n°${l.postId}`,
+  });
 }

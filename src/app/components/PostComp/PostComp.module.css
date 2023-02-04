@@ -1,4 +1,4 @@
-.wrapper{
+.wrapper {
   width: 100%;
   margin: 2.5px 5px;
   padding: 10px;
@@ -20,7 +20,8 @@
   outline: dashed red 1px;
 } */
 
-.content, .username{
+.content,
+.username {
   padding: 5px;
 }
 

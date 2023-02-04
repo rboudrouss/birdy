@@ -1,7 +1,6 @@
-
-export const APILINK = "/api"
-export const USERAPI = APILINK + "/user"
-export const POSTAPI = APILINK + "/post"
+export const APILINK = "/api";
+export const USERAPI = APILINK + "/user";
+export const POSTAPI = APILINK + "/post";
 
 export interface OKApiResponse<T> {
   data: T;

@@ -1,7 +1,7 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function postCreate(
@@ -92,12 +92,10 @@ export default async function postCreate(
   }
 
   let code = HttpCodes.CREATED;
-  res
-    .status(code)
-    .json({
-      isError: false,
-      status: code,
-      message: `User n°${p.authorId} replied to post n°${p.replyId} with post n°${p.id}`,
-      data: p,
-    });
+  res.status(code).json({
+    isError: false,
+    status: code,
+    message: `User n°${p.authorId} replied to post n°${p.replyId} with post n°${p.id}`,
+    data: p,
+  });
 }

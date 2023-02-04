@@ -13,10 +13,10 @@ datasource db {
 model User {
   id        Int       @id @default(autoincrement())
   email     String    @unique // @db.VarChar(255)
-  password  String    // @db.VarChar(16)
-  username  String    // @db.VarChar(20)
+  password  String // @db.VarChar(16)
+  username  String // @db.VarChar(20)
   posts     Post[]
-  bio       String?   // @db.VarChar(256)
+  bio       String? // @db.VarChar(256)
   followers Follows[] @relation("follower")
   following Follows[] @relation("following")
   likes     Likes[]
@@ -25,13 +25,13 @@ model User {
 model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  content   String   // @db.VarChar(256)
+  content   String // @db.VarChar(256)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
   likes     Likes[]
   replyTo   Post?    @relation("replies", fields: [replyId], references: [id])
   replies   Post[]   @relation("replies")
-  replyId    Int?
+  replyId   Int?
 }
 
 model Follows {

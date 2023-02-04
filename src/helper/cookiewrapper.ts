@@ -12,7 +12,7 @@ function isConnected(cookies: Partial<{ [key: string]: string }>): boolean {
 }
 
 function isConnectedFront() {
-  return !!Cookies.get("session")
+  return !!Cookies.get("session");
 }
 
 // Check if cookies is a valid session (is connected), if user is provided (used in frontend only)

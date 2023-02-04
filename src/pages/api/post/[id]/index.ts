@@ -33,7 +33,7 @@ export default async function postHandler(
         likes: true,
         replies: true,
         replyTo: true,
-      }
+      },
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;

@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Follows } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function followHandler(
@@ -14,13 +14,11 @@ export default async function followHandler(
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: `Method ${method} Not Allowed`,
-      });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Method ${method} Not Allowed`,
+    });
     return;
   }
 
@@ -34,13 +32,11 @@ export default async function followHandler(
 
   if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: "Unauthorized, not current connected User",
-      });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "Unauthorized, not current connected User",
+    });
     return;
   }
 

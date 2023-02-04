@@ -1,4 +1,4 @@
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
 import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -29,7 +29,7 @@ export default async function userAll(
     return;
   }
 
-  let out = u.map(removePassw)
+  let out = u.map(removePassw);
 
   let code = HttpCodes.OK;
   res

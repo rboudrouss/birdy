@@ -1,4 +1,4 @@
-import { User, Post, Follows } from "@prisma/client";
+import { User, Post, Follows, Likes } from "@prisma/client";
 import { POSTAPI, USERAPI } from "./constants";
 
 export interface UserWithoutPass {
@@ -29,6 +29,7 @@ export interface UserJson {
   followApi: string;
   unfollowApi: string;
   posts: PostJson[] | null;
+  likes: number[] | null;
 }
 
 export class UserObj {
@@ -38,9 +39,13 @@ export class UserObj {
   username: string;
   bio: string | null;
   posts: PostObj[] | null;
+  likes: number[] | null;
 
   constructor(
-    u: (User | UserWithoutPass | UserJson) & { posts?: Post[] | null }
+    u: (User | UserWithoutPass | UserJson) & {
+      posts?: Post[] | null;
+      likes?: Likes[] | number[] | null;
+    }
   ) {
     this.id = u.id;
     this.email = u.email;
@@ -48,6 +53,7 @@ export class UserObj {
     this.username = u.username;
     this.bio = u.bio ?? null;
     this.posts = u.posts?.map((post) => new PostObj(post)) ?? null;
+    this.likes = u.likes?.map((like: any) => like.postId ?? like) ?? null;
   }
 
   public get profileLink(): string {
@@ -78,6 +84,7 @@ export class UserObj {
       apiLink: this.apiLink,
       profileLink: this.profileLink,
       posts: this.posts?.map((post) => post.json) ?? null,
+      likes: this.likes,
     };
   }
 
@@ -97,6 +104,7 @@ export interface PostJson {
   likeApi: string;
   unlikeApi: string;
   author: UserJson | null;
+  replies: PostJson[] | null;
 }
 
 export class PostObj {
@@ -106,14 +114,18 @@ export class PostObj {
   authorId: number;
   replyId: number | null;
   author: UserObj | null;
+  replies: PostObj[] | null;
 
-  constructor(p: (Post | PostJson) & { author?: User | null }) {
+  constructor(
+    p: (Post | PostJson) & { author?: User | null; replies?: Post[] | null }
+  ) {
     this.id = p.id;
     this.createdAt = p.createdAt;
     this.content = p.content;
     this.authorId = p.authorId;
     this.replyId = p.replyId;
     this.author = (p.author && new UserObj(p.author)) ?? null;
+    this.replies = p.replies?.map((reply) => new PostObj(reply)) ?? null;
   }
 
   public get postLink(): string {
@@ -144,6 +156,7 @@ export class PostObj {
       likeApi: this.likeAPI,
       unlikeApi: this.unlikeAPI,
       author: this.author?.json ?? null,
+      replies: this.replies?.map((post) => post.json) ?? null,
     };
   }
 

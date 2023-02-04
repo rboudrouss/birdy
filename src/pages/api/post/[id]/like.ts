@@ -4,7 +4,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
-// TODO maybe remove the author id in the request
 export default async function likeHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Likes>>

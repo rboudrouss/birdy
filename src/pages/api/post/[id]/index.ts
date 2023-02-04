@@ -5,7 +5,6 @@ import { prisma } from "@/helper/instances";
 
 // Liked option
 
-// TODO maybe remove the author id in the request
 export default async function postHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Post>>

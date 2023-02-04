@@ -6,7 +6,6 @@ import { prisma } from "@/helper/instances";
 
 const DEFAULT_N = 20;
 
-// TODO maybe remove the author id in the request
 export default async function postList(
   req: NextApiRequest,
   res: NextApiResponse<

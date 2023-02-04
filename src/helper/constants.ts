@@ -28,26 +28,3 @@ export enum HttpCodes {
   WRONG_METHOD = 405,
   INTERNAL_ERROR = 500,
 }
-
-
-// TODO add relations
-// export interface User {
-//   id?: number;
-//   email: string;
-//   password?: string;
-//   username: string;
-//   bio?: String | null;
-//   posts?: Post[];
-//   followers?: { followerId: number; followingId: number }[];
-//   following?: { followerId: number; followingId: number }[];
-//   link?: string; // TODO implement this
-// }
-
-// export interface Post {
-//   id: number;
-//   createdAt: Date;
-//   content: string;
-//   authorId: number;
-//   replyId?: number;
-//   link?: string;
-// }

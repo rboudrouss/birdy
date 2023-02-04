@@ -12,14 +12,12 @@ export default function RegisterForm() {
 
   const register = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(email, passw, bio, username);
     let resp = await userService.register({
       email,
       password: passw,
       bio,
       username,
     });
-    console.log(resp);
   };
 
   return (

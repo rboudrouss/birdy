@@ -12,7 +12,6 @@ export default function LoginForm() {
 
   const login = async (e: any) => {
     e.preventDefault();
-    console.log(email, passw);
     await userService.login(email, passw);
   };
 

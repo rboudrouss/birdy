@@ -9,7 +9,6 @@ export default function Post() {
 
   const post = async (e: any) => {
     e.preventDefault();
-    console.log(author, content);
     await userService.createPost(content, author);
   };
 

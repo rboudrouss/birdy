@@ -1,11 +1,12 @@
-import { ApiResponse, HttpCodes, } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
 import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+// TODO must return the session cookie too
 export default async function loginHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserWithoutPass>>
+  res: NextApiResponse<ApiResponse<{ session: string; user: UserWithoutPass }>>
 ) {
   res.setHeader("Allow", ["POST"]);
 
@@ -57,7 +58,10 @@ export default async function loginHandler(
   res.status(code).json({
     isError: false,
     status: code,
-    data: removePassw(u),
+    data: {
+      session: `${u.id}`,
+      user: removePassw(u),
+    },
     message: `Welcome ${u.username} (id:${u.id})`,
   });
 }

@@ -29,7 +29,7 @@ export default async function postList(
     return;
   }
 
-  if (!cookieWrapper.isConnected(req.cookies)) {
+  if (!cookieWrapper.back.isConnected(req.cookies)) {
     let code = HttpCodes.FORBIDDEN;
     res
       .status(code)

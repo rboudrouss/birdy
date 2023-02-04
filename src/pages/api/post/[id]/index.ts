@@ -29,6 +29,12 @@ export default async function postHandler(
       where: {
         id: parseInt(query.id as string),
       },
+      include: {
+        author: true,
+        likes: true,
+        replies: true,
+        replyTo: true,
+      }
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;
@@ -55,6 +61,6 @@ export default async function postHandler(
     isError: false,
     data: p,
     status: code,
-    message: `Info of post with is ${query.id}`,
+    message: `Info of post with id ${query.id}`,
   });
 }

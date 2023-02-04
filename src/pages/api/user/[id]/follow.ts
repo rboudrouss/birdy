@@ -33,7 +33,7 @@ export default async function followHandler(
     return;
   }
 
-  if (cookieWrapper.checkValidUser(cookies, parseInt(body.author))) {
+  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
     res
       .status(code)

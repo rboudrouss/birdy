@@ -30,7 +30,7 @@ export default async function unfollowHandler(
     return;
   }
 
-  if (cookieWrapper.checkValidUser(cookies, parseInt(body.author))) {
+  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

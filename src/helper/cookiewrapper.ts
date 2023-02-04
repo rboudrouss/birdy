@@ -1,25 +1,39 @@
+import Cookies from "js-cookie";
+
 const COOKIE_TTL = 7 * 24 * 3600 * 1000; // A week
 
-const cookie_exp = (ttl: number | undefined) =>
-  new Date(Date.now() + (ttl ?? COOKIE_TTL)).toUTCString();
-
-function isConnected(cookies: Partial<{ [key: string]: string }>):number {
-  // TODO
-  // Check if cookies has a valid session (is connected) & return user ID
-  return 1
+function cookie_exp(ttl?: number | undefined) {
+  return new Date(Date.now() + (ttl ?? COOKIE_TTL)).toUTCString();
 }
 
-function checkValidUser(cookies: Partial<{ [key: string]: string }>, user?:number):boolean {
-  // Check if cookies is a valid session (is connected), if user is provided
-  // TODO verify cookie
-  return true;
+// Check if cookies has a valid session (is connected) (used in backend only)
+function isConnected(cookies: Partial<{ [key: string]: string }>): boolean {
+  return !!cookies.session;
+}
+
+function isConnectedFront() {
+  return !!Cookies.get("session")
+}
+
+// Check if cookies is a valid session (is connected), if user is provided (used in frontend only)
+function checkValidUser(
+  cookies: Partial<{ [key: string]: string }>,
+  user: number
+): boolean {
+  // TODO create real sessions
+  return cookies.session === String(user);
 }
 
 const cookieWrapper = {
   COOKIE_TTL,
   cookie_exp,
-  isConnected,
-  checkValidUser,
+  back: {
+    isConnected,
+    checkValidUser,
+  },
+  front: {
+    isConnected: isConnectedFront,
+  },
 };
 
 export default cookieWrapper;

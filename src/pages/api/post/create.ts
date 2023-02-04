@@ -44,7 +44,7 @@ export default async function postCreate(
     return;
   }
 
-  if (!cookiewrapper.checkValidUser(req.cookies, parseInt(body.author))) {
+  if (!cookiewrapper.back.checkValidUser(req.cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
     res
       .status(code)

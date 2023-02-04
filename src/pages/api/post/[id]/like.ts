@@ -31,7 +31,7 @@ export default async function likeHandler(
     return;
   }
 
-  if (cookieWrapper.checkValidUser(cookies, parseInt(body.author))) {
+  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,

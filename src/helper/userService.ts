@@ -1,5 +1,7 @@
-import { Post, User } from "@prisma/client";
-import { ApiResponse } from "./constants";
+import { Likes, Post, User } from "@prisma/client";
+import Cookies from "js-cookie";
+import { ApiResponse, OKApiResponse } from "./constants";
+import { UserObj, UserWithoutPass } from "./DBtoObj";
 import { fetchWrapper } from "./fetchwrapper";
 
 const userService = {
@@ -13,6 +15,7 @@ const userService = {
   getAll,
   createPost,
   getRecentPosts,
+  getPostById,
 };
 
 async function login(email: string, password: string): Promise<void> {
@@ -21,9 +24,13 @@ async function login(email: string, password: string): Promise<void> {
       email,
       password,
     })
-    .then((u: User) => {
+    .then((u: OKApiResponse<{ session: string; user: UserWithoutPass }>) => {
       // TODO set session cookie
-      localStorage.setItem("User", String(u.id)); // TODO make a real connection token
+      Cookies.set("session", u.data.session, { expires: 7 });
+      localStorage.setItem(
+        "User",
+        JSON.stringify(new UserObj(u.data.user as UserWithoutPass).json)
+      ); // TODO make a real connection token
       console.log("Logged in !");
       window.location.href = "/";
     });
@@ -31,7 +38,8 @@ async function login(email: string, password: string): Promise<void> {
 
 function logout() {
   console.log("Loging out");
-  localStorage.removeItem("user");
+  Cookies.remove("session");
+  localStorage.removeItem("User");
   window.location.href = "/login";
 }
 
@@ -78,6 +86,19 @@ async function getRecentPosts(
   return fetchWrapper.get(
     `/api/post/recent?${n ? `n=${n}}` : ""}${start ? `start=${start}` : ""}`
   );
+}
+
+async function getPostById(id: number): Promise<
+  ApiResponse<
+    Post & {
+      author: User;
+      likes: Likes[];
+      replies: Post[];
+      replyTo: Post | null;
+    }
+  >
+> {
+  return fetchWrapper.get(`/api/post/${id}`);
 }
 
 export default userService;

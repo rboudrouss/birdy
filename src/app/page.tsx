@@ -2,9 +2,9 @@
 
 import { PostJson, PostObj } from "@/helper/DBtoObj";
 import userService from "@/helper/userService";
-import { Post, User } from "@prisma/client";
 import { useState, useEffect } from "react";
 import PostComp from "./components/PostComp/PostComp";
+import PostForm from "./components/PostForm/PostForm";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -24,11 +24,11 @@ export default function Home() {
 
     getData();
   }, []);
-  console.log(posts);
 
   return (
     <main className={styles.main}>
       <h1>helloow</h1>
+      <PostForm parentPost={null} />
       {posts.map((post, i) => (
         <PostComp data={post} key={i} />
       ))}

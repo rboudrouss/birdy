@@ -1,11 +1,10 @@
 .wrapper{
-  /* min-height: 10%; */
   width: 100%;
-  margin: 10px 5px;
+  margin: 2.5px 5px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  outline: dashed blue 1px;
-
+  outline: solid gray 1px;
 }
 
 .userDiv {

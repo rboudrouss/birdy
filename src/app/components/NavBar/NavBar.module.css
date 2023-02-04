@@ -1,0 +1,25 @@
+.link {
+  display: flex;
+  padding: 1rem 1.5rem;
+  margin: 5px 0;
+}
+
+.icon {
+  margin-right: 5px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20%;
+  height: 100%;
+}
+
+.header {
+  height: 100vh;
+}
+
+/* .header * {
+  outline: dashed red 1px;
+} */

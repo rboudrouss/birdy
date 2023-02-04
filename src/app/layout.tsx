@@ -1,3 +1,4 @@
+import NavBar from "./components/NavBar/NavBar";
 import "./globals.css";
 
 import styles from "./layout.module.css";
@@ -17,7 +18,7 @@ export default function RootLayout({
       <body>
         <main className={styles.main}>
           <div className={styles.navbar}>
-            <h1>A</h1>
+            <NavBar />
           </div>
           <div className={styles.posts}>{children}</div>
           <div className={styles.followers}>

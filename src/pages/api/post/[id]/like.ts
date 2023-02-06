@@ -11,6 +11,7 @@ export default async function likeHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+  const postId = parseInt(query.id as string);
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
@@ -22,7 +23,7 @@ export default async function likeHandler(
     return;
   }
 
-  if (!body.user) {
+  if (!body.author) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
@@ -30,7 +31,9 @@ export default async function likeHandler(
     return;
   }
 
-  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
+  const userId = parseInt(body.author);
+
+  if (cookieWrapper.back.checkValidUser(cookies, userId)) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,
@@ -43,7 +46,7 @@ export default async function likeHandler(
   try {
     var p = await prisma.post.findUnique({
       where: {
-        id: parseInt(query.id as string),
+        id: postId,
       },
     });
   } catch (e: any) {
@@ -63,9 +66,21 @@ export default async function likeHandler(
   try {
     var l = await prisma.likes.create({
       data: {
-        postId: parseInt(query.id as string),
-        userId: parseInt(body.author),
+        postId,
+        userId,
       },
+    });
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: { nbLikes: { increment: 1 } },
+    });
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: { nbLikes: { increment: 1 } },
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;

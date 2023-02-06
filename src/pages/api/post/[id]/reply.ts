@@ -85,6 +85,14 @@ export default async function postCreate(
         replyId: replyTo,
       },
     });
+    await prisma.post.update({
+      where: {
+        id: replyTo,
+      },
+      data: {
+        nbReplies: { increment: 1 },
+      },
+    });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;
     res.status(500).json({ isError: true, status: code, message: e.message });

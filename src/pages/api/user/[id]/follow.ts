@@ -4,6 +4,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
+/* body 
+  author: number (author id, the follower)
+*/
 export default async function followHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Follows>>
@@ -11,6 +14,7 @@ export default async function followHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+  const userId = parseInt(query.id as string);
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
@@ -22,7 +26,7 @@ export default async function followHandler(
     return;
   }
 
-  if (!body.user) {
+  if (!body.author) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
@@ -30,7 +34,9 @@ export default async function followHandler(
     return;
   }
 
-  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
+  const authorID = parseInt(body.author);
+
+  if (cookieWrapper.back.checkValidUser(cookies, authorID)) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
@@ -43,7 +49,7 @@ export default async function followHandler(
   try {
     var u = await prisma.user.findUnique({
       where: {
-        id: parseInt(query.id as string),
+        id: userId,
       },
     });
   } catch (e: any) {
@@ -65,6 +71,22 @@ export default async function followHandler(
       data: {
         followingId: parseInt(query.id as string),
         followerId: parseInt(body.author),
+      },
+    });
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        nbFollowers: { increment: 1 },
+      },
+    });
+    await prisma.user.update({
+      where: {
+        id: authorID,
+      },
+      data: {
+        nbFollowing: { increment: 1 },
       },
     });
   } catch (e: any) {

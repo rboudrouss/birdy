@@ -1,3 +1,4 @@
+// HACK all this file is ugly, there is probably a better way for all of this ?
 import { User, Post, Follows, Likes } from "@prisma/client";
 import { POSTAPI, USERAPI } from "./constants";
 
@@ -10,6 +11,9 @@ export interface UserWithoutPass {
   Posts?: Post[];
   followers?: Follows[];
   following?: Follows[];
+  nbFollowers: number;
+  nbFollowing: number;
+  nbLikes: number;
 }
 
 export function removePassw(u: User): UserWithoutPass {
@@ -30,6 +34,9 @@ export interface UserJson {
   unfollowApi: string;
   posts: PostJson[] | null;
   likes: number[] | null;
+  nbFollowers: number;
+  nbFollowing: number;
+  nbLikes: number;
 }
 
 export class UserObj {
@@ -40,6 +47,9 @@ export class UserObj {
   bio: string | null;
   posts: PostObj[] | null;
   likes: number[] | null;
+  nbFollowers: number;
+  nbFollowing: number;
+  nbLikes: number;
 
   constructor(
     u: (User | UserWithoutPass | UserJson) & {
@@ -54,6 +64,9 @@ export class UserObj {
     this.bio = u.bio ?? null;
     this.posts = u.posts?.map((post) => new PostObj(post)) ?? null;
     this.likes = u.likes?.map((like: any) => like.postId ?? like) ?? null;
+    this.nbFollowers = u.nbFollowers;
+    this.nbFollowing = u.nbFollowing;
+    this.nbLikes = u.nbLikes;
   }
 
   public get profileLink(): string {
@@ -85,6 +98,9 @@ export class UserObj {
       profileLink: this.profileLink,
       posts: this.posts?.map((post) => post.json) ?? null,
       likes: this.likes,
+      nbFollowers: this.nbFollowers,
+      nbFollowing: this.nbFollowing,
+      nbLikes: this.nbLikes,
     };
   }
 
@@ -105,6 +121,8 @@ export interface PostJson {
   unlikeApi: string;
   author: UserJson | null;
   replies: PostJson[] | null;
+  nbLikes: number;
+  nbReplies: number;
 }
 
 export class PostObj {
@@ -115,6 +133,8 @@ export class PostObj {
   replyId: number | null;
   author: UserObj | null;
   replies: PostObj[] | null;
+  nbLikes: number;
+  nbReplies: number;
 
   constructor(
     p: (Post | PostJson) & { author?: User | null; replies?: Post[] | null }
@@ -126,6 +146,8 @@ export class PostObj {
     this.replyId = p.replyId;
     this.author = (p.author && new UserObj(p.author)) ?? null;
     this.replies = p.replies?.map((reply) => new PostObj(reply)) ?? null;
+    this.nbLikes = p.nbLikes;
+    this.nbReplies = p.nbReplies;
   }
 
   public get postLink(): string {
@@ -157,6 +179,8 @@ export class PostObj {
       unlikeApi: this.unlikeAPI,
       author: this.author?.json ?? null,
       replies: this.replies?.map((post) => post.json) ?? null,
+      nbLikes: this.nbLikes,
+      nbReplies: this.nbReplies,
     };
   }
 

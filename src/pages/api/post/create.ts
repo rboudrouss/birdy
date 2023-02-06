@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
+// TODO add "post/[id]/reply" feature here
 export default async function postCreate(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Post>>

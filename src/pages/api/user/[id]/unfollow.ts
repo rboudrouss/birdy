@@ -3,6 +3,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
+/* body 
+  author : number (author id, the user unfollowing)
+*/
 export default async function unfollowHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<null>>
@@ -10,6 +13,7 @@ export default async function unfollowHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+  const userId = parseInt(query.id as string);
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
@@ -21,13 +25,15 @@ export default async function unfollowHandler(
     return;
   }
 
-  if (!body.user) {
+  if (!body.author) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
       .json({ isError: true, status: code, message: "Need the user id" });
     return;
   }
+
+  const authorId = parseInt(body.author);
 
   if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
     let code = HttpCodes.FORBIDDEN;
@@ -42,7 +48,7 @@ export default async function unfollowHandler(
   try {
     var u = await prisma.user.findUnique({
       where: {
-        id: parseInt(query.id as string),
+        id: userId,
       },
     });
   } catch (e: any) {
@@ -63,9 +69,25 @@ export default async function unfollowHandler(
     var f = await prisma.follows.delete({
       where: {
         followerId_followingId: {
-          followingId: parseInt(query.id as string),
-          followerId: parseInt(body.author),
+          followingId: userId,
+          followerId: authorId,
         },
+      },
+    });
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        nbFollowers: { increment: -1 },
+      },
+    });
+    await prisma.user.update({
+      where: {
+        id: authorId,
+      },
+      data: {
+        nbFollowing: { increment: -1 },
       },
     });
   } catch (e: any) {

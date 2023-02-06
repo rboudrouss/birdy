@@ -1,5 +1,5 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
-import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
+import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -36,6 +36,12 @@ export default async function loginHandler(
       where: {
         email: body.email as string,
       },
+      include: {
+        posts: true,
+        likes: true,
+        followers: true,
+        following: true,
+      }
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;

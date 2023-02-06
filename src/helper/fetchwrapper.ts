@@ -1,3 +1,5 @@
+import { OKApiResponse } from "./constants";
+
 export const fetchWrapper = {
   get,
   post,
@@ -5,16 +7,16 @@ export const fetchWrapper = {
   delete: _delete,
 };
 
-async function get(url: string) {
+async function get<T>(url: string) {
   console.log("getting ", url);
   const requestOptions = {
     method: "GET",
   };
   const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return handleResponse<T>(response);
 }
 
-async function post(url: string, body: any) {
+async function post<T>(url: string, body: any) {
   console.log("posting ", url);
   const requestOptions = {
     method: "POST",
@@ -22,10 +24,10 @@ async function post(url: string, body: any) {
     body: JSON.stringify(body),
   };
   const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return handleResponse<T>(response);
 }
 
-async function put(url: string, body: any) {
+async function put<T>(url: string, body: any) {
   console.log("putting ", url);
   const requestOptions = {
     method: "PUT",
@@ -33,17 +35,17 @@ async function put(url: string, body: any) {
     body: JSON.stringify(body),
   };
   const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return handleResponse<T>(response);
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-async function _delete(url: string) {
+async function _delete<T>(url: string) {
   console.log("deleting ", url);
   const requestOptions = {
     method: "DELETE",
   };
   const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return handleResponse<T>(response);
 }
 
 // helper functions
@@ -60,13 +62,12 @@ async function _delete(url: string) {
 //     }
 // }
 
-async function handleResponse(response: Response) {
+async function handleResponse<T>(
+  response: Response
+): Promise<OKApiResponse<T>> {
   const text = await response.text();
   let data: any = text && JSON.parse(text);
   if (!response.ok) {
-    // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-    // if ([401, 403].includes(response.status) && userService.userId)
-    //   userService.logout();
     const error = data.message as string;
     alert(error); // TODO remove this in production
     return Promise.reject(error);

@@ -1,7 +1,7 @@
 import { Likes, Post, User } from "@prisma/client";
 import Cookies from "js-cookie";
 import { ApiResponse, OKApiResponse } from "./constants";
-import { UserObj, UserWithoutPass } from "./DBtoObj";
+import { APIUser, UserWithoutPass } from "./APIwrapper";
 import { fetchWrapper } from "./fetchwrapper";
 
 const userService = {
@@ -20,16 +20,16 @@ const userService = {
 
 async function login(email: string, password: string): Promise<void> {
   return await fetchWrapper
-    .post("/api/user/login", {
+    .post<{ session: string; user: UserWithoutPass }>("/api/user/login", {
       email,
       password,
     })
-    .then((u: OKApiResponse<{ session: string; user: UserWithoutPass }>) => {
+    .then((u) => {
       // TODO set session cookie
       Cookies.set("session", u.data.session, { expires: 7 });
       localStorage.setItem(
         "User",
-        JSON.stringify(new UserObj(u.data.user as UserWithoutPass).json)
+        JSON.stringify(new APIUser(u.data.user as UserWithoutPass))
       ); // TODO make a real connection token
       console.log("Logged in !");
       window.location.href = "/";
@@ -54,21 +54,21 @@ async function register(user: {
   });
 }
 
-async function getById(id: string | number): Promise<ApiResponse<User>> {
+async function getById(id: string | number): Promise<OKApiResponse<User>> {
   return fetchWrapper.get(`/api/user/${id}`);
 }
-async function getAll(): Promise<ApiResponse<User[]>> {
+async function getAll(): Promise<OKApiResponse<User[]>> {
   return fetchWrapper.get("/api/user/all");
 }
 
 async function createPost(content: string, author?: string): Promise<void> {
   return fetchWrapper
-    .post("/api/post/create", {
+    .post<Post>("/api/post/create", {
       author: author ? Number(author) : userService.userId,
       content: content,
     })
-    .then((p: ApiResponse<Post>) => {
-      window.location.href = `/post/${p?.data?.id}`;
+    .then((p) => {
+      window.location.href = `/post/${p.data.id}`;
     });
 }
 
@@ -76,7 +76,7 @@ async function getRecentPosts(
   n?: number,
   start?: number
 ): Promise<
-  ApiResponse<{
+  OKApiResponse<{
     start: number;
     end: number;
     n: number;
@@ -89,7 +89,7 @@ async function getRecentPosts(
 }
 
 async function getPostById(id: number): Promise<
-  ApiResponse<
+  OKApiResponse<
     Post & {
       author: User;
       likes: Likes[];

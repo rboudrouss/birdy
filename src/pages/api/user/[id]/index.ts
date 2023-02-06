@@ -1,6 +1,6 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { removePassw, UserWithoutPass } from "@/helper/DBtoObj";
+import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { prisma } from "@/helper/instances";
 
 export default async function userHandler(

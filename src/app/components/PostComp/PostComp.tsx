@@ -1,11 +1,9 @@
 "use client";
 
-import { PostJson, PostObj } from "@/helper/DBtoObj";
+import { APIPost } from "@/helper/APIwrapper";
 import styles from "./PostComp.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useState } from "react";
-export default function PostComp(props: { data: PostJson }) {
+export default function PostComp(props: { data: APIPost }) {
   const [liked, setLiked] = useState(false);
 
   return (
@@ -21,19 +19,19 @@ export default function PostComp(props: { data: PostJson }) {
       <div className={styles.buttonDiv}>
         <button>
           {/* Comment */}
-          <FontAwesomeIcon icon={faComment} />
+          {/* <FontAwesomeIcon icon={faComment} /> */}
         </button>
         <button>
           {/* Like */}
-          <FontAwesomeIcon icon={faHeart} />
+          {/* <FontAwesomeIcon icon={faHeart} /> */}
         </button>
         <button>
           {/* Open new window */}
-          <FontAwesomeIcon icon={faHeart} />
+          {/* <FontAwesomeIcon icon={faHeart} /> */}
         </button>
         <button>
           {/* Share Link */}
-          <FontAwesomeIcon icon={faHeart} />
+          {/* <FontAwesomeIcon icon={faHeart} /> */}
         </button>
       </div>
     </article>

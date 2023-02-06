@@ -3,18 +3,19 @@ export const USERAPI = APILINK + "/user";
 export const POSTAPI = APILINK + "/post";
 
 export interface OKApiResponse<T> {
+  message: string;
+  status: number;
   data: T;
   isError: false;
 }
 export interface ErrorApiResponse {
+  message: string;
+  status: number;
   data?: null;
   isError: true;
 }
 
-export type ApiResponse<T> = { message: string; status: number } & (
-  | OKApiResponse<T>
-  | ErrorApiResponse
-);
+export type ApiResponse<T> = OKApiResponse<T> | ErrorApiResponse;
 
 export enum HttpCodes {
   OK = 200,

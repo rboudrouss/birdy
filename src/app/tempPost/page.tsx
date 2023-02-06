@@ -1,7 +1,7 @@
 "use client";
 
 import userService from "@/helper/userService";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 
 export default function Post() {
   let [author, setAuthor] = useState("");

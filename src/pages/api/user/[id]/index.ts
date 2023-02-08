@@ -1,4 +1,4 @@
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { prisma } from "@/helper/instances";
@@ -10,7 +10,16 @@ export default async function userHandler(
   res.setHeader("Allow", ["GET", "PUT"]);
 
   const { query, method } = req;
-  const id = parseInt(query.id as string, 10);
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
+  const id = parseInt(query.id as string);
 
   try {
     var u = await prisma.user.findUnique({

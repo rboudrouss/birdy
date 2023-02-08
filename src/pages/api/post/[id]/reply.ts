@@ -1,7 +1,7 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function postCreate(
@@ -11,6 +11,16 @@ export default async function postCreate(
   res.setHeader("Allow", ["POST"]);
 
   const { body, method, query } = req;
+
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
 
   if (method != "POST") {
     let code = HttpCodes.WRONG_METHOD;
@@ -24,8 +34,8 @@ export default async function postCreate(
 
   if (
     !(
-      query.id &&
       body.author &&
+      isDigit(body.author as string) &&
       body.content &&
       body.content.length < 256 &&
       body.content.length > 0
@@ -40,8 +50,8 @@ export default async function postCreate(
     return;
   }
 
-  let author = Number(body.author as string);
-  let replyTo = Number(query.id);
+  let author = parseInt(body.author as string);
+  let replyTo = parseInt(query.id as string);
 
   if (author < 1 || replyTo < 1) {
     let code = HttpCodes.BAD_REQ;
@@ -53,7 +63,7 @@ export default async function postCreate(
     return;
   }
 
-  if (!cookiewrapper.back.checkValidUser(req.cookies, parseInt(body.author))) {
+  if (!cookiewrapper.back.checkValidUser(req.cookies, author)) {
     let code = HttpCodes.FORBIDDEN;
     res.status(403).json({
       isError: true,
@@ -65,7 +75,7 @@ export default async function postCreate(
 
   let p = await prisma.post.findUnique({
     where: {
-      id: parseInt(query.id as string),
+      id: replyTo,
     },
   });
 

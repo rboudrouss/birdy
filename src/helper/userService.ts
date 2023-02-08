@@ -1,6 +1,6 @@
 import { Likes, Post, User } from "@prisma/client";
 import Cookies from "js-cookie";
-import { ApiResponse, OKApiResponse } from "./constants";
+import { ApiResponse, isDigit, OKApiResponse } from "./constants";
 import { APIUser, UserWithoutPass } from "./APIwrapper";
 import { fetchWrapper } from "./fetchwrapper";
 
@@ -64,7 +64,7 @@ async function getAll(): Promise<OKApiResponse<User[]>> {
 async function createPost(content: string, author?: string): Promise<void> {
   return fetchWrapper
     .post<Post>("/api/post/create", {
-      author: author ? Number(author) : userService.userId,
+      author: isDigit(author) ? parseInt(author as string) : userService.userId,
       content: content,
     })
     .then((p) => {

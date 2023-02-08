@@ -1,6 +1,6 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 // Liked option
@@ -12,6 +12,16 @@ export default async function postHandler(
   res.setHeader("Allow", ["GET"]);
 
   const { method, query } = req;
+  
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
 
   if (method != "GET") {
     let code = HttpCodes.WRONG_METHOD;

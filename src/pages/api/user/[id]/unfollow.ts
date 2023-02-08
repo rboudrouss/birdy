@@ -1,6 +1,6 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 /* body 
@@ -13,6 +13,15 @@ export default async function unfollowHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
   const userId = parseInt(query.id as string);
 
   if (method != "POST") {
@@ -25,17 +34,21 @@ export default async function unfollowHandler(
     return;
   }
 
-  if (!body.author) {
+  if (!body.author && !isDigit(body.author) && parseInt(body.author) < 1) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
-      .json({ isError: true, status: code, message: "Need the user id" });
+      .json({
+        isError: true,
+        status: code,
+        message: `Inexistant or incorrect author id, got ${body.author}`,
+      });
     return;
   }
 
   const authorId = parseInt(body.author);
 
-  if (cookieWrapper.back.checkValidUser(cookies, parseInt(body.author))) {
+  if (cookieWrapper.back.checkValidUser(cookies, authorId)) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

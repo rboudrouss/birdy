@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Likes } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 export default async function likeHandler(
@@ -11,6 +11,17 @@ export default async function likeHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
+
   const postId = parseInt(query.id as string);
 
   if (method != "POST") {
@@ -23,11 +34,15 @@ export default async function likeHandler(
     return;
   }
 
-  if (!body.author) {
+  if (!body.author && !isDigit(body.author) && parseInt(body.author) < 1) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
-      .json({ isError: true, status: code, message: "Need the user id" });
+      .json({
+        isError: true,
+        status: code,
+        message: `Inexistant or incorrect author Id, got ${body.author}`,
+      });
     return;
   }
 

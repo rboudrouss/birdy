@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Follows } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 /* body 
@@ -14,6 +14,15 @@ export default async function followHandler(
   res.setHeader("Allow", ["POST"]);
 
   const { method, query, body, cookies } = req;
+  if (!isDigit(query.id as string)) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `id ${query.id} is not a number`,
+    });
+    return;
+  }
   const userId = parseInt(query.id as string);
 
   if (method != "POST") {
@@ -26,11 +35,13 @@ export default async function followHandler(
     return;
   }
 
-  if (!body.author) {
+  if (!body.author && !isDigit(body.author) && parseInt(body.author) < 1) {
     let code = HttpCodes.BAD_REQ;
-    res
-      .status(code)
-      .json({ isError: true, status: code, message: "Need the user id" });
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: `Inexistant or incorrect author Id, got ${body.author}`,
+    });
     return;
   }
 
@@ -69,8 +80,8 @@ export default async function followHandler(
   try {
     var f = await prisma.follows.create({
       data: {
-        followingId: parseInt(query.id as string),
-        followerId: parseInt(body.author),
+        followingId: userId,
+        followerId: authorID,
       },
     });
     await prisma.user.update({

@@ -1,7 +1,7 @@
 import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 // TODO add "post/[id]/reply" feature here
@@ -26,6 +26,7 @@ export default async function postCreate(
   if (
     !(
       body.author &&
+      isDigit(body.author) &&
       body.content &&
       body.content.length < 256 &&
       body.content.length > 0
@@ -35,12 +36,14 @@ export default async function postCreate(
     res.status(code).json({
       isError: true,
       status: code,
-      message: "need an author, and a content under 256 characters",
+      message: `need an author (got ), and a content under 256 characters`,
     });
     return;
   }
 
-  if (!cookiewrapper.back.checkValidUser(req.cookies, parseInt(body.author))) {
+  let author = parseInt(body.author as string);
+
+  if (!cookiewrapper.back.checkValidUser(req.cookies, author)) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
@@ -49,8 +52,6 @@ export default async function postCreate(
     });
     return;
   }
-
-  let author = Number(body.author as string);
 
   if (author < 1) {
     let code = HttpCodes.BAD_REQ;

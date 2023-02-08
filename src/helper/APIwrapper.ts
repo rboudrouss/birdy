@@ -39,6 +39,16 @@ export class APIUser {
     this.nbFollowers = u.nbFollowers;
     this.nbFollowing = u.nbFollowing;
     this.nbLikes = u.nbLikes;
+    if (
+      [
+        this.id,
+        ...(this.likes ?? []),
+        this.nbFollowers,
+        this.nbFollowing,
+        this.nbLikes,
+      ].some((e) => isNaN(e) || !Number.isInteger(e))
+    )
+      throw new Error("Got a NaN or not a number in APIUser declaration");
   }
 
   public get profileLink(): string {
@@ -62,14 +72,24 @@ export class APIUser {
   }
 
   public async follow(author: number) {
+    if (isNaN(author) || author < 1)
+      throw new Error(
+        `APIUser.follow: got a NaN author or invalid (author=${author})`
+      );
     return await fetchWrapper.post(this.followApi, { author });
   }
 
   public async unfollow(author: number) {
+    if (isNaN(author) || author < 1)
+      throw new Error(
+        `APIUser.unfollow: got a NaN author or invalid (author=${author})`
+      );
     return await fetchWrapper.post(this.unfollowApi, { author });
   }
 
   static async fetch(id: number) {
+    if (isNaN(id) || id < 1)
+      throw new Error(`APIUser.fetch: got a NaN id or invalid (id=${id})`);
     return new APIUser(
       await fetchWrapper.get<User>(`${USERAPI}/${id}`).then((u) => u.data)
     );
@@ -109,6 +129,14 @@ export class APIPost {
     this.replies = p.replies?.map((reply) => new APIPost(reply)) ?? null;
     this.nbLikes = p.nbLikes;
     this.nbReplies = p.nbReplies;
+    if (
+      [this.id, this.replyId ?? 0, this.nbLikes, this.nbReplies].some(
+        (e) => isNaN(e) || !Number.isInteger(e)
+      )
+    )
+      throw new Error(
+        "APIPost.constructor: got an invalid number in APIPost initialisation"
+      );
   }
 
   public get postLink(): string {
@@ -132,10 +160,18 @@ export class APIPost {
   }
 
   public async like(author: number) {
+    if (isNaN(author) || author < 1)
+      throw new Error(
+        `APIPost.like: got a NaN author or invalid (author=${author})`
+      );
     return await fetchWrapper.post(this.likeAPI, { author });
   }
 
   public async dislike(author: number) {
+    if (isNaN(author) || author < 1)
+      throw new Error(
+        `APIPost.dislike: got a NaN author or invalid (author=${author})`
+      );
     return await fetchWrapper.post(this.unlikeAPI, { author });
   }
 
@@ -148,6 +184,15 @@ export class APIPost {
   }
 
   public async reply(content: string, author: number) {
+    if (isNaN(author) || author < 1)
+      throw new Error(
+        `APIPost.reply: got a NaN author or invalid (author=${author})`
+      );
+    if (content.length<1)
+      throw new Error(
+        "APIPost.reply: got empty content"
+      );
+
     return await fetchWrapper.post(this.replyApi, { content, author });
   }
 
@@ -157,6 +202,8 @@ export class APIPost {
   }
 
   static async fetch(id: number) {
+    if (isNaN(id) || id < 1)
+      throw new Error(`APIPost.fetch: got a NaN id or invalid (id=${id})`);
     return new APIPost(
       await fetchWrapper.get<Post>(`${POSTAPI}/${id}`).then((p) => p.data)
     );

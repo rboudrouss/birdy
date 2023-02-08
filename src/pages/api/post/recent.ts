@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
 import { prisma } from "@/helper/instances";
 
 const DEFAULT_N = 20;
@@ -15,8 +15,12 @@ export default async function postList(
   res.setHeader("Allow", ["GET"]);
 
   const { method, query } = req;
-  const n = query.n ? parseInt(query.n as string) : DEFAULT_N;
-  const skip = query.start ? parseInt(query.skip as string) : undefined;
+  const n = isDigit(query.n as string)
+    ? parseInt(query.n as string)
+    : DEFAULT_N;
+  const skip = isDigit(query.start as string)
+    ? parseInt(query.skip as string)
+    : undefined;
 
   if (method != "GET") {
     let code = HttpCodes.WRONG_METHOD;

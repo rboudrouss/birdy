@@ -2,6 +2,7 @@ import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
+import bcrypt from "bcryptjs"
 
 export default async function loginHandler(
   req: NextApiRequest,
@@ -49,7 +50,7 @@ export default async function loginHandler(
     return;
   }
 
-  if (!u || body.password !== u.password) {
+  if (!u || !await bcrypt.compare(body.password, u.password)) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,

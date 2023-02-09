@@ -2,6 +2,7 @@ import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
+import bcrypt from "bcryptjs";
 
 export default async function registerHandler(
   req: NextApiRequest,
@@ -23,7 +24,7 @@ export default async function registerHandler(
 
   if (
     !(body.password && body.email && body.username) ||
-    (body.bio && body.bio.length > 256)
+    (body.bio && body.bio.length > 256) || body.password.length < 3
   ) {
     let code = HttpCodes.BAD_REQ;
     res.status(code).json({
@@ -55,12 +56,15 @@ export default async function registerHandler(
     return;
   }
 
+  console.log("salt: ", process.env.salt)
+  let hash = await bcrypt.hash(body.password as string, 10); 
+
   try {
     var u = await prisma.user.create({
       data: {
         email: body.email as string,
         username: body.username as string,
-        password: body.password as string,
+        password: hash,
         bio: (body.bio as string | undefined) ?? null,
       },
     });

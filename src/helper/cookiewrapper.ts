@@ -21,7 +21,7 @@ function checkValidUser(
   user: number
 ): boolean {
   // TODO create real sessions
-  return cookies.session === String(user);
+  return cookies.session === user.toString();
 }
 
 const cookieWrapper = {

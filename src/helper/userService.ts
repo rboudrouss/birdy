@@ -1,12 +1,13 @@
 import { Likes, Post, User } from "@prisma/client";
 import Cookies from "js-cookie";
-import { ApiResponse, isDigit, OKApiResponse } from "./constants";
+import { OKApiResponse } from "./constants";
 import { APIUser, UserWithoutPass } from "./APIwrapper";
 import { fetchWrapper } from "./fetchwrapper";
+import cookieWrapper from "./cookiewrapper";
 
 const userService = {
   get userId() {
-    return localStorage.getItem("user"); // TODO maybe use cookies
+    return getConnectedUser()?.id ?? null;
   },
   login,
   logout,
@@ -16,7 +17,40 @@ const userService = {
   createPost,
   getRecentPosts,
   getPostById,
+  getConnectedUser,
+  updateConnectedUser,
+  isPostLiked,
 };
+
+function isPostLiked(postId: number) {
+  const user = getConnectedUser();
+  return user?.likes?.includes(postId) ?? false;
+}
+
+async function updateConnectedUser() {
+  console.log("Updating connected user");
+  if (!cookieWrapper.front.isConnected()) return;
+  let user = getConnectedUser() as APIUser;
+  localStorage.setItem(
+    "User",
+    JSON.stringify(
+      new APIUser((await fetchWrapper.get<UserWithoutPass>(user?.apiLink)).data)
+    )
+  );
+}
+
+function getConnectedUser(): APIUser | null {
+  if (!cookieWrapper.front.isConnected()) return null;
+  const user = localStorage.getItem("User");
+
+  if (!user) {
+    // Error, login out
+    logout();
+    throw new Error("Cookie is set but no user is found in local storage");
+  }
+
+  return new APIUser(JSON.parse(user));
+}
 
 async function login(email: string, password: string): Promise<void> {
   return await fetchWrapper
@@ -61,10 +95,10 @@ async function getAll(): Promise<OKApiResponse<User[]>> {
   return fetchWrapper.get("/api/user/all");
 }
 
-async function createPost(content: string, author?: string): Promise<void> {
+async function createPost(content: string, author: number): Promise<void> {
   return fetchWrapper
     .post<Post>("/api/post/create", {
-      author: isDigit(author) ? parseInt(author as string) : userService.userId,
+      author: author.toString(),
       content: content,
     })
     .then((p) => {

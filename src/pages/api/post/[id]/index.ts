@@ -12,7 +12,7 @@ export default async function postHandler(
   res.setHeader("Allow", ["GET"]);
 
   const { method, query } = req;
-  
+
   if (!isDigit(query.id as string)) {
     let code = HttpCodes.BAD_REQ;
     res.status(code).json({
@@ -41,7 +41,11 @@ export default async function postHandler(
       include: {
         author: true,
         likes: true,
-        replies: true,
+        replies: {
+          include: {
+            author: true,
+          },
+        },
         replyTo: true,
       },
     });

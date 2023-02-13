@@ -44,7 +44,7 @@ export default async function unlikeHandler(
 
   const userId = parseInt(body.author);
 
-  if (cookieWrapper.back.checkValidUser(cookies, userId)) {
+  if (!cookieWrapper.back.checkValidUser(cookies, userId)) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

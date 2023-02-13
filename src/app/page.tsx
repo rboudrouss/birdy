@@ -1,6 +1,6 @@
 "use client";
 
-import { APIPost } from "@/helper/APIwrapper";
+import { APIPost, APIUser } from "@/helper/APIwrapper";
 import cookieWrapper from "@/helper/cookiewrapper";
 import userService from "@/helper/userService";
 import { useState, useEffect } from "react";
@@ -11,6 +11,7 @@ import styles from "./page.module.css";
 export default function Home() {
   let [posts, setPosts] = useState<APIPost[]>([]);
   let [lastP, setLastP] = useState(0);
+  let [user, setUser] = useState<APIUser | null>(null);
 
   // TODO fetchs 2 times, find a better way like useMemo ?
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function Home() {
       }
       setPosts(data.data.map((post) => new APIPost(post)));
       setLastP(data.end);
+      setUser(userService.getConnectedUser());
     }
 
     getData();
@@ -34,7 +36,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <h1>helloow</h1>
-      <PostForm parentPost={null} />
+      <PostForm parentPost={null} user={user} />
       {posts.map((post, i) => (
         <PostComp data={post} key={i} />
       ))}

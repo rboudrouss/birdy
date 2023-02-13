@@ -2,9 +2,33 @@
 
 import { APIPost } from "@/helper/APIwrapper";
 import styles from "./PostComp.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaHeart, FaComment, FaLink } from "react-icons/fa";
+import userService from "@/helper/userService";
+import cookieWrapper from "@/helper/cookiewrapper";
+
 export default function PostComp(props: { data: APIPost }) {
+  let post = props.data;
   const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    setLiked(userService.isPostLiked(props.data.id));
+  }, [props.data.id]);
+
+  const likeHandler = (e: any) => {
+    e.preventDefault();
+    if (!cookieWrapper.front.isConnected()) return;
+
+    if (liked) {
+      post.dislike(userService.userId as number);
+      post.nbLikes--;
+    } else {
+      post.like(userService.userId as number);
+      post.nbLikes++;
+    }
+    userService.updateConnectedUser();
+    setLiked(!liked);
+  };
 
   return (
     <article className={styles.wrapper}>
@@ -19,19 +43,17 @@ export default function PostComp(props: { data: APIPost }) {
       <div className={styles.buttonDiv}>
         <button>
           {/* Comment */}
-          {/* <FontAwesomeIcon icon={faComment} /> */}
+          <p>{props.data.nbReplies}</p>
+          <FaComment />
         </button>
-        <button>
+        <button onClick={likeHandler}>
           {/* Like */}
-          {/* <FontAwesomeIcon icon={faHeart} /> */}
-        </button>
-        <button>
-          {/* Open new window */}
-          {/* <FontAwesomeIcon icon={faHeart} /> */}
+          <p>{props.data.nbLikes}</p>
+          <FaHeart color={liked ? "red" : "black"} />
         </button>
         <button>
           {/* Share Link */}
-          {/* <FontAwesomeIcon icon={faHeart} /> */}
+          <FaLink />
         </button>
       </div>
     </article>

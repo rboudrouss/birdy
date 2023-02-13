@@ -1,6 +1,6 @@
 // HACK all this file is ugly, there is probably a better way for all of this ?
 import { User, Post, Likes } from "@prisma/client";
-import { POSTAPI, USERAPI } from "./constants";
+import { OKApiResponse, POSTAPI, USERAPI } from "./constants";
 import { fetchWrapper } from "./fetchwrapper";
 
 export type UserWithoutPass = User & { password?: string | null };
@@ -164,7 +164,7 @@ export class APIPost {
       throw new Error(
         `APIPost.like: got a NaN author or invalid (author=${author})`
       );
-    return await fetchWrapper.post(this.likeAPI, { author });
+    return await fetchWrapper.post(this.likeAPI, { author: author.toString() });
   }
 
   public async dislike(author: number) {
@@ -172,7 +172,7 @@ export class APIPost {
       throw new Error(
         `APIPost.dislike: got a NaN author or invalid (author=${author})`
       );
-    return await fetchWrapper.post(this.unlikeAPI, { author });
+    return await fetchWrapper.post(this.unlikeAPI, { author: author.toString() });
   }
 
   public get isReply(): boolean {
@@ -188,12 +188,16 @@ export class APIPost {
       throw new Error(
         `APIPost.reply: got a NaN author or invalid (author=${author})`
       );
-    if (content.length<1)
-      throw new Error(
-        "APIPost.reply: got empty content"
-      );
+    if (content.length < 1) throw new Error("APIPost.reply: got empty content");
 
-    return await fetchWrapper.post(this.replyApi, { content, author });
+    return new APIPost(
+      (
+        await fetchWrapper.post<Post>(this.replyApi, {
+          content,
+          author: author.toString(),
+        })
+      ).data
+    );
   }
 
   public clone() {

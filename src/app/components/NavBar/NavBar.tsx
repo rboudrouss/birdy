@@ -41,6 +41,12 @@ export default function NavBar() {
             <p>Profile</p>
           </div>
         </a>
+        <a href="/logout" className={styles.link}>
+          {/* <FontAwesomeIcon icon={faMap} className={styles.icon} /> */}
+          <div className="textWrapper">
+            <p>Logout</p>
+          </div>
+        </a>
         <p>
           {loggedIn
             ? `Connected as ${userService.getConnectedUser()?.username}`

@@ -118,8 +118,15 @@ export class APIPost {
   replies: APIPost[] | null;
   nbLikes: number;
   nbReplies: number;
+  replyTo: APIPost | null;
 
-  constructor(p: Post & { author?: User | null; replies?: Post[] | null }) {
+  constructor(
+    p: Post & {
+      author?: User | null;
+      replies?: Post[] | null;
+      replyTo?: Post | null;
+    }
+  ) {
     this.id = p.id;
     this.createdAt = p.createdAt;
     this.content = p.content;
@@ -137,6 +144,7 @@ export class APIPost {
       throw new Error(
         "APIPost.constructor: got an invalid number in APIPost initialisation"
       );
+    this.replyTo = p.replyTo ? new APIPost(p.replyTo) : null;
   }
 
   public get postLink(): string {
@@ -172,7 +180,9 @@ export class APIPost {
       throw new Error(
         `APIPost.dislike: got a NaN author or invalid (author=${author})`
       );
-    return await fetchWrapper.post(this.unlikeAPI, { author: author.toString() });
+    return await fetchWrapper.post(this.unlikeAPI, {
+      author: author.toString(),
+    });
   }
 
   public get isReply(): boolean {

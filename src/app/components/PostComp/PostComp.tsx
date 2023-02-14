@@ -34,6 +34,7 @@ export default function PostComp(props: { data: APIPost }) {
     <article className={styles.wrapper}>
       <a href={props.data.postLink}>
         <div className={styles.userDiv}>
+          {props.data.replyId && <FaComment />}
           <span className={styles.username}>{props.data.author?.username}</span>
         </div>
         <div className={styles.contentDiv}>

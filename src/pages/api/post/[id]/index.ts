@@ -46,7 +46,11 @@ export default async function postHandler(
             author: true,
           },
         },
-        replyTo: true,
+        replyTo: {
+          include: {
+            author: true,
+          },
+        },
       },
     });
   } catch (e: any) {

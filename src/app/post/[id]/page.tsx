@@ -27,10 +27,11 @@ export default function PostId({ params }: { params: { id: number } }) {
 
   return (
     <main className={styles.main}>
-      {post && <PostComp data={post} />}
+      {post && post.replyId && <PostComp data={post.replyTo as APIPost} />}
+      <div className={styles.mainPost}>{post && <PostComp data={post} />}</div>
+      {post && <PostForm parentPost={post} user={user} />}
       {post &&
         post.replies?.map((reply, i) => <PostComp data={reply} key={i} />)}
-      {post && <PostForm parentPost={post} user={user} />}
     </main>
   );
 }

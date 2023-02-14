@@ -74,10 +74,12 @@ export default function PostComp(props: { data: APIPost }) {
             {/* Share Link */}
             <FaLink />
           </button>
-          <button onClick={deleteHandler}>
-            {/* Delete */}
-            <FaTrash />
-          </button>
+          {userService.userId == props.data.author?.id ? (
+            <button onClick={deleteHandler}>
+              {/* Delete */}
+              <FaTrash />
+            </button>
+          ) : <div />}
         </div>
       </article>
       {showReply && (

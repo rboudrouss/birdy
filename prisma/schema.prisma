@@ -40,9 +40,9 @@ model Post {
 }
 
 model Follows {
-  follower    User     @relation("following", fields: [followerId], references: [id])
+  follower    User     @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
   followerId  Int
-  following   User     @relation("follower", fields: [followingId], references: [id])
+  following   User     @relation("follower", fields: [followingId], references: [id], onDelete: Cascade)
   followingId Int
   createdAt   DateTime @default(now())
 
@@ -50,9 +50,9 @@ model Follows {
 }
 
 model Likes {
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  post   Post @relation(fields: [postId], references: [id])
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
 
   @@id([userId, postId])

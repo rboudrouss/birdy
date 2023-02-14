@@ -3,7 +3,7 @@
 import { APIPost } from "@/helper/APIwrapper";
 import styles from "./PostComp.module.css";
 import { useEffect, useState } from "react";
-import { FaHeart, FaComment, FaLink } from "react-icons/fa";
+import { FaHeart, FaComment, FaLink, FaTrash } from "react-icons/fa";
 import userService from "@/helper/userService";
 import cookieWrapper from "@/helper/cookiewrapper";
 import PostForm from "../PostForm/PostForm";
@@ -39,6 +39,12 @@ export default function PostComp(props: { data: APIPost }) {
     setShowReply(!showReply);
   };
 
+  const deleteHandler = async (e: any) => {
+    e.preventDefault();
+    await post.delete();
+    window.location.reload();
+  };
+
   return (
     <>
       <article className={styles.wrapper}>
@@ -67,6 +73,10 @@ export default function PostComp(props: { data: APIPost }) {
           <button>
             {/* Share Link */}
             <FaLink />
+          </button>
+          <button onClick={deleteHandler}>
+            {/* Delete */}
+            <FaTrash />
           </button>
         </div>
       </article>

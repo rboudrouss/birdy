@@ -167,6 +167,10 @@ export class APIPost {
     return `${this.apiLink}/unlike`;
   }
 
+  public get deleteAPI(): string {
+    return `${this.apiLink}/delete`;
+  }
+
   public async like(author: number) {
     if (isNaN(author) || author < 1)
       throw new Error(
@@ -183,6 +187,10 @@ export class APIPost {
     return await fetchWrapper.post(this.unlikeAPI, {
       author: author.toString(),
     });
+  }
+
+  public async delete() {
+    await fetchWrapper.delete(this.deleteAPI);
   }
 
   public get isReply(): boolean {

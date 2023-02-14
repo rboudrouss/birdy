@@ -32,7 +32,7 @@ model Post {
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
   likes     Likes[]
-  replyTo   Post?    @relation("replies", fields: [replyId], references: [id])
+  replyTo   Post?    @relation("replies", fields: [replyId], references: [id], onDelete: SetNull)
   replies   Post[]   @relation("replies")
   replyId   Int?
   nbLikes   Int      @default(0)

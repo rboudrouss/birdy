@@ -17,6 +17,8 @@ export default function PostComp(props: { data: APIPost }) {
 
   const likeHandler = (e: any) => {
     e.preventDefault();
+    // HACK might be redundant but let's try
+    userService.updateConnectedUser();
     if (!cookieWrapper.front.isConnected()) return;
 
     if (liked) {
@@ -26,8 +28,8 @@ export default function PostComp(props: { data: APIPost }) {
       post.like(userService.userId as number);
       post.nbLikes++;
     }
-    userService.updateConnectedUser();
     setLiked(!liked);
+    userService.updateConnectedUser();
   };
 
   return (

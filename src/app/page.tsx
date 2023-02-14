@@ -19,9 +19,10 @@ export default function Home() {
       window.location.href = "/login";
       return;
     }
+    userService.updateConnectedUser();
 
     async function getData() {
-      let { data, message } = await userService.getRecentPosts();
+      let { data, message } = await userService.getRecentPosts(true);
       if (!data) {
         throw new Error(message);
       }

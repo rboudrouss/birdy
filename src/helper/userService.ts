@@ -107,6 +107,7 @@ async function createPost(content: string, author: number): Promise<void> {
 }
 
 async function getRecentPosts(
+  all:boolean,
   n?: number,
   start?: number
 ): Promise<
@@ -117,6 +118,9 @@ async function getRecentPosts(
     data: (Post & { author: User })[];
   }>
 > {
+  if(all)
+    return fetchWrapper.get(`/api/post/recent?all=true`);
+
   return fetchWrapper.get(
     `/api/post/recent?${n ? `n=${n}}` : ""}${start ? `start=${start}` : ""}`
   );

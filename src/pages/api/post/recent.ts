@@ -18,7 +18,7 @@ export default async function postList(
   const n = isDigit(query.n as string)
     ? parseInt(query.n as string)
     : DEFAULT_N;
-  const skip = isDigit(query.start as string)
+  let skip = isDigit(query.start as string)
     ? parseInt(query.skip as string)
     : undefined;
 
@@ -40,10 +40,18 @@ export default async function postList(
     return;
   }
 
+  let requestobj: any = {
+    take: n,
+    skip: skip,
+  };
+  if (query.all) {
+    requestobj = {};
+    skip = 0;
+  }
+
   try {
     var p = await prisma.post.findMany({
-      take: n,
-      skip: skip,
+      ...requestobj,
       orderBy: {
         createdAt: "desc",
       },
@@ -73,8 +81,8 @@ export default async function postList(
     message: "Ok !",
     data: {
       start: skip ?? 0,
-      end: (skip ?? 0) + n,
-      n: n,
+      end: (skip ?? 0) + p.length,
+      n: p.length,
       data: p,
     },
   });

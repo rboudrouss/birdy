@@ -30,8 +30,8 @@ export enum HttpCodes {
 }
 
 // TODO don't know where to put this so it's here for the moment
-export function isDigit(a: string | undefined): boolean {
-  if(!a) return false;
+export function isDigit(a: any): boolean {
+  if(typeof a !== "string") return false;
 
   if (a.split("").some((e) => e < "0" || e > "9")) return false;
 

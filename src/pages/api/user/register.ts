@@ -1,38 +1,35 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
+
+const APIRegisterHandler = APIdecorator(registerHandler, ["POST"], {
+  username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
+  email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
+  password: (s) => typeof s === "string" && s.length > 3,
+  bio: false,
+});
 
 export default async function registerHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserWithoutPass>>
 ) {
-  res.setHeader("Allow", ["POST"]);
-
-  const { body, method } = req;
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
+  const { body } = req;
 
   if (
-    !(body.password && body.email && body.username) ||
-    (body.bio && body.bio.length > 256) || body.password.length < 3
+    !body.bio ||
+    (body.bio &&
+      !(
+        typeof body.bio === "string" &&
+        body.bio.length <= 256 &&
+        body.bio.length > 0
+      ))
   ) {
     let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message:
-        "need a password, an email and a name. Optionnaly a bio with less than 256 characters",
-    });
+    res
+      .status(code)
+      .json({ isError: true, status: code, message: "Bio is wrong type" });
     return;
   }
 
@@ -56,8 +53,8 @@ export default async function registerHandler(
     return;
   }
 
-  console.log("salt: ", process.env.salt)
-  let hash = await bcrypt.hash(body.password as string, 10); 
+  console.log("salt: ", process.env.salt);
+  let hash = await bcrypt.hash(body.password as string, 10);
 
   try {
     var u = await prisma.user.create({

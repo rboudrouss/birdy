@@ -2,35 +2,35 @@ import cookieWrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 
 const DEFAULT_N = 20;
 
-export default async function postList(
+const APIPostList = APIdecorator(
+  postList,
+  ["GET"],
+  null,
+  {
+    n:false, // false here means facultatif
+    skip:false,
+  }
+)
+
+export default APIPostList;
+
+export async function postList(
   req: NextApiRequest,
   res: NextApiResponse<
     ApiResponse<{ start: number; end: number; n: number; data: Post[] }>
   >
 ) {
-  res.setHeader("Allow", ["GET"]);
-
-  const { method, query } = req;
+  const { query } = req;
   const n = isDigit(query.n as string)
     ? parseInt(query.n as string)
     : DEFAULT_N;
   let skip = isDigit(query.start as string)
     ? parseInt(query.skip as string)
     : undefined;
-
-  if (method != "GET") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
 
   if (!cookieWrapper.back.isConnected(req.cookies)) {
     let code = HttpCodes.FORBIDDEN;

@@ -1,52 +1,26 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 
-/* body 
-  author : number (author id, the user unfollowing)
-*/
-export default async function unfollowHandler(
+const APIUnfollowHandler = APIdecorator(
+  unfollowHandler,
+  ["POST"],
+  {
+    author: Number.isInteger,
+  },
+  { id: isDigit }
+);
+
+export default APIUnfollowHandler;
+
+export async function unfollowHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<null>>
 ) {
-  res.setHeader("Allow", ["POST"]);
-
-  const { method, query, body, cookies } = req;
-  if (!isDigit(query.id as string)) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `id ${query.id} is not a number`,
-    });
-    return;
-  }
+  const { query, body, cookies } = req;
   const userId = parseInt(query.id as string);
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
-  if (!body.author && !isDigit(body.author) && parseInt(body.author) < 1) {
-    let code = HttpCodes.BAD_REQ;
-    res
-      .status(code)
-      .json({
-        isError: true,
-        status: code,
-        message: `Inexistant or incorrect author id, got ${body.author}`,
-      });
-    return;
-  }
-
-  const authorId = parseInt(body.author);
+  const authorId = body.author as number;
 
   if (cookieWrapper.back.checkValidUser(cookies, authorId)) {
     let code = HttpCodes.FORBIDDEN;

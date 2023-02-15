@@ -2,66 +2,28 @@ import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 
-export default async function postCreate(
+const APIPostCreate = APIdecorator(
+  replyHandler,
+  ["POST"],
+  {
+    author: Number.isInteger,
+    content: (x) => typeof x === "string" && x.length < 256 && x.length > 0,
+  },
+  { id: isDigit }
+);
+
+export default APIPostCreate;
+
+export async function replyHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Post>>
 ) {
-  res.setHeader("Allow", ["POST"]);
+  const { body, query } = req;
 
-  const { body, method, query } = req;
-
-  if (!isDigit(query.id as string)) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `id ${query.id} is not a number`,
-    });
-    return;
-  }
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
-  if (
-    !(
-      body.author &&
-      isDigit(body.author as string) &&
-      body.content &&
-      body.content.length < 256 &&
-      body.content.length > 0
-    )
-  ) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "need an author, and a content under 256 characters",
-    });
-    return;
-  }
-
-  let author = parseInt(body.author as string);
+  let author = body.author as number;
   let replyTo = parseInt(query.id as string);
-
-  if (author < 1 || replyTo < 1) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "wrong author or id number",
-    });
-    return;
-  }
 
   if (!cookiewrapper.back.checkValidUser(req.cookies, author)) {
     let code = HttpCodes.FORBIDDEN;

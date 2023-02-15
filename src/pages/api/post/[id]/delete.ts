@@ -1,37 +1,24 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 
-export default async function likeHandler(
+const APILikeHandler = APIdecorator(
+  deleteHandler,
+  ["DELETE"],
+  null, // formater hack
+  { id: isDigit }
+);
+
+export default APILikeHandler;
+
+async function deleteHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<null>>
 ) {
-  res.setHeader("Allow", ["DELETE"]);
-
   const { method, query, body, cookies } = req;
 
-  if (!isDigit(query.id as string)) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `id ${query.id} is not a number`,
-    });
-    return;
-  }
-
   const postId = parseInt(query.id as string);
-
-  if (method != "DELETE") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
 
   try {
     var p = await prisma.post.findUnique({
@@ -59,7 +46,7 @@ export default async function likeHandler(
     return;
   }
 
-  if(!cookieWrapper.back.checkValidUser(cookies, p.authorId)) {
+  if (!cookieWrapper.back.checkValidUser(cookies, p.authorId)) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,
@@ -68,8 +55,6 @@ export default async function likeHandler(
     });
     return;
   }
-  
-
 
   try {
     await prisma.post.delete({

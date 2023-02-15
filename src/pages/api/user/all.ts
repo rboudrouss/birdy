@@ -1,26 +1,18 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function userAll(
+const APIUserAll = APIdecorator(
+  userAll,
+  ["GET"]
+)
+export default APIUserAll;
+
+export async function userAll(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserWithoutPass[]>>
 ) {
-  res.setHeader("Allow", ["GET"]);
-
-  const { method } = req;
-
-  if (method !== "GET") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
   try {
     var u = await prisma.user.findMany();
   } catch (e: any) {

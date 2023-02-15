@@ -1,30 +1,86 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { PrismaClient } from "@prisma/client";
+import { ApiResponse, HttpCodes } from "./constants";
 export const prisma = new PrismaClient();
 
-// Return true if request is correct else false
-export function checkValidReq<T>(
-  req: NextApiRequest,
-  res: NextApiResponse<T | { error: string }>,
-  allowedMethod: string[],
-  requiredAttr?: string[]
-): boolean {
-  res.setHeader("Allow", allowedMethod);
+type verifyQuery = (x: string | string[] | undefined) => boolean;
+type verifyBody = (x: any) => boolean;
 
-  const { method, body } = req;
+export function APIdecorator<T>(
+  target: (req: NextApiRequest, res: NextApiResponse<ApiResponse<T>>) => void,
+  allowedMethod?: string[] | null,
+  bodyAttr?: { [key: string]: boolean | verifyBody } | null,
+  queryAttr?: { [key: string]: boolean | verifyQuery } | null
+) {
+  return async function (
+    req: NextApiRequest,
+    res: NextApiResponse<ApiResponse<T>>
+  ) {
+    if (allowedMethod) res.setHeader("Allow", allowedMethod);
 
-  if (!method || !allowedMethod.includes(method)) {
-    res.status(405).json({ error: `Method ${method} Not Allowed` });
-    return false;
-  }
+    const { method, body, query, cookies } = req;
 
-  if (requiredAttr && !requiredAttr.map((att) => body[att]).every((e) => e)) {
-    res.status(400).json({
-      error: `need at least these attributes: ${requiredAttr.join(", ")}`,
-    });
-    return false;
-  }
+    if (allowedMethod && (!method || !allowedMethod.includes(method))) {
+      let code = HttpCodes.WRONG_METHOD;
+      res.status(code).json({
+        isError: true,
+        status: code,
+        message: `Method ${method} Not Allowed`,
+      });
+      return;
+    }
 
-  return true;
+    console.log("\n\n", req.url)
+    console.log("body", body)
+    console.log("query", query)
+    console.log("cookies", cookies)
+    // HACK un peu moche la fonction
+    if (
+      bodyAttr &&
+      !Object.keys(bodyAttr)
+        .map(
+          (att) =>
+            (bodyAttr[att] === false || body[att]) &&
+            (typeof bodyAttr[att] === "boolean"
+              ? true
+              : (bodyAttr[att] as verifyBody)(body[att]))
+        )
+        .every((e) => e)
+    ) {
+      let code = HttpCodes.BAD_REQ;
+      res.status(code).json({
+        isError: true,
+        status: code,
+        message: `Attributes not found or incorect (needed body attributes : ${Object.keys(
+          bodyAttr
+        ).join(", ")})`,
+      });
+      return;
+    }
+
+    if (
+      queryAttr &&
+      !Object.keys(queryAttr)
+        .map(
+          (att) =>
+            (queryAttr[att] === false || query[att]) &&
+            (typeof queryAttr[att] === "boolean"
+              ? true
+              : (queryAttr[att] as verifyQuery)(query[att]))
+        )
+        .every((e) => e)
+    ) {
+      let code = HttpCodes.BAD_REQ;
+      res.status(code).json({
+        isError: true,
+        status: code,
+        message: `Important Attribute not found or incorect`,
+      });
+      return;
+    }
+
+    target(req, res);
+    return;
+  };
 }

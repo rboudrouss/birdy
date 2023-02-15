@@ -2,46 +2,28 @@ import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
+
+const APIPostCreate = APIdecorator(
+  postCreate,
+  ["POST"],
+  {
+    author: Number.isInteger,
+    content: (x) => typeof x === "string" && x.length < 256 && x.length > 0,
+  },
+  null
+);
+
+export default APIPostCreate;
 
 // TODO add "post/[id]/reply" feature here
-export default async function postCreate(
+export async function postCreate(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Post>>
 ) {
-  res.setHeader("Allow", ["POST"]);
+  const { body } = req;
 
-  const { body, method } = req;
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
-  if (
-    !(
-      body.author &&
-      isDigit(body.author) &&
-      body.content &&
-      body.content.length < 256 &&
-      body.content.length > 0
-    )
-  ) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `need an author (got ), and a content under 256 characters`,
-    });
-    return;
-  }
-
-  let author = parseInt(body.author as string);
+  let author = body.author as number;
 
   if (!cookiewrapper.back.checkValidUser(req.cookies, author)) {
     let code = HttpCodes.FORBIDDEN;
@@ -51,13 +33,6 @@ export default async function postCreate(
       message: "wrong cookie, wrong account",
     });
     return;
-  }
-
-  if (author < 1) {
-    let code = HttpCodes.BAD_REQ;
-    res
-      .status(code)
-      .json({ isError: true, status: code, message: "wrong author number" });
   }
 
   try {

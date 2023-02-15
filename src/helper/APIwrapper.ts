@@ -176,7 +176,7 @@ export class APIPost {
       throw new Error(
         `APIPost.like: got a NaN author or invalid (author=${author})`
       );
-    return await fetchWrapper.post(this.likeAPI, { author: author.toString() });
+    return await fetchWrapper.post(this.likeAPI, { author });
   }
 
   public async dislike(author: number) {
@@ -185,7 +185,7 @@ export class APIPost {
         `APIPost.dislike: got a NaN author or invalid (author=${author})`
       );
     return await fetchWrapper.post(this.unlikeAPI, {
-      author: author.toString(),
+      author,
     });
   }
 
@@ -212,7 +212,7 @@ export class APIPost {
       (
         await fetchWrapper.post<Post>(this.replyApi, {
           content,
-          author: author.toString(),
+          author,
         })
       ).data
     );

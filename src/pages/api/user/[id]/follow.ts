@@ -2,50 +2,24 @@ import cookieWrapper from "@/helper/cookiewrapper";
 import { Follows } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 
-/* body 
-  author: number (author id, the follower)
-*/
-export default async function followHandler(
+const APIFollowHandler = APIdecorator(
+  followHandler,
+  ["POST"],
+  { author: Number.isInteger },
+  { id: isDigit }
+);
+
+export default APIFollowHandler;
+
+export async function followHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Follows>>
 ) {
-  res.setHeader("Allow", ["POST"]);
-
-  const { method, query, body, cookies } = req;
-  if (!isDigit(query.id as string)) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `id ${query.id} is not a number`,
-    });
-    return;
-  }
+  const { query, body, cookies } = req;
   const userId = parseInt(query.id as string);
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
-  if (!body.author && !isDigit(body.author) && parseInt(body.author) < 1) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Inexistant or incorrect author Id, got ${body.author}`,
-    });
-    return;
-  }
-
-  const authorID = parseInt(body.author);
+  const authorID = body.author as number;
 
   if (cookieWrapper.back.checkValidUser(cookies, authorID)) {
     let code = HttpCodes.FORBIDDEN;

@@ -98,8 +98,8 @@ async function getAll(): Promise<OKApiResponse<User[]>> {
 async function createPost(content: string, author: number): Promise<void> {
   return fetchWrapper
     .post<Post>("/api/post/create", {
-      author: author.toString(),
-      content: content,
+      author,
+      content,
     })
     .then((p) => {
       window.location.href = `/post/${p.data.id}`;

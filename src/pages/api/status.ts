@@ -1,3 +1,4 @@
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -6,7 +7,10 @@ type Data = {
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ApiResponse<null>>
 ) {
-  res.status(200).json({ status: "OK o/" });
+  let code = HttpCodes.OK;
+  res
+    .status(code)
+    .json({ isError: false, message: "OK o/", status: code, data: null });
 }

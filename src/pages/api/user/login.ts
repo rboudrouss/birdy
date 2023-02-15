@@ -1,36 +1,25 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 
-export default async function loginHandler(
+const APILoginHandler = APIdecorator(
+  loginHandler,
+  ["POST"], // formater hack
+  {
+    password: (s) => typeof s === "string" && s.length > 3 && s.length > 0,
+    email: (s) => typeof s === "string" && s.length < 257 && s.length > 0,
+  }
+);
+
+export default APILoginHandler;
+
+export async function loginHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<{ session: string; user: UserWithoutPass }>>
 ) {
-  res.setHeader("Allow", ["POST"]);
-
-  const { method, body } = req;
-
-  if (method != "POST") {
-    let code = HttpCodes.WRONG_METHOD;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: `Method ${method} Not Allowed`,
-    });
-    return;
-  }
-
-  if (!(body.password && body.email)) {
-    let code = HttpCodes.BAD_REQ;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "need a password and an email",
-    });
-    return;
-  }
+  const { body } = req;
 
   try {
     var u = await prisma.user.findUnique({
@@ -42,7 +31,7 @@ export default async function loginHandler(
         likes: true,
         followers: true,
         following: true,
-      }
+      },
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;
@@ -50,7 +39,7 @@ export default async function loginHandler(
     return;
   }
 
-  if (!u || !await bcrypt.compare(body.password, u.password)) {
+  if (!u || !(await bcrypt.compare(body.password, u.password))) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,

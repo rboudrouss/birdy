@@ -1,3 +1,4 @@
+import InfoBar from "./components/InfoBar/InfoBar";
 import NavBar from "./components/NavBar/NavBar";
 import "./globals.css";
 
@@ -22,7 +23,7 @@ export default function RootLayout({
           </div>
           <div className={styles.posts}>{children}</div>
           <div className={styles.followers}>
-            <h1>B</h1>
+            <InfoBar />
           </div>
         </main>
       </body>

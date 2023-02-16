@@ -11,7 +11,6 @@ const APIUnfollowHandler = APIdecorator(
   },
   { id: isDigit }
 );
-
 export default APIUnfollowHandler;
 
 export async function unfollowHandler(

@@ -9,7 +9,6 @@ const APIpostHander = APIdecorator(
   null, // formater hack
   { id: isDigit }
 );
-
 export default APIpostHander;
 
 async function postHandler(

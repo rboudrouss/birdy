@@ -9,13 +9,12 @@ const DEFAULT_N = 20;
 const APIPostList = APIdecorator(
   postList,
   ["GET"],
-  null,
+  null, // formater hack
   {
-    n:false, // false here means facultatif
-    skip:false,
+    n: false, // false here means facultatif
+    skip: false,
   }
-)
-
+);
 export default APIPostList;
 
 export async function postList(

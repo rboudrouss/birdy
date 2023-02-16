@@ -12,7 +12,6 @@ const APILoginHandler = APIdecorator(
     email: (s) => typeof s === "string" && s.length < 257 && s.length > 0,
   }
 );
-
 export default APILoginHandler;
 
 export async function loginHandler(

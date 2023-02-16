@@ -14,6 +14,7 @@ export default function PostId({ params }: { params: { id: number } }) {
   // TODO fetchs 2 times, find a better way
   useEffect(() => {
     async function getData() {
+      // TODO use APIPost instead
       let { data, message } = await userService.getPostById(params.id);
       if (!data) {
         throw new Error(message);

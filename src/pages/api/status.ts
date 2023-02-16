@@ -1,10 +1,6 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  status: string;
-};
-
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<null>>

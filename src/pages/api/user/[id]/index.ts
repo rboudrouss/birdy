@@ -16,10 +16,9 @@ const APIUserHandler = APIdecorator(
   },
   { id: isDigit }
 );
-
 export default APIUserHandler;
 
-export async function userHandler(
+async function userHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserWithoutPass>>
 ) {

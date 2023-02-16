@@ -4,14 +4,19 @@ import { APIdecorator, prisma } from "@/helper/instances";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 
-const APIRegisterHandler = APIdecorator(registerHandler, ["POST"], {
-  username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
-  email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
-  password: (s) => typeof s === "string" && s.length > 3,
-  bio: false,
-});
+const APIRegisterHandler = APIdecorator(
+  registerHandler,
+  ["POST"], // formater hack
+  {
+    username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
+    email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
+    password: (s) => typeof s === "string" && s.length > 3,
+    bio: false,
+  }
+);
+export default APIRegisterHandler;
 
-export default async function registerHandler(
+export async function registerHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserWithoutPass>>
 ) {

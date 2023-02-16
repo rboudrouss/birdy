@@ -10,7 +10,6 @@ const APILikeHandler = APIdecorator(
   { author: Number.isInteger },
   { id: isDigit }
 );
-
 export default APILikeHandler;
 
 export async function likeHandler(

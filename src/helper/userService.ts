@@ -12,8 +12,6 @@ const userService = {
   login,
   logout,
   register,
-  getById,
-  getAll,
   createPost,
   getRecentPosts,
   getPostById,
@@ -86,13 +84,6 @@ async function register(user: {
   return fetchWrapper.post(`/api/user/register`, user).then(() => {
     window.location.href = "/login";
   });
-}
-
-async function getById(id: string | number): Promise<OKApiResponse<User>> {
-  return fetchWrapper.get(`/api/user/${id}`);
-}
-async function getAll(): Promise<OKApiResponse<User[]>> {
-  return fetchWrapper.get("/api/user/all");
 }
 
 async function createPost(content: string, author: number): Promise<void> {

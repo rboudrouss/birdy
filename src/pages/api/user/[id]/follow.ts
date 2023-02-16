@@ -10,7 +10,6 @@ const APIFollowHandler = APIdecorator(
   { author: Number.isInteger },
   { id: isDigit }
 );
-
 export default APIFollowHandler;
 
 export async function followHandler(

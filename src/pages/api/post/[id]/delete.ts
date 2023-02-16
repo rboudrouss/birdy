@@ -9,7 +9,6 @@ const APILikeHandler = APIdecorator(
   null, // formater hack
   { id: isDigit }
 );
-
 export default APILikeHandler;
 
 async function deleteHandler(

@@ -6,14 +6,12 @@ import { APIdecorator, prisma } from "@/helper/instances";
 
 const APIPostCreate = APIdecorator(
   postCreate,
-  ["POST"],
+  ["POST"], // formater hack
   {
     author: Number.isInteger,
     content: (x) => typeof x === "string" && x.length < 256 && x.length > 0,
-  },
-  null
+  }
 );
-
 export default APIPostCreate;
 
 // TODO add "post/[id]/reply" feature here

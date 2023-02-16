@@ -13,7 +13,6 @@ const APIPostCreate = APIdecorator(
   },
   { id: isDigit }
 );
-
 export default APIPostCreate;
 
 export async function replyHandler(

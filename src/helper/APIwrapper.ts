@@ -1,6 +1,7 @@
 // HACK all this file is ugly, there is probably a better way for all of this ?
+// NOTE this file is meant to be use in the fronted only <!>
 import { User, Post, Likes } from "@prisma/client";
-import { OKApiResponse, POSTAPI, USERAPI } from "./constants";
+import { POSTAPI, USERAPI } from "./constants";
 import { fetchWrapper } from "./fetchwrapper";
 
 export type UserWithoutPass = User & { password?: string | null };

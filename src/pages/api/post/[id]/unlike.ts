@@ -9,7 +9,6 @@ const APIUnlikeHandler = APIdecorator(
   { author: Number.isInteger },
   { id: isDigit }
 );
-
 export default APIUnlikeHandler;
 
 export async function unlikeHandler(

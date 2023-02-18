@@ -1,7 +1,7 @@
 - [ ] Add bookmarks ?
-- [ ] Add Image store, Cloudinary ?
+- [ ] Add Image store, use local server in :5000
 - [ ] Add real sessions, instead of only the ID
-  - [ ] remove the author in body in requests
+  - [X] remove the author in body in requests (meh don't think i'll do that, the double verification is cool)
 - [X] Hash passwords
   - [ ] add salt
 - [X] Write an OOP API like `new Post({id : 2}).fetchlikes()/.getlikes()`
@@ -12,6 +12,7 @@
 - [ ] Pop-up for deleting/login out
 - [X] find a solution for the "foreign key constraint failed on the field: `foreign key`" on delete
 - [ ] FIX "API resolved without sending a response", nextjs doesn't like the decorator function ?
+- [ ] Use Next Router to change pages. (it has some benefits instead of the native javascript one)
 
 # Projet WEB
 

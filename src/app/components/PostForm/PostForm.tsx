@@ -17,7 +17,7 @@ export default function PostForm(props: {
     e.preventDefault();
     if (props.parentPost) {
       let post = await props.parentPost.reply(
-        content,
+        content.trim(),
         (props.user as APIUser).id
       );
       window.location.href = post.postLink;

@@ -56,7 +56,7 @@ export default function PostComp(props: { data: APIPost }) {
             </span>
           </div>
           <div className={styles.contentDiv}>
-            <span className={styles.content}>{props.data.content}</span>
+            <span className={styles.content}>{props.data.content.trim()}</span>
           </div>
         </a>
         <div className={styles.buttonDiv}>

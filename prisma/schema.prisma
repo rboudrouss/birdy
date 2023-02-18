@@ -23,6 +23,7 @@ model User {
   nbFollowers Int       @default(0)
   nbFollowing Int       @default(0)
   nbLikes     Int       @default(0)
+  images      Image[]
 }
 
 model Post {
@@ -37,6 +38,17 @@ model Post {
   replyId   Int?
   nbLikes   Int      @default(0)
   nbReplies Int      @default(0)
+  images    Image[]
+}
+
+model Image {
+  id     String
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id])
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([id, postId])
 }
 
 model Follows {

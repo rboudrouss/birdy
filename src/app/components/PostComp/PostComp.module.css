@@ -25,6 +25,10 @@
   padding: 5px;
 }
 
+.content {
+  white-space: pre-wrap;
+}
+
 .buttonDiv {
   width: 100%;
   margin: 10px 5px;

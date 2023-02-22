@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
 
 const APILikeHandler = APIdecorator(
   deleteHandler,
@@ -45,7 +45,7 @@ async function deleteHandler(
     return;
   }
 
-  if (!cookieWrapper.back.checkValidUser(cookies, p.authorId)) {
+  if (await findConnectedUser(cookies.session) !== p.authorId) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,

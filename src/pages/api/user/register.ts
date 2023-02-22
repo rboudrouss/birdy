@@ -1,6 +1,6 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 
@@ -23,18 +23,14 @@ export async function registerHandler(
   const { body } = req;
 
   if (
-    !body.bio ||
-    (body.bio &&
-      !(
-        typeof body.bio === "string" &&
-        body.bio.length <= 256 &&
-        body.bio.length > 0
-      ))
+    (!body.bio && body.bio !== "") ||
+    !(typeof body.bio === "string" && body.bio.length <= 256)
   ) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
       .json({ isError: true, status: code, message: "Bio is wrong type" });
+      console.log(!body.bio, body.bio !== "", typeof body.bio === "string", body.bio.length <= 256)
     return;
   }
 

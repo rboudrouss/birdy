@@ -1,6 +1,6 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const APIUserAll = APIdecorator(

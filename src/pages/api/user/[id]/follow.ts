@@ -2,7 +2,7 @@ import cookieWrapper from "@/helper/cookiewrapper";
 import { Follows } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
 
 const APIFollowHandler = APIdecorator(
   followHandler,
@@ -20,7 +20,7 @@ export async function followHandler(
   const userId = parseInt(query.id as string);
   const authorID = body.author as number;
 
-  if (cookieWrapper.back.checkValidUser(cookies, authorID)) {
+  if (await findConnectedUser(cookies.session) !== userId) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

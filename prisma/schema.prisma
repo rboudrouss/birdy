@@ -11,44 +11,84 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique // @db.VarChar(255)
+  id          Int          @id @default(autoincrement())
+  email       String       @unique // @db.VarChar(255)
   password    String // @db.VarChar(16)
   username    String // @db.VarChar(20)
   posts       Post[]
   bio         String? // @db.VarChar(256)
-  followers   Follows[] @relation("follower")
-  following   Follows[] @relation("following")
+  followers   Follows[]    @relation("follower")
+  following   Follows[]    @relation("following")
   likes       Likes[]
-  nbFollowers Int       @default(0)
-  nbFollowing Int       @default(0)
-  nbLikes     Int       @default(0)
+  nbFollowers Int          @default(0)
+  nbFollowing Int          @default(0)
+  nbLikes     Int          @default(0)
   images      Image[]
+  postsImages postImages[]
+  coverImage  coverImage?
+  ppImage     ppImage?
+  sessions    Session[]
+}
+
+model Session {
+  id        String   @id
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
   content   String // @db.VarChar(256)
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User         @relation(fields: [authorId], references: [id])
   authorId  Int
   likes     Likes[]
-  replyTo   Post?    @relation("replies", fields: [replyId], references: [id], onDelete: SetNull)
-  replies   Post[]   @relation("replies")
+  replyTo   Post?        @relation("replies", fields: [replyId], references: [id], onDelete: SetNull)
+  replies   Post[]       @relation("replies")
   replyId   Int?
-  nbLikes   Int      @default(0)
-  nbReplies Int      @default(0)
-  images    Image[]
+  nbLikes   Int          @default(0)
+  nbReplies Int          @default(0)
+  images    postImages[]
 }
 
 model Image {
-  id     String
-  postId Int
-  post   Post   @relation(fields: [postId], references: [id])
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
+  id         String      @id @unique
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  createdAt  DateTime    @default(now())
+  postImage  postImages?
+  coverImage coverImage?
+  ppImage    ppImage?
+}
 
-  @@id([id, postId])
+model postImages {
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  postId  Int
+  post    Post   @relation(fields: [postId], references: [id])
+  imageId String @unique
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([postId, imageId])
+}
+
+model coverImage {
+  userId  Int    @unique
+  user    User   @relation(fields: [userId], references: [id])
+  imageId String @unique
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([imageId, userId])
+}
+
+model ppImage {
+  userId  Int    @unique
+  user    User   @relation(fields: [userId], references: [id])
+  imageId String @unique
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([imageId, userId])
 }
 
 model Follows {

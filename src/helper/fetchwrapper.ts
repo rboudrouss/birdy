@@ -1,4 +1,5 @@
-import { OKApiResponse } from "./constants";
+import { HttpCodes, OKApiResponse } from "./constants";
+import userService from "./userService";
 
 export const fetchWrapper = {
   get,
@@ -54,6 +55,18 @@ async function handleResponse<T>(
   const text = await response.text();
   let data: any = text && JSON.parse(text);
   if (!response.ok) {
+    if (window)
+      if (
+        [HttpCodes.UNAUTHORIZED, HttpCodes.FORBIDDEN].includes(response.status)
+      ) {
+        // if we are in the browser
+        // auto logout if 401 response returned from api
+        alert("You are not authorized to do this action")
+        userService.logout();
+        window.location.href = "/login";
+        const error = data.message as string;
+        return Promise.reject(error);
+      }
     const error = data.message as string;
     alert(error); // TODO remove this in production
     return Promise.reject(error);

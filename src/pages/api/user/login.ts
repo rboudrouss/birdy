@@ -1,8 +1,9 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 
 const APILoginHandler = APIdecorator(
   loginHandler,
@@ -48,14 +49,33 @@ export async function loginHandler(
     return;
   }
 
+  let session = generateSession(u.id);
+
+  try {
+    await prisma.session.create({
+      data: {
+        id: session,
+        userId: u.id,
+      },
+    });
+  } catch (e: any) {
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
+    return;
+  }
+
   let code = HttpCodes.ACCEPTED;
   res.status(code).json({
     isError: false,
     status: code,
     data: {
-      session: `${u.id}`,
+      session: session,
       user: removePassw(u),
     },
     message: `Welcome ${u.username} (id:${u.id})`,
   });
+}
+
+function generateSession(id: number) {
+  return `${randomBytes(5).toString("hex")}${Date.now().toString(16)}${id.toString(16)}`;
 }

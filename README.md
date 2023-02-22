@@ -1,6 +1,6 @@
 - [ ] Add bookmarks ?
-- [ ] Add Image store, use local server in :5000
-- [ ] Add real sessions, instead of only the ID
+- [ ] Add Image store
+- [X] Add real sessions, instead of only the ID
   - [X] remove the author in body in requests (meh don't think i'll do that, the double verification is cool)
 - [X] Hash passwords
   - [ ] add salt
@@ -17,3 +17,12 @@
 # Projet WEB
 
 birdy : a twitter clone (not really but hey)
+
+
+## Lunch app
+
+first install the dependencies using yarn (`yarn`) or npm (`npm i`).
+
+Migrate the database using `npx prisma migrate dev --name init` then `npx prisma migrate deploy`
+
+To lunch the app : `yarn start` or `npm run start`

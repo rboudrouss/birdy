@@ -1,7 +1,7 @@
 import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, prisma } from "@/helper/instances";
+import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
 
 const APIUnlikeHandler = APIdecorator(
   unlikeHandler,
@@ -20,7 +20,7 @@ export async function unlikeHandler(
   const postId = parseInt(query.id as string);
   const userId = body.author as number;
 
-  if (!cookieWrapper.back.checkValidUser(cookies, userId)) {
+  if (await findConnectedUser(cookies.session) !== userId) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

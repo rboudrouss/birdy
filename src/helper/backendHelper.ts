@@ -31,10 +31,10 @@ export function APIdecorator<T>(
       return;
     }
 
-    console.log("\n\n", req.url)
-    console.log("body", body)
-    console.log("query", query)
-    console.log("cookies", cookies)
+    console.log("\n\n", req.url);
+    console.log("body", body);
+    console.log("query", query);
+    console.log("cookies", cookies);
     // HACK un peu moche la fonction
     if (
       bodyAttr &&
@@ -83,4 +83,19 @@ export function APIdecorator<T>(
     target(req, res);
     return;
   };
+}
+
+// Return -1 if session not found
+export async function findConnectedUser(session: string | undefined | null): Promise<number> {
+  if (!session) return -1;
+
+  return (
+    (
+      await prisma.session.findUnique({
+        where: {
+          id: session,
+        },
+      })
+    )?.userId ?? -1
+  );
 }

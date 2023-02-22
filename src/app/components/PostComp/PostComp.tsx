@@ -8,10 +8,10 @@ import userService from "@/helper/userService";
 import cookieWrapper from "@/helper/cookiewrapper";
 import PostForm from "../PostForm/PostForm";
 
-export default function PostComp(props: { data: APIPost }) {
+export default function PostComp(props: { data: APIPost, showReply?: boolean }) {
   let post = props.data;
   const [liked, setLiked] = useState(false);
-  const [showReply, setShowReply] = useState(false);
+  const [showReply, setShowReply] = useState(props.showReply || false);
 
   useEffect(() => {
     setLiked(userService.isPostLiked(props.data.id));

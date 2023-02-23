@@ -15,6 +15,7 @@
     "@next/font": "13.1.5",
     "@prisma/client": "4.9.0",
     "@types/bcryptjs": "2.4.2",
+    "@types/formidable": "2.0.5",
     "@types/js-cookie": "3.0.2",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
@@ -22,12 +23,14 @@
     "bcryptjs": "2.4.3",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.5",
+    "formidable": "2.1.1",
     "js-cookie": "3.0.1",
     "next": "13.1.5",
     "prisma": "4.9.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "4.7.1",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "uuid": "9.0.0"
   }
 }

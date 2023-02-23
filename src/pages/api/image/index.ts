@@ -1,12 +1,22 @@
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import cookieWrapper from "@/helper/cookiewrapper";
-import { APIdecorator, findConnectedUser } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  APIdecorator,
+  findConnectedUser,
+  prisma,
+} from "@/helper/backendHelper";
 import { NextApiRequest, NextApiResponse } from "next";
+import formidable from "formidable";
+import fs from "fs";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 const APIimageHandler = APIdecorator(
   imageHandler,
-  ["POST"], // formater hack
-  { id: isDigit } // IN QUERY <!> not in body
+  ["POST"] // formater hack
 );
 
 export default APIimageHandler;
@@ -15,27 +25,95 @@ async function imageHandler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  if (req.headers["content-type"] !== "image/jpeg") {
-    let code = HttpCodes.BAD_REQ;
+  let imgServer = process.env.IMG_SERVER;
+
+  if (!imgServer) {
+    let code = HttpCodes.INTERNAL_ERROR;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "Accept only jpeg images",
+      message: "env IMG_SERVER not set",
     });
     return;
   }
 
-  const { query, cookies } = req;
+  const { cookies } = req;
 
-  const id = parseInt(query.id as string);
+  let user = await findConnectedUser(cookies.session);
 
-  if ((await findConnectedUser(cookies.session)) !== id) {
+  if (user === -1) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "wrong cookie, wrong account",
+      message: "not connected",
     });
     return;
   }
+
+  const result = await parseForm(req);
+
+  let image = Object.values(result.files)[0] as formidable.File | undefined;
+
+  if (!image) {
+    let code = HttpCodes.BAD_REQ;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "no image",
+    });
+    return;
+  }
+
+  let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
+
+  let formData = new FormData();
+  formData.append("file", imageBlob, "image.jpg");
+
+  let response = await fetch(imgServer, {
+    method: "POST",
+    body: formData,
+  })
+
+  const {filename} = await response.json();
+
+  try {
+    await prisma.image.create({
+      data: {
+        id: filename,
+        userId: user,
+      },
+    });
+  } catch (e: any) {
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: e.message + " nyah",
+    });
+    return;
+  }
+
+  let code = HttpCodes.CREATED;
+  res.status(code).json({
+    isError: false,
+    status: code,
+    message: "Created !",
+    data: filename.split(".")[0],
+  });
+}
+
+function parseForm(
+  req: NextApiRequest
+): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
+  return new Promise((resolve, reject) => {
+    const form = new formidable.IncomingForm({ multiples: true });
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve({ fields, files });
+    });
+  });
 }

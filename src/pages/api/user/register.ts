@@ -54,7 +54,6 @@ export async function registerHandler(
     return;
   }
 
-  console.log("salt: ", process.env.salt);
   let hash = await bcrypt.hash(body.password as string, 10);
 
   try {

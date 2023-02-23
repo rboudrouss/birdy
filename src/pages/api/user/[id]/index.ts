@@ -4,6 +4,7 @@ import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { APIdecorator, prisma } from "@/helper/backendHelper";
 
 // TODO more security in this function
+// TODO add password hashing
 
 const APIUserHandler = APIdecorator(
   userHandler,
@@ -31,10 +32,17 @@ async function userHandler(
         id,
       },
       include: {
-        posts: true,
+        posts: {
+          include: {
+            images: true,
+          },
+        },
         followers: true,
         following: true,
         likes: true,
+        postsImages: true,
+        coverImage: true,
+        ppImage: true,
       },
     });
   } catch (e: any) {

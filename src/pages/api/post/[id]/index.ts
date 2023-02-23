@@ -35,6 +35,7 @@ async function postHandler(
             author: true,
           },
         },
+        images: true,
       },
     });
   } catch (e: any) {

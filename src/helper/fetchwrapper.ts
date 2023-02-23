@@ -55,20 +55,24 @@ async function handleResponse<T>(
   const text = await response.text();
   let data: any = text && JSON.parse(text);
   if (!response.ok) {
-    if (window)
-      if (
-        [HttpCodes.UNAUTHORIZED, HttpCodes.FORBIDDEN].includes(response.status)
-      ) {
-        // if we are in the browser
-        // auto logout if 401 response returned from api
-        alert("You are not authorized to do this action")
-        userService.logout();
-        window.location.href = "/login";
-        const error = data.message as string;
-        return Promise.reject(error);
-      }
     const error = data.message as string;
-    alert(error); // TODO remove this in production
+    try {
+      window;
+    } catch {
+      console.error(error);
+      return Promise.reject(error);
+    }
+    if (
+      [HttpCodes.UNAUTHORIZED, HttpCodes.FORBIDDEN].includes(response.status)
+    ) {
+      // if we are in the browser
+      // auto logout if 401 response returned from api
+      alert("You are not authorized to do this action");
+      userService.logout();
+      window.location.href = "/login";
+    } else {
+      alert(error);
+    }
     return Promise.reject(error);
   }
   return data;

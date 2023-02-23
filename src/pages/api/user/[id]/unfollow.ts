@@ -1,7 +1,11 @@
-import cookieWrapper from "@/helper/cookiewrapper";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  APIdecorator,
+  findConnectedUser,
+  prisma,
+  isDigit,
+} from "@/helper/backendHelper";
 
 const APIUnfollowHandler = APIdecorator(
   unfollowHandler,
@@ -21,7 +25,7 @@ export async function unfollowHandler(
   const userId = parseInt(query.id as string);
   const authorId = body.author as number;
 
-  if (await findConnectedUser(cookies.session) !== authorId) {
+  if ((await findConnectedUser(cookies.session)) !== authorId) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

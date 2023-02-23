@@ -1,7 +1,7 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, prisma } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { APIdecorator, prisma, isDigit } from "@/helper/backendHelper";
 
 const APIpostHander = APIdecorator(
   postHandler,

@@ -86,7 +86,9 @@ export function APIdecorator<T>(
 }
 
 // Return -1 if session not found
-export async function findConnectedUser(session: string | undefined | null): Promise<number> {
+export async function findConnectedUser(
+  session: string | undefined | null
+): Promise<number> {
   if (!session) return -1;
 
   return (
@@ -98,4 +100,15 @@ export async function findConnectedUser(session: string | undefined | null): Pro
       })
     )?.userId ?? -1
   );
+}
+
+export function isDigit(a: any): boolean {
+  if (typeof a !== "string") return false;
+
+  if (a.split("").some((e) => e < "0" || e > "9")) return false;
+
+  // HACK this might be redundant but hey
+  if (isNaN(parseInt(a))) return false;
+
+  return true;
 }

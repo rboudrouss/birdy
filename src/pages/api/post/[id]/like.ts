@@ -1,8 +1,12 @@
-import cookieWrapper from "@/helper/cookiewrapper";
 import { Likes } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  APIdecorator,
+  findConnectedUser,
+  prisma,
+  isDigit,
+} from "@/helper/backendHelper";
 
 const APILikeHandler = APIdecorator(
   likeHandler,
@@ -22,7 +26,7 @@ export async function likeHandler(
 
   const userId = body.author as number;
 
-  if (await findConnectedUser(cookies.session) !== userId) {
+  if ((await findConnectedUser(cookies.session)) !== userId) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,

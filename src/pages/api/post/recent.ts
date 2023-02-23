@@ -1,8 +1,12 @@
-import cookieWrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  APIdecorator,
+  findConnectedUser,
+  prisma,
+  isDigit,
+} from "@/helper/backendHelper";
 
 const DEFAULT_N = 20;
 
@@ -31,7 +35,7 @@ export async function postList(
     ? parseInt(query.skip as string)
     : undefined;
 
-  if (await findConnectedUser(req.cookies.session) === -1) {
+  if ((await findConnectedUser(req.cookies.session)) === -1) {
     let code = HttpCodes.FORBIDDEN;
     res
       .status(code)

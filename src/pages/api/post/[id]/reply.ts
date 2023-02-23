@@ -1,8 +1,12 @@
-import cookiewrapper from "@/helper/cookiewrapper";
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
-import { APIdecorator, findConnectedUser, prisma } from "@/helper/backendHelper";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  APIdecorator,
+  findConnectedUser,
+  prisma,
+  isDigit,
+} from "@/helper/backendHelper";
 
 const APIPostCreate = APIdecorator(
   replyHandler,
@@ -24,7 +28,7 @@ export async function replyHandler(
   let author = body.author as number;
   let replyTo = parseInt(query.id as string);
 
-  if (await findConnectedUser(req.cookies.session) !== author) {
+  if ((await findConnectedUser(req.cookies.session)) !== author) {
     let code = HttpCodes.FORBIDDEN;
     res.status(403).json({
       isError: true,

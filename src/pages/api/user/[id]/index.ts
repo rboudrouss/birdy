@@ -1,7 +1,7 @@
-import { ApiResponse, HttpCodes, isDigit } from "@/helper/constants";
+import { ApiResponse, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma } from "@/helper/backendHelper";
+import { APIdecorator, prisma, isDigit } from "@/helper/backendHelper";
 
 // TODO more security in this function
 // TODO add password hashing

@@ -8,20 +8,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-const APIimageHandler = APIdecorator(
-  imageHandler,
-  ["POST"] // formater hack
+const APIimageGetter = APIdecorator(
+  imageGetter,
+  ["POST", "GET"] // formater hack
 );
 
-export default APIimageHandler;
+export default APIimageGetter;
 
-async function imageHandler(
+async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
@@ -37,7 +31,7 @@ async function imageHandler(
     return;
   }
 
-  const { cookies } = req;
+  const { cookies, method } = req;
 
   let user = await findConnectedUser(cookies.session);
 
@@ -48,6 +42,15 @@ async function imageHandler(
       status: code,
       message: "not connected",
     });
+    return;
+  }
+
+  if (method === "GET") {
+    res.status(HttpCodes.OK);
+    res.setHeader("content-type", "text/html");
+    res.end(
+      `<form action="/api/image" method="post" enctype="multipart/form-data"><input type="file" name="file" id="file"><input type="submit" value="Upload" name="submit"></form>`
+    );
     return;
   }
 
@@ -73,9 +76,11 @@ async function imageHandler(
   let response = await fetch(imgServer, {
     method: "POST",
     body: formData,
-  })
+  });
 
-  const {filename} = await response.json();
+  let { filename } = await response.json();
+
+  filename = filename.split(".")[0];
 
   try {
     await prisma.image.create({
@@ -89,7 +94,7 @@ async function imageHandler(
     res.status(code).json({
       isError: true,
       status: code,
-      message: e.message + " nyah",
+      message: e.message,
     });
     return;
   }
@@ -99,9 +104,15 @@ async function imageHandler(
     isError: false,
     status: code,
     message: "Created !",
-    data: filename.split(".")[0],
+    data: filename,
   });
 }
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 function parseForm(
   req: NextApiRequest

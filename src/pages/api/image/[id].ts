@@ -28,9 +28,7 @@ export default async function imageHandler(
   }
 
   try {
-    var response = await fetch(
-      imgServer + "/" + id + ".jpg"
-    );
+    var response = await fetch(imgServer + "/" + id + ".jpg");
   } catch (e) {
     let code = HttpCodes.NOT_FOUND;
     res.status(code).json({
@@ -41,10 +39,9 @@ export default async function imageHandler(
     return;
   }
 
-
   let imageBlob = new Blob([await response.blob()]);
 
-  res.setHeader('Content-Type', 'image/jpg')
+  res.setHeader("Content-Type", "image/jpg");
   // HACK but hey it works
-  res.end(new Buffer(await imageBlob.arrayBuffer()))
+  res.end(Buffer.from(await imageBlob.arrayBuffer()));
 }

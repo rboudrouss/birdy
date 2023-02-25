@@ -46,8 +46,17 @@ function getConnectedUser(): APIUser | null {
     logout();
     throw new Error("Cookie is set but no user is found in local storage");
   }
+  let out;
 
-  return new APIUser(JSON.parse(user));
+  try {
+    out = new APIUser(JSON.parse(user));
+  } catch (e: any) {
+    alert("Error while parsing user, logging out");
+    logout();
+    return null;
+  }
+
+  return out;
 }
 
 async function login(email: string, password: string): Promise<void> {
@@ -98,7 +107,7 @@ async function createPost(content: string, author: number): Promise<void> {
 }
 
 async function getRecentPosts(
-  all:boolean,
+  all: boolean,
   n?: number,
   start?: number
 ): Promise<
@@ -109,8 +118,7 @@ async function getRecentPosts(
     data: (Post & { author: User })[];
   }>
 > {
-  if(all)
-    return fetchWrapper.get(`/api/post/recent?all=true`);
+  if (all) return fetchWrapper.get(`/api/post/recent?all=true`);
 
   return fetchWrapper.get(
     `/api/post/recent?${n ? `n=${n}}` : ""}${start ? `start=${start}` : ""}`

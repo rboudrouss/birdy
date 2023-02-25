@@ -55,7 +55,7 @@ model Post {
 model Image {
   id         String      @id @unique
   userId     Int
-  user       User        @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime    @default(now())
   postImage  postImages?
   coverImage coverImage?
@@ -64,29 +64,29 @@ model Image {
 
 model postImages {
   userId  Int
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId  Int
-  post    Post   @relation(fields: [postId], references: [id])
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   imageId String @unique
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
   @@id([postId, imageId])
 }
 
 model coverImage {
   userId  Int    @unique
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   imageId String @unique
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
   @@id([imageId, userId])
 }
 
 model ppImage {
   userId  Int    @unique
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   imageId String @unique
-  image   Image  @relation(fields: [imageId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
   @@id([imageId, userId])
 }

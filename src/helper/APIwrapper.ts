@@ -1,6 +1,14 @@
 // HACK all this file is ugly, there is probably a better way for all of this ?
 // NOTE this file is meant to be use in the fronted only <!>
-import { User, Post, Likes } from "@prisma/client";
+import {
+  User,
+  Post,
+  Likes,
+  Image,
+  postImages,
+  coverImage,
+  ppImage,
+} from "@prisma/client";
 import { POSTAPI, USERAPI } from "./constants";
 import { fetchWrapper } from "./fetchwrapper";
 
@@ -23,11 +31,19 @@ export class APIUser {
   nbFollowers: number;
   nbFollowing: number;
   nbLikes: number;
+  images: string[];
+  postsImages: string[];
+  ppImage?: string;
+  coverImage?: string;
 
   constructor(
     u: (User | UserWithoutPass) & {
       posts?: Post[] | null;
       likes?: Likes[] | number[] | null;
+      images?: Image[] | string[] | null;
+      postsImages?: postImages[] | string[] | null;
+      ppImage?: ppImage | string | null;
+      coverImage?: coverImage | string | null;
     }
   ) {
     this.id = u.id;
@@ -40,6 +56,10 @@ export class APIUser {
     this.nbFollowers = u.nbFollowers;
     this.nbFollowing = u.nbFollowing;
     this.nbLikes = u.nbLikes;
+    this.images = u.images?.map((i: any) => i.id ?? i) ?? [];
+    this.postsImages = u.postsImages?.map((i: any) => i.imageId ?? i) ?? [];
+    this.ppImage = (u.ppImage as any)?.imageId ?? u.ppImage ?? null;
+    this.coverImage = (u.coverImage as any)?.imageid ?? u.coverImage ?? null;
     if (
       [
         this.id,
@@ -66,6 +86,15 @@ export class APIUser {
 
   public get unfollowApi(): string {
     return `${this.apiLink}/unfollow`;
+  }
+
+  public get avatarImg(): string {
+    return `${this.apiLink}/pp`;
+  }
+
+  // TODO
+  public get coverImg(): string {
+    return "";
   }
 
   public clone() {
@@ -96,6 +125,27 @@ export class APIUser {
     );
   }
 
+  public async updateThis() {
+    let u = new APIUser(
+      await fetchWrapper.get<User>(this.apiLink).then((u) => u.data)
+    );
+    this.id = u.id;
+    this.email = u.email;
+    this.password = u.password;
+    this.username = u.username;
+    this.bio = u.bio;
+    this.posts = u.posts;
+    this.likes = u.likes;
+    this.nbFollowers = u.nbFollowers;
+    this.nbFollowing = u.nbFollowing;
+    this.nbLikes = u.nbLikes;
+    this.images = u.images;
+    this.postsImages = u.postsImages;
+    this.ppImage = u.ppImage;
+    this.coverImage = u.coverImage;
+  }
+
+  // Deprecated
   public async update() {
     const { email, username, bio, password } = this;
 
@@ -120,12 +170,14 @@ export class APIPost {
   nbLikes: number;
   nbReplies: number;
   replyTo: APIPost | null;
+  images: string[];
 
   constructor(
     p: Post & {
       author?: User | null;
       replies?: Post[] | null;
       replyTo?: Post | null;
+      images?: postImages[] | string[] | null;
     }
   ) {
     this.id = p.id;
@@ -137,6 +189,7 @@ export class APIPost {
     this.replies = p.replies?.map((reply) => new APIPost(reply)) ?? null;
     this.nbLikes = p.nbLikes;
     this.nbReplies = p.nbReplies;
+    this.images = p.images?.map((i: any) => i.imageId ?? i) ?? [];
     if (
       [this.id, this.replyId ?? 0, this.nbLikes, this.nbReplies].some(
         (e) => isNaN(e) || !Number.isInteger(e)
@@ -170,6 +223,10 @@ export class APIPost {
 
   public get deleteAPI(): string {
     return `${this.apiLink}/delete`;
+  }
+
+  public get imageLinks(): string[] {
+    return this.images.map((i) => `${POSTAPI}/image/${i}`);
   }
 
   public async like(author: number) {
@@ -217,6 +274,23 @@ export class APIPost {
         })
       ).data
     );
+  }
+
+  public async updateThis() {
+    let p = new APIPost(
+      await fetchWrapper.get<Post>(`${POSTAPI}/${this.id}`).then((p) => p.data)
+    );
+
+    this.id = p.id;
+    this.createdAt = p.createdAt;
+    this.content = p.content;
+    this.authorId = p.authorId;
+    this.replyId = p.replyId;
+    this.author = p.author;
+    this.replies = p.replies;
+    this.nbLikes = p.nbLikes;
+    this.nbReplies = p.nbReplies;
+    this.images = p.images;
   }
 
   public clone() {

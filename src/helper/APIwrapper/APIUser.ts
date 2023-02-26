@@ -16,8 +16,8 @@ import { APIPost } from "./APIPost";
 export type UserWithoutPass = User & { password?: string | null };
 
 export function removePassw(u: User): UserWithoutPass {
-  let out: any = { ...u };
-  out.password = null;
+  let { password, ...out } = u;
+  (out as any).password = null;
   return out as UserWithoutPass;
 }
 
@@ -74,7 +74,7 @@ export class APIUser {
   }
 
   public get profileLink(): string {
-    return `/${this.id}`;
+    return `/profile/${this.id}`;
   }
 
   public get apiLink(): string {

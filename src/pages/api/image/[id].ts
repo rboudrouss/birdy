@@ -39,7 +39,7 @@ export default async function imageHandler(
     return;
   }
 
-  let imageBlob = new Blob([await response.blob()]);
+  let imageBlob = await response.blob();
 
   res.setHeader("Content-Type", "image/jpg");
   // HACK but hey it works

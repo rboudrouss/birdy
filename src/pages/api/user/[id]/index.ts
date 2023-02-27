@@ -1,7 +1,13 @@
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, conditions, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma, isDigit } from "@/helper/backendHelper";
+import {
+  APIdecorator,
+  prisma,
+  isDigit,
+  verifyQuery,
+} from "@/helper/backendHelper";
+import bcrypt from "bcryptjs";
 
 // TODO more security in this function
 // TODO add password hashing
@@ -73,15 +79,20 @@ async function userHandler(
   // Methode is then PUT
 
   if (
-    !["email", "username", "password", "bio"]
-      .map((e) => !body[e] || (body[e] && typeof body[e] === "string"))
-      .every((e) => e)
+    (body.username && !conditions.username(body.username)) ||
+    (body.email && !conditions.email(body.email)) ||
+    (body.password && !conditions.password(body.password)) ||
+    (body.bio && !conditions.bio(body.bio))
   ) {
     let code = HttpCodes.BAD_REQ;
     res
       .status(code)
-      .json({ isError: true, status: code, message: "Incorect attributes" });
+      .json({ isError: true, status: code, message: "Incorrect attributes" });
+    return;
   }
+
+  let password: string | null = null;
+  if (body.password) password = await bcrypt.hash(body.password as string, 10);
 
   try {
     var u2 = await prisma.user.update({
@@ -91,7 +102,7 @@ async function userHandler(
       data: {
         email: (body.email as string) ?? u.email,
         username: (body.username as string) ?? u.username,
-        password: (body.password as string) ?? u.password,
+        password: password ?? u.password,
         bio: (body.bio as string) ?? u.bio,
       },
     });

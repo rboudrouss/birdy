@@ -1,10 +1,13 @@
 const ImageHelper = {
-  getBase64,
-  getBlob,
+  get64fromBlob,
+  getBlobfrom64,
+  postBlob,
+  fetchBlob,
+  fetchImgById
 };
 export default ImageHelper;
 
-async function getBase64(file: File): Promise<string> {
+async function get64fromBlob(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -13,7 +16,7 @@ async function getBase64(file: File): Promise<string> {
   });
 }
 
-function getBlob(base64: string) {
+function getBlobfrom64(base64: string) {
   const arr = base64.split(",");
   const mime = arr[0].match(/:(.*?);/)![1];
   const bstr = Buffer.from(arr[1], "base64").toString("binary");
@@ -23,4 +26,22 @@ function getBlob(base64: string) {
     u8arr[n] = bstr.charCodeAt(n);
   }
   return new Blob([u8arr], { type: mime });
+}
+
+async function postBlob(blob:Blob | File, url:string){
+  let data = new FormData();
+  data.append("file", blob, "image.jpg")
+  let response = await fetch(url,{
+    method: "POST",
+    body: data
+  })
+  return response;
+}
+
+async function fetchBlob(url:string){
+  return await fetch(url).then((r) => r.blob())
+}
+
+async function fetchImgById(id:string, server?:string){
+  return await fetchBlob(`${server ?? process.env.IMG_SERVER ?? ""}/${id}.jpg`)
 }

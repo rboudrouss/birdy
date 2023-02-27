@@ -7,6 +7,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
+import ImageHelper from "@/helper/ImageHelper";
 
 const APIimageGetter = APIdecorator(
   imageGetter,
@@ -70,13 +71,7 @@ async function imageGetter(
 
   let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
 
-  let formData = new FormData();
-  formData.append("file", imageBlob, "image.jpg");
-
-  let response = await fetch(imgServer, {
-    method: "POST",
-    body: formData,
-  });
+  let response = await ImageHelper.postBlob(imageBlob, imgServer);
 
   let { filename } = await response.json();
 

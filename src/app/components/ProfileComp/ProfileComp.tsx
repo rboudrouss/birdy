@@ -6,8 +6,8 @@ export default function ProfileComp(props: { user: APIUser | null }) {
   return <></>;
 
   return (
-    <div>
-      {/* <img src={props.user.avatarImg} className={styles.avatar}/> */}
+    <div className={styles.wrapper}>
+      <img src={props.user.avatarImg} className={styles.avatar}/>
       <h1>{props.user.username}</h1>
       <p>{props.user.bio}</p>
     </div>

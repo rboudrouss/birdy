@@ -46,14 +46,14 @@ export default function RegisterForm(props: { url?: string }) {
           type="text"
           required
           onChange={(e) => setUsername(e.target.value)}
-          value={(user && user.username) ?? ""}
+          defaultValue={(user && user.username) ?? ""}
         />
         <p>Email</p>
         <input
           type="email"
           required
           onChange={(e) => setEmail(e.target.value)}
-          value={(user && user.email) ?? ""}
+          defaultValue={(user && user.email) ?? ""}
         />
         <p>password</p>
         <input
@@ -65,7 +65,7 @@ export default function RegisterForm(props: { url?: string }) {
         <input
           type="text"
           onChange={(e) => setBio(e.target.value)}
-          value={(user && user.bio) ?? ""}
+          defaultValue={(user && user.bio) ?? ""}
         />
         <button type="submit" onClick={register}>
           register

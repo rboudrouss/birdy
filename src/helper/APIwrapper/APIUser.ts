@@ -9,7 +9,7 @@ import {
   coverImage,
   ppImage,
 } from "@prisma/client";
-import { USERAPI } from "../constants";
+import { defaultAvatarUrl, USERAPI } from "../constants";
 import { fetchWrapper } from "../fetchwrapper";
 import { APIPost } from "./APIPost";
 
@@ -90,12 +90,12 @@ export class APIUser {
   }
 
   public get avatarImg(): string {
-    return `${this.apiLink}/pp`;
+    return this.ppImage ? `api/image/${this.ppImage}` : defaultAvatarUrl;
   }
 
-  // TODO
+  // TODO find a default cover image
   public get coverImg(): string {
-    return "";
+    return this.coverImage ? `api/image/${this.coverImage}` : defaultAvatarUrl;
   }
 
   public clone() {
@@ -144,6 +144,8 @@ export class APIUser {
     this.postsImages = u.postsImages;
     this.ppImage = u.ppImage;
     this.coverImage = u.coverImage;
+    
+    return this;
   }
 
   // Deprecated

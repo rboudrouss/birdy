@@ -35,3 +35,5 @@ export const conditions: { [key: string]: (s: any) => boolean } = {
   password: (s) => typeof s === "string" && s.length > 3,
   bio: (s) => typeof s === "string" && s.length <=256,
 };
+
+export const defaultAvatarUrl = "/avatar.jpg";

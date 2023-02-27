@@ -137,6 +137,8 @@ export class APIPost {
     this.nbLikes = p.nbLikes;
     this.nbReplies = p.nbReplies;
     this.images = p.images;
+
+    return this;
   }
 
   public clone() {

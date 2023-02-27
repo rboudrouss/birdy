@@ -1,23 +1,41 @@
 "use client";
 
+import { fetchWrapper } from "@/helper/fetchwrapper";
 import userService from "@/helper/userService";
 import { MouseEvent, useState } from "react";
 import styles from "./RegisterForm.module.css";
 
-export default function RegisterForm() {
-  let [email, setEmail] = useState("");
-  let [passw, setPassw] = useState("");
-  let [bio, setBio] = useState("");
-  let [username, setUsername] = useState("");
+export default function RegisterForm(props: { url?: string }) {
+  let [email, setEmail] = useState<string | undefined>(undefined);
+  let [passw, setPassw] = useState<string | undefined>(undefined);
+  let [bio, setBio] = useState<string | undefined>(undefined);
+  let [username, setUsername] = useState<string | undefined>(undefined);
+
+  let user = userService.getConnectedUser();
 
   const register = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    let resp = await userService.register({
-      email,
-      password: passw,
-      bio,
-      username,
-    });
+    console.log({email, passw, bio, username})
+    if (props.url)
+      fetchWrapper.put(props.url, {
+        email,
+        password: passw,
+        bio,
+        username,
+      });
+    else {
+      if (!(email && passw && username)) {
+        alert("Please fill at least email, password and username");
+        return;
+      }
+
+      await userService.register({
+        email,
+        password: passw,
+        bio,
+        username,
+      });
+    }
   };
 
   return (
@@ -28,12 +46,14 @@ export default function RegisterForm() {
           type="text"
           required
           onChange={(e) => setUsername(e.target.value)}
+          value={(user && user.username) ?? ""}
         />
         <p>Email</p>
         <input
           type="email"
           required
           onChange={(e) => setEmail(e.target.value)}
+          value={(user && user.email) ?? ""}
         />
         <p>password</p>
         <input
@@ -42,7 +62,11 @@ export default function RegisterForm() {
           onChange={(e) => setPassw(e.target.value)}
         />
         <p>Bio (facultatif)</p>
-        <input type="text" onChange={(e) => setBio(e.target.value)} />
+        <input
+          type="text"
+          onChange={(e) => setBio(e.target.value)}
+          value={(user && user.bio) ?? ""}
+        />
         <button type="submit" onClick={register}>
           register
         </button>

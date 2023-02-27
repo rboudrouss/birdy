@@ -29,10 +29,16 @@ export default function PostForm(props: {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
-        {/* <img src={props.User.avatar} alt="Avatar" /> */}
-        <div className={styles.name}>{props.user.username}</div>
-      </div>
+      <a href={props.user.profileLink}>
+        <div className={styles.header}>
+          <img
+            src={props.user.avatarImg}
+            alt="Avatar"
+            className={styles.avatar}
+          />
+          <div className={styles.name}>{props.user.username}</div>
+        </div>
+      </a>
       <form onSubmit={post}>
         <textarea
           onChange={(e) => setContent(e.target.value)}

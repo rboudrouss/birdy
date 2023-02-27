@@ -7,18 +7,10 @@
   outline: solid gray 1px;
 }
 
-.userDiv {
-  padding-bottom: 10px;
-}
-
 .username {
   padding: 5px;
   font-weight: bold;
 }
-
-/* .wrapper * {
-  outline: dashed red 1px;
-} */
 
 .content,
 .username {
@@ -34,4 +26,18 @@
   margin: 10px 5px;
   display: flex;
   justify-content: space-around;
+}
+
+.avatar{
+  width: 25px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  margin: 0 5px;
+}
+
+.header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 5px;
 }

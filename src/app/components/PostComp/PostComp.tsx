@@ -8,7 +8,10 @@ import userService from "@/helper/userService";
 import cookieWrapper from "@/helper/cookiewrapper";
 import PostForm from "../PostForm/PostForm";
 
-export default function PostComp(props: { data: APIPost, showReply?: boolean }) {
+export default function PostComp(props: {
+  data: APIPost;
+  showReply?: boolean;
+}) {
   let post = props.data;
   const [liked, setLiked] = useState(false);
   const [showReply, setShowReply] = useState(props.showReply || false);
@@ -54,7 +57,10 @@ export default function PostComp(props: { data: APIPost, showReply?: boolean }) 
             <span className={styles.username}>
               {props.data.author?.username}
             </span>
+            {props.data.replyId && <FaComment />}
           </div>
+        </a>
+        <a href={props.data.postLink}>
           <div className={styles.contentDiv}>
             <span className={styles.content}>{props.data.content.trim()}</span>
           </div>
@@ -79,7 +85,9 @@ export default function PostComp(props: { data: APIPost, showReply?: boolean }) 
               {/* Delete */}
               <FaTrash />
             </button>
-          ) : <div />}
+          ) : (
+            <div />
+          )}
         </div>
       </article>
       {showReply && (

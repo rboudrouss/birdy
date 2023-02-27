@@ -30,7 +30,6 @@ export async function registerHandler(
     res
       .status(code)
       .json({ isError: true, status: code, message: "Bio is wrong type" });
-      console.log(!body.bio, body.bio !== "", typeof body.bio === "string", body.bio.length <= 256)
     return;
   }
 

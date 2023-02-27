@@ -1,4 +1,6 @@
-// TODO
+// FIXME maybe a bad idea to proxy it like that
+// take too much time and if lots of defaults will re-download the same image
+// je proxy déjà une fois bon, pas besoin de le faire 2 fois
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import {
   APIdecorator,
@@ -9,6 +11,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
+import ImageHelper from "@/helper/ImageHelper";
 
 const APIimageGetter = APIdecorator(
   imageGetter,
@@ -101,21 +104,18 @@ async function imageGetter(
       return;
     }
 
+    let imageBlob;
     try {
-      var response2 = await fetch(
-        imgServer + "/" + user2.ppImage.imageId + ".jpg"
-      );
-    } catch (e) {
+      imageBlob = await ImageHelper.fetchImgById(user2.ppImage.imageId);
+    } catch (e: any) {
       let code = HttpCodes.NOT_FOUND;
       res.status(code).json({
         isError: true,
         status: code,
-        message: "Image not found",
+        message: "Image not found\n" + e.message || "",
       });
       return;
     }
-
-    let imageBlob = new Blob([await response2.blob()]);
 
     res.setHeader("Content-Type", "image/jpg");
     // HACK but hey it works
@@ -124,7 +124,7 @@ async function imageGetter(
 
   let user = await findConnectedUser(cookies.session);
 
-  if (user === id) {
+  if (user !== id) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
@@ -150,16 +150,10 @@ async function imageGetter(
 
   let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
 
-  let formData = new FormData();
-  formData.append("file", imageBlob, "image.jpg");
-
-  let response = await fetch("/api/image", {
-    method: "POST",
-    body: formData,
-  });
+  // FIXME
+  let response = await ImageHelper.postBlob(imageBlob,"/api/image")
 
   let { data } = await response.json();
-  console.log(data)
 
   let filename = data.split(".")[0];
 

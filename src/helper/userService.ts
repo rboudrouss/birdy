@@ -43,8 +43,9 @@ function getConnectedUser(): APIUser | null {
 
   if (!user) {
     // Error, login out
-    logout();
-    throw new Error("Cookie is set but no user is found in local storage");
+    // logout();
+    // throw new Error("Cookie is set but no user is found in local storage");
+    return null;
   }
   let out;
 

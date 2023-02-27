@@ -28,3 +28,10 @@ export enum HttpCodes {
   WRONG_METHOD = 405,
   INTERNAL_ERROR = 500,
 }
+
+export const conditions: { [key: string]: (s: any) => boolean } = {
+  username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
+  email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
+  password: (s) => typeof s === "string" && s.length > 3,
+  bio: (s) => typeof s === "string" && s.length <=256,
+};

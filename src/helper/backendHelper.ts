@@ -4,14 +4,55 @@ import { PrismaClient } from "@prisma/client";
 import { ApiResponse, HttpCodes } from "./constants";
 export const prisma = new PrismaClient();
 
-type verifyQuery = (x: string | string[] | undefined) => boolean;
-type verifyBody = (x: any) => boolean;
+type verifyQueryT = (x: string | string[] | undefined) => boolean;
+type verifyBodyT = (x: any) => boolean;
+
+export function verifyBody(
+  body: any,
+  bodyAttr?: { [key: string]: boolean | verifyBodyT } | null
+) {
+  if (!bodyAttr) return true;
+
+  return Object.keys(bodyAttr)
+    .map(
+      (att) =>
+        (bodyAttr[att] === false || body[att]) &&
+        (typeof bodyAttr[att] === "boolean"
+          ? true
+          : (bodyAttr[att] as verifyBodyT)(body[att]))
+    )
+    .every((e) => e);
+}
+
+export function verifyQuery(
+  query: { [key: string]: string | string[] | undefined },
+  queryAttr?: { [key: string]: boolean | verifyQueryT } | null
+) {
+  if (!queryAttr) return true;
+
+  return Object.keys(queryAttr)
+    .map(
+      (att) =>
+        (queryAttr[att] === false || query[att]) &&
+        (typeof queryAttr[att] === "boolean"
+          ? true
+          : (queryAttr[att] as verifyQueryT)(query[att]))
+    )
+    .every((e) => e);
+}
+
+export function verify(
+  body: any,
+  query: { [key: string]: string | string[] | undefined },
+  bodyAttr?: { [key: string]: boolean | verifyBodyT } | null,
+  queryAttr?: { [key: string]: boolean | verifyQueryT } | null
+) {}
 
 export function APIdecorator<T>(
   target: (req: NextApiRequest, res: NextApiResponse<ApiResponse<T>>) => void,
   allowedMethod?: string[] | null,
-  bodyAttr?: { [key: string]: boolean | verifyBody } | null,
-  queryAttr?: { [key: string]: boolean | verifyQuery } | null
+  bodyAttr?: { [key: string]: boolean | verifyBodyT } | null,
+  queryAttr?: { [key: string]: boolean | verifyQueryT } | null
 ) {
   return async function (
     req: NextApiRequest,
@@ -36,18 +77,7 @@ export function APIdecorator<T>(
     console.log("query", query);
     console.log("cookies", cookies);
     // HACK un peu moche la fonction
-    if (
-      bodyAttr &&
-      !Object.keys(bodyAttr)
-        .map(
-          (att) =>
-            (bodyAttr[att] === false || body[att]) &&
-            (typeof bodyAttr[att] === "boolean"
-              ? true
-              : (bodyAttr[att] as verifyBody)(body[att]))
-        )
-        .every((e) => e)
-    ) {
+    if (bodyAttr && !verifyBody(body, bodyAttr)) {
       let code = HttpCodes.BAD_REQ;
       res.status(code).json({
         isError: true,
@@ -59,18 +89,7 @@ export function APIdecorator<T>(
       return;
     }
 
-    if (
-      queryAttr &&
-      !Object.keys(queryAttr)
-        .map(
-          (att) =>
-            (queryAttr[att] === false || query[att]) &&
-            (typeof queryAttr[att] === "boolean"
-              ? true
-              : (queryAttr[att] as verifyQuery)(query[att]))
-        )
-        .every((e) => e)
-    ) {
+    if (queryAttr && !verifyQuery(query, queryAttr)) {
       let code = HttpCodes.BAD_REQ;
       res.status(code).json({
         isError: true,

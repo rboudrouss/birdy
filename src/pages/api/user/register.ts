@@ -26,7 +26,7 @@ export async function registerHandler(
     (!body.bio && body.bio !== "") ||
     !(typeof body.bio === "string" && body.bio.length <= 256)
   ) {
-    let code = HttpCodes.BAD_REQ;
+    let code = HttpCodes.BAD_REQUEST;
     res
       .status(code)
       .json({ isError: true, status: code, message: "Bio is wrong type" });

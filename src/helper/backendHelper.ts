@@ -46,7 +46,9 @@ export function verify(
   query: { [key: string]: string | string[] | undefined },
   bodyAttr?: { [key: string]: boolean | verifyBodyT } | null,
   queryAttr?: { [key: string]: boolean | verifyQueryT } | null
-) {}
+) {
+  return verifyBody(body, bodyAttr) && verifyQuery(query, queryAttr);
+}
 
 export function APIdecorator<T>(
   target: (req: NextApiRequest, res: NextApiResponse<ApiResponse<T>>) => void,
@@ -78,7 +80,7 @@ export function APIdecorator<T>(
     console.log("cookies", cookies);
     // HACK un peu moche la fonction
     if (bodyAttr && !verifyBody(body, bodyAttr)) {
-      let code = HttpCodes.BAD_REQ;
+      let code = HttpCodes.BAD_REQUEST;
       res.status(code).json({
         isError: true,
         status: code,
@@ -90,7 +92,7 @@ export function APIdecorator<T>(
     }
 
     if (queryAttr && !verifyQuery(query, queryAttr)) {
-      let code = HttpCodes.BAD_REQ;
+      let code = HttpCodes.BAD_REQUEST;
       res.status(code).json({
         isError: true,
         status: code,

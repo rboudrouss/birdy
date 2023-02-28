@@ -60,7 +60,7 @@ async function imageGetter(
   let image = Object.values(result.files)[0] as formidable.File | undefined;
 
   if (!image) {
-    let code = HttpCodes.BAD_REQ;
+    let code = HttpCodes.BAD_REQUEST;
     res.status(code).json({
       isError: true,
       status: code,

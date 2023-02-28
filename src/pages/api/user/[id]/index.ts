@@ -84,7 +84,7 @@ async function userHandler(
     (body.password && !conditions.password(body.password)) ||
     (body.bio && !conditions.bio(body.bio))
   ) {
-    let code = HttpCodes.BAD_REQ;
+    let code = HttpCodes.BAD_REQUEST;
     res
       .status(code)
       .json({ isError: true, status: code, message: "Incorrect attributes" });

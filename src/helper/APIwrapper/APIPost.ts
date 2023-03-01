@@ -1,7 +1,7 @@
 // HACK all this file is ugly, there is probably a better way for all of this ?
 // NOTE this file is meant to be use in the fronted only <!>
 import { User, Post, postImages } from "@prisma/client";
-import { APILINK, POSTAPI } from "../constants";
+import { POSTAPI } from "../constants";
 import { fetchWrapper } from "../fetchwrapper";
 import { APIUser } from "./APIUser";
 
@@ -72,7 +72,7 @@ export class APIPost {
   }
 
   public get imageLinks(): string[] {
-    return this.images.map((i) => `${APILINK}/image/${i}`);
+    return this.images.map((i) => `uploads/${i}`);
   }
 
   public async like(author: number) {

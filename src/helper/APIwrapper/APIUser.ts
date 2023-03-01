@@ -90,12 +90,12 @@ export class APIUser {
   }
 
   public get avatarImg(): string {
-    return this.ppImage ? `api/image/${this.ppImage}` : defaultAvatarUrl;
+    return this.ppImage ? `/uploads/${this.ppImage}` : defaultAvatarUrl;
   }
 
   // TODO find a default cover image
   public get coverImg(): string {
-    return this.coverImage ? `api/image/${this.coverImage}` : defaultAvatarUrl;
+    return this.coverImage ? `/uploads/${this.coverImage}` : defaultAvatarUrl;
   }
 
   public clone() {

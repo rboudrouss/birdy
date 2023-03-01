@@ -1,4 +1,11 @@
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import {
+  ApiResponse,
+  HttpCodes,
+  IMAGEAPI,
+  IMGEXT,
+  MAXIMGSIZE,
+  UPLOADFOLDER,
+} from "@/helper/constants";
 import {
   APIdecorator,
   findConnectedUser,
@@ -8,6 +15,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
 import ImageHelper from "@/helper/ImageHelper";
+import { randomUUID } from "crypto";
 
 const APIimageGetter = APIdecorator(
   imageGetter,
@@ -20,17 +28,17 @@ async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  let imgServer = process.env.IMG_SERVER;
+  // let imgServer = process.env.IMG_SERVER;
 
-  if (!imgServer) {
-    let code = HttpCodes.INTERNAL_ERROR;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "env IMG_SERVER not set",
-    });
-    return;
-  }
+  // if (!imgServer) {
+  //   let code = HttpCodes.INTERNAL_ERROR;
+  //   res.status(code).json({
+  //     isError: true,
+  //     status: code,
+  //     message: "env IMG_SERVER not set",
+  //   });
+  //   return;
+  // }
 
   const { cookies, method } = req;
 
@@ -50,7 +58,7 @@ async function imageGetter(
     res.status(HttpCodes.OK);
     res.setHeader("content-type", "text/html");
     res.end(
-      `<form action="/api/image" method="post" enctype="multipart/form-data"><input type="file" name="file" id="file"><input type="submit" value="Upload" name="submit"></form>`
+      `<form action="${IMAGEAPI}" method="post" enctype="multipart/form-data"><input type="file" name="file" id="file"><input type="submit" value="Upload" name="submit"></form>`
     );
     return;
   }
@@ -59,28 +67,26 @@ async function imageGetter(
 
   let image = Object.values(result.files)[0] as formidable.File | undefined;
 
-  if (!image) {
+  let extension = image?.originalFilename?.split(".")[1] ?? "";
+
+  if (!image || !IMGEXT.includes(extension)) {
     let code = HttpCodes.BAD_REQUEST;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "no image",
+      message: "no jpg image or no extension",
     });
     return;
   }
 
-  let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
+  let newName = `${randomImgName()}.${extension}`;
 
-  let response = await ImageHelper.postBlob(imageBlob, imgServer);
-
-  let { filename } = await response.json();
-
-  filename = filename.split(".")[0];
+  fs.renameSync(image.filepath, `${UPLOADFOLDER}/${newName}`);
 
   try {
     await prisma.image.create({
       data: {
-        id: filename,
+        id: newName,
         userId: user,
       },
     });
@@ -99,7 +105,7 @@ async function imageGetter(
     isError: false,
     status: code,
     message: "Created !",
-    data: filename,
+    data: newName,
   });
 }
 
@@ -113,7 +119,11 @@ function parseForm(
   req: NextApiRequest
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
   return new Promise((resolve, reject) => {
-    const form = new formidable.IncomingForm({ multiples: true });
+    const form = new formidable.IncomingForm({
+      multiples: true,
+      maxFileSize: MAXIMGSIZE,
+      uploadDir: UPLOADFOLDER,
+    });
     form.parse(req, (err, fields, files) => {
       if (err) {
         reject(err);
@@ -122,4 +132,10 @@ function parseForm(
       resolve({ fields, files });
     });
   });
+}
+
+function randomImgName() {
+  return `${randomUUID().split("-").join("")}${Date.now()
+    .toString(16)
+    .slice(-4)}`;
 }

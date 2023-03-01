@@ -78,6 +78,7 @@ export function APIdecorator<T>(
     console.log("body", body);
     console.log("query", query);
     console.log("cookies", cookies);
+
     // HACK un peu moche la fonction
     if (bodyAttr && !verifyBody(body, bodyAttr)) {
       let code = HttpCodes.BAD_REQUEST;

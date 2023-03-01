@@ -1,6 +1,6 @@
 import { Likes, Post, User } from "@prisma/client";
 import Cookies from "js-cookie";
-import { OKApiResponse } from "./constants";
+import { OKApiResponse, POSTAPI, USERAPI } from "./constants";
 import { APIUser, UserWithoutPass } from "./APIwrapper";
 import { fetchWrapper } from "./fetchwrapper";
 import cookieWrapper from "./cookiewrapper";
@@ -62,7 +62,7 @@ function getConnectedUser(): APIUser | null {
 
 async function login(email: string, password: string): Promise<void> {
   return await fetchWrapper
-    .post<{ session: string; user: UserWithoutPass }>("/api/user/login", {
+    .post<{ session: string; user: UserWithoutPass }>(`${USERAPI}/login`, {
       email,
       password,
     })
@@ -98,7 +98,7 @@ async function register(user: {
 
 async function createPost(content: string, author: number): Promise<void> {
   return fetchWrapper
-    .post<Post>("/api/post/create", {
+    .post<Post>(`${POSTAPI}/create`, {
       author,
       content,
     })

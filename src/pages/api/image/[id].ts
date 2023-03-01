@@ -7,6 +7,7 @@ export const config = {
   },
 };
 
+// Deprecated, too slow
 export default async function imageHandler(
   req: NextApiRequest,
   res: NextApiResponse<ErrorApiResponse | Blob>
@@ -28,7 +29,8 @@ export default async function imageHandler(
   }
 
   try {
-    var response = await fetch(imgServer + "/" + id + ".jpg");
+    // var response = await fetch(imgServer + "/" + id + ".jpg");
+    var response = await fetch(`/uploads/${id}`);
   } catch (e) {
     let code = HttpCodes.NOT_FOUND;
     res.status(code).json({

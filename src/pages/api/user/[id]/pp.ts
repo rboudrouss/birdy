@@ -1,7 +1,7 @@
 // FIXME maybe a bad idea to proxy it like that
 // take too much time and if lots of defaults will re-download the same image
 // je proxy déjà une fois bon, pas besoin de le faire 2 fois
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, IMAGEAPI } from "@/helper/constants";
 import {
   APIdecorator,
   findConnectedUser,
@@ -151,7 +151,7 @@ async function imageGetter(
   let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
 
   // FIXME
-  let response = await ImageHelper.postBlob(imageBlob,"/api/image")
+  let response = await ImageHelper.postBlob(imageBlob,`${IMAGEAPI}`)
 
   let { data } = await response.json();
 

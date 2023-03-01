@@ -41,3 +41,6 @@ next-env.d.ts
 
 # Database migrations (don't do this in production)
 prisma/migrations
+
+# client uploads
+/public/uploads/

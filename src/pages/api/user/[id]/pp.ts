@@ -1,6 +1,4 @@
-// FIXME maybe a bad idea to proxy it like that
-// take too much time and if lots of defaults will re-download the same image
-// je proxy déjà une fois bon, pas besoin de le faire 2 fois
+// only recommended to use as Post request, GET is only for testing
 import { ApiResponse, HttpCodes, IMAGEAPI } from "@/helper/constants";
 import {
   APIdecorator,
@@ -26,14 +24,15 @@ async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  let imgServer = process.env.IMG_SERVER;
+  console.log(req.url, "url");
+  let URL = process.env.URL;
 
-  if (!imgServer) {
+  if (!URL) {
     let code = HttpCodes.INTERNAL_ERROR;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "env IMG_SERVER not set",
+      message: "env URL not set",
     });
     return;
   }
@@ -106,13 +105,15 @@ async function imageGetter(
 
     let imageBlob;
     try {
-      imageBlob = await ImageHelper.fetchImgById(user2.ppImage.imageId);
+      imageBlob = await fetch(`${URL}/api/image/${user2.ppImage.imageId}`).then(
+        (r) => r.blob()
+      );
     } catch (e: any) {
       let code = HttpCodes.NOT_FOUND;
       res.status(code).json({
         isError: true,
         status: code,
-        message: "Image not found\n" + e.message || "",
+        message: "Image not found\n" + e.message ?? "",
       });
       return;
     }
@@ -151,24 +152,31 @@ async function imageGetter(
   let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
 
   // FIXME
-  let response = await ImageHelper.postBlob(imageBlob,`${IMAGEAPI}`)
+  let response = await ImageHelper.postBlob(
+    imageBlob,
+    `${URL}${IMAGEAPI}?id=${id}&secret=${process.env.SECRET}`
+  );
 
   let { data } = await response.json();
+  console.log(data, "data");
 
-  let filename = data.split(".")[0];
+  if (typeof data !== "string") {
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "got weird response from image api",
+    });
+    return;
+  }
+
+  let filename = data as string;
 
   try {
     // HACK deleteMany so no need to check if image exists
     await prisma.ppImage.deleteMany({
       where: {
         userId: id,
-      },
-    });
-
-    await prisma.image.create({
-      data: {
-        id: filename,
-        userId: user,
       },
     });
 

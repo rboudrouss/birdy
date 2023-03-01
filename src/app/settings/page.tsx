@@ -35,12 +35,35 @@ export default function SettingsPage() {
 
 function ChangePP() {
   let [file, setFile] = useState<File | null>(null);
+  let [submitting, setSubmitting] = useState(false);
 
   let submit = async (e: any) => {
     e.preventDefault();
+    if (submitting) return;
     if (!file) return;
 
-    await ImageHelper.postBlob(file, `/api/user/${userService.userId}/pp`);
+    setSubmitting(true)
+    let resp = await ImageHelper.postBlob(
+      file,
+      `/api/user/${userService.userId}/pp`
+    );
+    setSubmitting(false)
+    if (resp.ok) {
+      alert("Profile picture changed!");
+      window.location.href = "/";
+    } else {
+      try {
+        await resp
+          .json()
+          .then((d) => {
+            if (d.message) alert(d.message);
+            console.error(d);
+          })
+          .catch(async () => {
+            console.error(await resp.text().catch(() => "binary data"));
+          });
+      } catch {}
+    }
   };
 
   return (
@@ -52,6 +75,7 @@ function ChangePP() {
         onChange={(e) => setFile(e.target.files && e.target.files[0])}
       />
       <button onClick={submit}>Submit</button>
+      {submitting && <p>Submitting...</p>}
     </form>
   );
 }

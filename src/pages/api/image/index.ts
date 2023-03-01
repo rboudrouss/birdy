@@ -9,12 +9,12 @@ import {
 import {
   APIdecorator,
   findConnectedUser,
+  isDigit,
   prisma,
 } from "@/helper/backendHelper";
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
-import ImageHelper from "@/helper/ImageHelper";
 import { randomUUID } from "crypto";
 
 const APIimageGetter = APIdecorator(
@@ -24,6 +24,7 @@ const APIimageGetter = APIdecorator(
 
 export default APIimageGetter;
 
+// TODO add support for multiple images
 async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
@@ -40,9 +41,22 @@ async function imageGetter(
   //   return;
   // }
 
-  const { cookies, method } = req;
+  const { cookies, method, query } = req;
 
-  let user = await findConnectedUser(cookies.session);
+  let user;
+
+  if (query.secret === process.env.SECRET) {
+    if (!isDigit(query.id)) {
+      let code = HttpCodes.BAD_REQUEST;
+      res.status(code).json({
+        isError: true,
+        status: code,
+        message: "no id",
+      });
+      return;
+    }
+    user = parseInt(query.id as string);
+  } else user = await findConnectedUser(cookies.session);
 
   if (user === -1) {
     let code = HttpCodes.FORBIDDEN;

@@ -3,7 +3,15 @@
 import { APIPost, APIUser } from "@/helper/APIwrapper";
 import userService from "@/helper/userService";
 import { useState } from "react";
+import { FaImage } from "react-icons/fa";
+import AvatarImg from "../AvatarImg/AvatarImg";
 import styles from "./PostForm.module.css";
+
+function color(length:number){
+  if (length > 256) return "red";
+  if (length > 230) return "orange";
+  return "black";
+}
 
 export default function PostForm(props: {
   parentPost: APIPost | null;
@@ -15,6 +23,8 @@ export default function PostForm(props: {
 
   const post = async (e: any) => {
     e.preventDefault();
+    if (!content || content.length > 256) return;
+
     if (props.parentPost) {
       let post = await props.parentPost.reply(
         content.trim(),
@@ -30,28 +40,45 @@ export default function PostForm(props: {
   return (
     <div className={styles.wrapper}>
       <a href={props.user.profileLink}>
-        <div className={styles.header}>
-          <img
-            src={props.user.avatarImg}
-            alt="Avatar"
+          <AvatarImg
+            url={props.user.avatarImg}
+            width={50}
+            height={50}
             className={styles.avatar}
           />
-          <div className={styles.name}>{props.user.username}</div>
-        </div>
       </a>
-      <form onSubmit={post}>
+      <div className={styles.form}>
         <textarea
           onChange={(e) => setContent(e.target.value)}
           name="content"
           placeholder="What's on your mind?"
+          className={styles.textarea}
         />
 
         <div className={styles.actions}>
-          <button type="submit" onClick={post}>
-            Post
-          </button>
+          <div>
+            <button
+              onClick={() => alert("Not implemented yet")}
+              className={styles.imgButton}
+            >
+              <FaImage />
+            </button>
+          </div>
+          <div>
+            {content.length > 200 && (
+              <span className={styles.error} style={{
+                color: color(content.length)
+              }}>
+                ({content.length}/256)
+              </span>
+            )
+              }
+            <button type="submit" onClick={post} className={styles.postButton} color="red">
+              Post
+            </button>
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

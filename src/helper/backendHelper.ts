@@ -107,6 +107,7 @@ export function APIdecorator<T>(
   };
 }
 
+// TODO make it retun null though
 // Return -1 if session not found
 export async function findConnectedUser(
   session: string | undefined | null

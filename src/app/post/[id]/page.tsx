@@ -9,7 +9,6 @@ import styles from "./page.module.css";
 
 export default function PostId({ params }: { params: { id: number } }) {
   let [post, setPost] = useState<APIPost | null>(null);
-  let [user, setUser] = useState<APIUser | null>(null);
 
   // TODO fetchs 2 times, find a better way
   useEffect(() => {
@@ -19,8 +18,10 @@ export default function PostId({ params }: { params: { id: number } }) {
       if (!data) {
         throw new Error(message);
       }
+      console.log(data, "data")
       setPost(new APIPost(data));
-      setUser(userService.getConnectedUser());
+      console.log(post, new APIPost(data), "post")
+      console.log(post?.replies, "replies")
     }
 
     getData();

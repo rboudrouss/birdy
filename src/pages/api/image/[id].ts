@@ -29,7 +29,6 @@ export default async function imageHandler(
   }
 
   try {
-    // var response = await fetch(imgServer + "/" + id + ".jpg");
     var response = await fetch(`/uploads/${id}`);
   } catch (e) {
     let code = HttpCodes.NOT_FOUND;

@@ -24,16 +24,6 @@ export async function followHandler(
   const userId = parseInt(query.id as string);
   const authorID = body.author as number;
 
-  if ((await findConnectedUser(cookies.session)) !== userId) {
-    let code = HttpCodes.FORBIDDEN;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "Unauthorized, not current connected User",
-    });
-    return;
-  }
-
   try {
     var u = await prisma.user.findUnique({
       where: {
@@ -53,6 +43,17 @@ export async function followHandler(
       .json({ isError: true, status: code, message: "Post not found" });
     return;
   }
+
+  if ((await findConnectedUser(cookies.session)) !== authorID) {
+    let code = HttpCodes.FORBIDDEN;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "Unauthorized, not current connected User",
+    });
+    return;
+  }
+
 
   try {
     var f = await prisma.follows.create({

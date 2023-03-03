@@ -17,23 +17,25 @@ export default function SettingsPage() {
 
       <h2>Account</h2>
       <Dropdown label="Change profile picture">
-        <div className={styles.profilePicture}>
-          <ChangePP />
-        </div>
+        <ChangeProfileImg className={styles.profilePicture} type="pp" />
       </Dropdown>
 
-      <Dropdown label="Change profile or password">
+      <Dropdown label="Change profile cover">
+        <ChangeProfileImg className={styles.profilePicture} type="cover" />
+      </Dropdown>
+
+      <Dropdown label="Change profile or password" >
         <ChangeProfile />
       </Dropdown>
 
-      {/* <Dropdown label="Delete account">
-        <h2>TODO</h2>
-      </Dropdown> */}
+      <Dropdown label="Delete account // TODO" isOpen={true}>
+        <h2 color="red">TODO</h2>
+      </Dropdown>
     </div>
   );
 }
 
-function ChangePP() {
+function ChangeProfileImg(props: { type: "cover" | "pp"; className?: string }) {
   let [file, setFile] = useState<File | null>(null);
   let [submitting, setSubmitting] = useState(false);
 
@@ -42,12 +44,12 @@ function ChangePP() {
     if (submitting) return;
     if (!file) return;
 
-    setSubmitting(true)
+    setSubmitting(true);
     let resp = await ImageHelper.postBlob(
       file,
-      `/api/user/${userService.userId}/pp`
+      `/api/user/${userService.userId}/profile?type=${props.type}`
     );
-    setSubmitting(false)
+    setSubmitting(false);
     if (resp.ok) {
       alert("Profile picture changed!");
       window.location.href = "/";
@@ -67,7 +69,7 @@ function ChangePP() {
   };
 
   return (
-    <form onSubmit={submit}>
+    <div className={`${styles.chageImgDiv} ${props.className}`}>
       <input
         type="file"
         name="file"
@@ -76,7 +78,7 @@ function ChangePP() {
       />
       <button onClick={submit}>Submit</button>
       {submitting && <p>Submitting...</p>}
-    </form>
+    </div>
   );
 }
 

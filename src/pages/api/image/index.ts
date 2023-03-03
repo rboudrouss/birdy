@@ -88,7 +88,7 @@ async function imageGetter(
     res.status(code).json({
       isError: true,
       status: code,
-      message: "no jpg image or no extension",
+      message: "no supported image or no extension",
     });
     return;
   }

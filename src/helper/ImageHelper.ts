@@ -30,7 +30,7 @@ function getBlobfrom64(base64: string) {
 
 async function postBlob(blob:Blob | File, url:string){
   let data = new FormData();
-  data.append("file", blob, "image.jpg")
+  data.append("file", blob)
   let response = await fetch(url,{
     method: "POST",
     body: data

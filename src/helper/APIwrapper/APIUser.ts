@@ -8,6 +8,7 @@ import {
   postImages,
   coverImage,
   ppImage,
+  Follows,
 } from "@prisma/client";
 import { defaultAvatarUrl, USERAPI } from "../constants";
 import { fetchWrapper } from "../fetchwrapper";
@@ -27,8 +28,8 @@ export class APIUser {
   password: string | null;
   username: string;
   bio: string | null;
-  posts: APIPost[] | null;
-  likes: number[] | null;
+  posts: APIPost[];
+  likes: number[];
   nbFollowers: number;
   nbFollowing: number;
   nbLikes: number;
@@ -36,15 +37,19 @@ export class APIUser {
   postsImages: string[];
   ppImage?: string;
   coverImage?: string;
+  followers: number[];
+  following: number[];
 
   constructor(
-    u: (User | UserWithoutPass) & {
+    u: (User | UserWithoutPass | APIUser) & {
       posts?: Post[] | null;
       likes?: Likes[] | number[] | null;
       images?: Image[] | string[] | null;
       postsImages?: postImages[] | string[] | null;
       ppImage?: ppImage | string | null;
       coverImage?: coverImage | string | null;
+      followers?: Follows[] | number[] | null;
+      following?: Follows[] | number[] | null;
     }
   ) {
     this.id = u.id;
@@ -52,8 +57,7 @@ export class APIUser {
     this.password = u.password;
     this.username = u.username;
     this.bio = u.bio ?? null;
-    this.posts = u.posts?.map((post) => new APIPost(post)) ?? null;
-    this.likes = u.likes?.map((like: any) => like.postId ?? like) ?? null;
+    this.likes = u.likes?.map((like: any) => like.postId ?? like) ?? [];
     this.nbFollowers = u.nbFollowers;
     this.nbFollowing = u.nbFollowing;
     this.nbLikes = u.nbLikes;
@@ -61,6 +65,15 @@ export class APIUser {
     this.postsImages = u.postsImages?.map((i: any) => i.imageId ?? i) ?? [];
     this.ppImage = (u.ppImage as any)?.imageId ?? u.ppImage ?? null;
     this.coverImage = (u.coverImage as any)?.imageid ?? u.coverImage ?? null;
+    this.followers = u.followers?.map((f: any) => f.followerId ?? f) ?? [];
+    this.following = u.following?.map((f: any) => f.followingId ?? f) ?? [];
+    this.posts =
+      u.posts
+        ?.map((post) => new APIPost(post))
+        .map((post) => {
+          post.author = this;
+          return post;
+        }) ?? [];
     if (
       [
         this.id,
@@ -70,7 +83,7 @@ export class APIUser {
         this.nbLikes,
       ].some((e) => isNaN(e) || !Number.isInteger(e))
     )
-      throw new Error("Got a NaN or not a number in APIUser declaration");
+      console.error("Got a NaN or not a number in APIUser declaration");
   }
 
   public get profileLink(): string {
@@ -144,7 +157,7 @@ export class APIUser {
     this.postsImages = u.postsImages;
     this.ppImage = u.ppImage;
     this.coverImage = u.coverImage;
-    
+
     return this;
   }
 

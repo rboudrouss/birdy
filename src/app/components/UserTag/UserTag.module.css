@@ -1,0 +1,27 @@
+.userTag{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.username{
+  font-weight: 600;
+  color: #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.textDiv{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.replyToText,
+.dateText
+{
+  color: rgb(97, 97, 97);
+  font-size: 0.8em;
+}

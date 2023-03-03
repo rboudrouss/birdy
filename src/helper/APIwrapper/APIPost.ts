@@ -20,22 +20,30 @@ export class APIPost {
 
   constructor(
     p: Post & {
-      author?: User | null;
+      author?: User | APIUser | null;
       replies?: Post[] | null;
       replyTo?: Post | null;
       images?: postImages[] | string[] | null;
+      createdAt: Date | string;
     }
   ) {
     this.id = p.id;
-    this.createdAt = p.createdAt;
+    this.createdAt = new Date(p.createdAt);
     this.content = p.content;
     this.authorId = p.authorId;
     this.replyId = p.replyId;
     this.author = (p.author && new APIUser(p.author)) ?? null;
-    this.replies = p.replies?.map((reply) => new APIPost(reply)) ?? null;
     this.nbLikes = p.nbLikes;
     this.nbReplies = p.nbReplies;
     this.images = p.images?.map((i: any) => i.imageId ?? i) ?? [];
+    this.replyTo = p.replyTo ? new APIPost(p.replyTo) : null;
+    this.replies =
+      p.replies
+        ?.map((reply) => new APIPost(reply))
+        .map((reply) => {
+          reply.replyTo = this;
+          return reply;
+        }) ?? [];
     if (
       [this.id, this.replyId ?? 0, this.nbLikes, this.nbReplies].some(
         (e) => isNaN(e) || !Number.isInteger(e)
@@ -44,7 +52,6 @@ export class APIPost {
       throw new Error(
         "APIPost.constructor: got an invalid number in APIPost initialisation"
       );
-    this.replyTo = p.replyTo ? new APIPost(p.replyTo) : null;
   }
 
   public get postLink(): string {

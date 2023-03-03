@@ -7,14 +7,49 @@
   outline: solid gray 1px;
 }
 
+.userDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.delete{
+  margin: 10px;
+  padding-right: 5px;
+  color:inherit;
+  background-color: inherit;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete:hover{
+  color: red;
+}
+
+.all{
+  width: 100%;
+}
+
+.postLink{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.julesDiv{
+  display: flex;
+}
+
 .username {
   padding: 5px;
   font-weight: bold;
 }
 
-.content,
-.username {
-  padding: 5px;
+.contentDiv{
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
 }
 
 .content {
@@ -40,4 +75,19 @@
   flex-direction: row;
   align-items: center;
   padding-bottom: 5px;
+}
+
+.buttonDiv>button{
+  outline: none;
+  border: none;
+  background-color: inherit;
+  color: inherit;
+  width: 2rem;
+}
+
+.responseSpace{
+  width: 12%;
+  height: 100%;
+  background-color: black;
+  color:black;
 }

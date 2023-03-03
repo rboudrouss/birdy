@@ -15,7 +15,10 @@ const APIimageGetter = APIdecorator(
   imageGetter,
   ["POST", "GET"], // formater hack
   null,
-  { id: isDigit }
+  {
+    id: isDigit,
+    type: (s) => typeof s === "string" || typeof s === "undefined",
+  }
 );
 
 export default APIimageGetter;
@@ -24,7 +27,6 @@ async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  console.log(req.url, "url");
   let URL = process.env.URL;
 
   if (!URL) {
@@ -40,7 +42,9 @@ async function imageGetter(
   const { cookies, method, query } = req;
 
   const id = parseInt(query.id as string);
+  const type = query.type as string | undefined;
 
+  // Verify if user exists
   try {
     var userObj = await prisma.user.findUnique({
       where: {
@@ -70,6 +74,7 @@ async function imageGetter(
     return;
   }
 
+  // <!> Deprecated
   if (method === "GET") {
     try {
       var user2 = await prisma.user.findUnique({
@@ -123,6 +128,7 @@ async function imageGetter(
     res.end(Buffer.from(await imageBlob.arrayBuffer()));
   }
 
+  // TODO Try catch this thing
   let user = await findConnectedUser(cookies.session);
 
   if (user !== id) {
@@ -158,7 +164,6 @@ async function imageGetter(
   );
 
   let { data } = await response.json();
-  console.log(data, "data");
 
   if (typeof data !== "string") {
     let code = HttpCodes.INTERNAL_ERROR;
@@ -172,15 +177,20 @@ async function imageGetter(
 
   let filename = data as string;
 
+  let prismaInstance;
+  if (type === "cover") prismaInstance = prisma.coverImage;
+  else prismaInstance = prisma.ppImage;
+
   try {
-    // HACK deleteMany so no need to check if image exists
-    await prisma.ppImage.deleteMany({
+    // deleteMany so no need to check if image exists (doesn't raise error)
+    await prismaInstance.deleteMany({
       where: {
         userId: id,
       },
     });
 
-    await prisma.ppImage.create({
+    // HACK any mais trop relou de typer ça correctement
+    await (prismaInstance as any).create({
       data: {
         userId: id,
         imageId: filename,

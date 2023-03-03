@@ -23,16 +23,28 @@ async function postHandler(
         id: parseInt(query.id as string),
       },
       include: {
-        author: true,
+        author: {
+          include: {
+            ppImage: true,
+          },
+        },
         likes: true,
         replies: {
           include: {
-            author: true,
+            author: {
+              include: {
+                ppImage: true,
+              },
+            },
           },
         },
         replyTo: {
           include: {
-            author: true,
+            author: {
+              include: {
+                ppImage: true,
+              },
+            },
           },
         },
         images: true,

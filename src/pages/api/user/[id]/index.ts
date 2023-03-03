@@ -39,8 +39,16 @@ async function userHandler(
       },
       include: {
         posts: {
+          orderBy: {
+            createdAt: "desc",
+          },
           include: {
             images: true,
+            replyTo: {
+              include: {
+                author: true,
+              },
+            },
           },
         },
         followers: true,

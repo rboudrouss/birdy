@@ -2,7 +2,6 @@
 
 import styles from "./NavBar.module.css";
 import cookieWrapper from "@/helper/cookiewrapper";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import userService from "@/helper/userService";
 

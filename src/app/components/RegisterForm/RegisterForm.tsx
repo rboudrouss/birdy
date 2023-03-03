@@ -15,7 +15,6 @@ export default function RegisterForm(props: { url?: string }) {
 
   const register = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log({email, passw, bio, username})
     if (props.url)
       fetchWrapper.put(props.url, {
         email,

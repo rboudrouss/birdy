@@ -4,7 +4,6 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  console.log(req.headers);
   res.status(200).json({ request: JSON.stringify(req, censor(req)) });
 }
 

@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <h1>helloow</h1>
+      <h1>Home</h1>
       <PostForm parentPost={null} user={user} />
       {posts.map((post, i) => (
         <PostComp data={post} key={i} />

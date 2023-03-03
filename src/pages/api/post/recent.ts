@@ -17,6 +17,7 @@ const APIPostList = APIdecorator(
   {
     n: false, // false here means facultatif
     skip: false,
+    replies: false,
   }
 );
 export default APIPostList;
@@ -31,9 +32,10 @@ export async function postList(
   const n = isDigit(query.n as string)
     ? parseInt(query.n as string)
     : DEFAULT_N;
-  let skip = isDigit(query.start as string)
+  let skip = isDigit(query.skip as string)
     ? parseInt(query.skip as string)
     : undefined;
+  let replies = !!query.replies;
 
   if ((await findConnectedUser(req.cookies.session)) === -1) {
     let code = HttpCodes.FORBIDDEN;
@@ -54,13 +56,20 @@ export async function postList(
 
   try {
     var p = await prisma.post.findMany({
+      where: {
+        replyId: replies ? { not: null } : null,
+      },
       ...requestobj,
       orderBy: {
         createdAt: "desc",
       },
       include: {
         // FIXME do not send the password
-        author: true,
+        author: {
+          include: {
+            ppImage: true,
+          },
+        },
       },
     });
   } catch (e: any) {

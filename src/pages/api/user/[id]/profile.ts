@@ -1,5 +1,5 @@
 // only recommended to use as Post request, GET is only for testing
-import { ApiResponse, HttpCodes, IMAGEAPI } from "@/helper/constants";
+import { ApiResponse, HttpCodes, IMAGEAPI, IMGEXT, UPLOADFOLDER } from "@/helper/constants";
 import {
   APIdecorator,
   findConnectedUser,
@@ -10,6 +10,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
 import ImageHelper from "@/helper/ImageHelper";
+import { randomUUID } from "crypto";
 
 const APIimageGetter = APIdecorator(
   imageGetter,
@@ -145,43 +146,34 @@ async function imageGetter(
 
   let image = Object.values(result.files)[0] as formidable.File | undefined;
 
-  if (!image) {
+  let extension = image?.originalFilename?.split(".")[1] ?? "";
+
+  if (!image || !IMGEXT.includes(extension)) {
     let code = HttpCodes.BAD_REQUEST;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "no image",
+      message: "no supported image or no extension",
     });
     return;
   }
 
-  let imageBlob = new Blob([fs.readFileSync(image.filepath)]);
+  let filename = `${randomImgName()}.${extension}`;
 
-  // FIXME
-  let response = await ImageHelper.postBlob(
-    imageBlob,
-    `${URL}${IMAGEAPI}?id=${id}&secret=${process.env.SECRET}`
-  );
-
-  let { data } = await response.json();
-
-  if (typeof data !== "string") {
-    let code = HttpCodes.INTERNAL_ERROR;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "got weird response from image api",
-    });
-    return;
-  }
-
-  let filename = data as string;
+  fs.renameSync(image.filepath, `${UPLOADFOLDER}/${filename}`);
 
   let prismaInstance;
   if (type === "cover") prismaInstance = prisma.coverImage;
   else prismaInstance = prisma.ppImage;
 
   try {
+    await prisma.image.create({
+      data: {
+        id: filename,
+        userId: user,
+      },
+    });
+
     // deleteMany so no need to check if image exists (doesn't raise error)
     await prismaInstance.deleteMany({
       where: {
@@ -234,4 +226,11 @@ function parseForm(
       resolve({ fields, files });
     });
   });
+}
+
+
+function randomImgName() {
+  return `${randomUUID().split("-").join("")}${Date.now()
+    .toString(16)
+    .slice(-4)}`;
 }

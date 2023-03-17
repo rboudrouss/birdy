@@ -1,5 +1,12 @@
 // only recommended to use as Post request, GET is only for testing
-import { ApiResponse, HttpCodes, IMAGEAPI, IMGEXT, UPLOADFOLDER } from "@/helper/constants";
+import {
+  ApiResponse,
+  HttpCodes,
+  IMAGEAPI,
+  IMGEXT,
+  MAXIMGSIZE,
+  UPLOADFOLDER,
+} from "@/helper/constants";
 import {
   APIdecorator,
   findConnectedUser,
@@ -217,7 +224,11 @@ function parseForm(
   req: NextApiRequest
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
   return new Promise((resolve, reject) => {
-    const form = new formidable.IncomingForm({ multiples: true });
+    const form = new formidable.IncomingForm({
+      multiples: true,
+      maxFileSize: MAXIMGSIZE,
+      uploadDir: UPLOADFOLDER,
+    });
     form.parse(req, (err, fields, files) => {
       if (err) {
         reject(err);
@@ -227,7 +238,6 @@ function parseForm(
     });
   });
 }
-
 
 function randomImgName() {
   return `${randomUUID().split("-").join("")}${Date.now()

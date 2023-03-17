@@ -8,15 +8,19 @@ import userService from "@/helper/userService";
 import cookieWrapper from "@/helper/cookiewrapper";
 import PostForm from "../PostForm/PostForm";
 import { UserTag } from "../UserTag/UserTag";
+import SurePopUp from "../PopUp/SurePopUp";
 
 export default function PostComp(props: {
   data: APIPost;
   showReply?: boolean;
   className?: string;
+  showShowMore?: boolean;
 }) {
   let post = props.data;
   const [liked, setLiked] = useState(false);
   const [showReply, setShowReply] = useState(props.showReply || false);
+  const [showPopUp, setShowPopUp] = useState(false);
+
 
   useEffect(() => {
     setLiked(userService.isPostLiked(props.data.id));
@@ -46,50 +50,65 @@ export default function PostComp(props: {
 
   const deleteHandler = async (e: any) => {
     e.preventDefault();
+    setShowPopUp(false);
     await post.delete();
-    window.location.reload();
+    window.location.href = "/";
+  };
+
+  const clickDelete = (e: any) => {
+    e.preventDefault();
+    setShowPopUp(true);
   };
 
   return (
     <div className={`${props.className} ${styles.all}`}>
+      {showPopUp && (
+        <SurePopUp onYes={deleteHandler} onClose={() => setShowPopUp(false)} />
+      )}
       <a href={props.data.postLink}>
         <div className={styles.julesDiv}>
-        {props.data.replyId && <div className={styles.responseSpace}>
-          <div></div>
-          </div>}
+          {props.data.replyId && (
+            <div className={styles.responseSpace}>
+              <div className={styles.responseBar}></div>
+            </div>
+          )}
 
-        <article className={styles.wrapper}>
-          <div className={styles.userDiv}>
-            <UserTag post={props.data} className={styles.userTag} />
-            {userService.userId == props.data.author?.id ? (
-              <button onClick={deleteHandler} className={styles.delete}>
-                {/* Delete */}
-                <FaTrash />
+          <article className={styles.wrapper}>
+            <div className={styles.userDiv}>
+              <UserTag post={props.data} className={styles.userTag} />
+              {userService.userId == props.data.author?.id ? (
+                <>
+                  <button onClick={clickDelete} className={styles.delete}>
+                    {/* Delete */}
+                    <FaTrash />
+                  </button>
+                </>
+              ) : (
+                <div />
+              )}
+            </div>
+            <div className={styles.contentDiv}>
+              <span className={styles.content}>
+                {props.data.content.trim()}
+              </span>
+            </div>
+            <div className={styles.buttonDiv}>
+              <button onClick={replyHandler}>
+                {/* Comment */}
+                <p>{props.data.nbReplies}</p>
+                <FaComment />
               </button>
-            ) : (
-              <div />
-            )}
-          </div>
-          <div className={styles.contentDiv}>
-            <span className={styles.content}>{props.data.content.trim()}</span>
-          </div>
-          <div className={styles.buttonDiv}>
-            <button onClick={replyHandler}>
-              {/* Comment */}
-              <p>{props.data.nbReplies}</p>
-              <FaComment />
-            </button>
-            <button onClick={likeHandler}>
-              {/* Like */}
-              <p>{props.data.nbLikes}</p>
-              <FaHeart color={liked ? "red" : "black"} />
-            </button>
-            <button>
-              {/* Share Link */}
-              <FaLink />
-            </button>
-          </div>
-        </article>
+              <button onClick={likeHandler}>
+                {/* Like */}
+                <p>{props.data.nbLikes}</p>
+                <FaHeart color={liked ? "red" : "black"} />
+              </button>
+              <button>
+                {/* Share Link */}
+                <FaLink />
+              </button>
+            </div>
+          </article>
         </div>
       </a>
       {showReply && (

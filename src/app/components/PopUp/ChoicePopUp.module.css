@@ -1,0 +1,29 @@
+.btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btns > button {
+  width: 33%;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  outline: 1px solid black;
+}
+
+.noBtn {
+  background-color: inherit;
+}
+
+.yesBtn {
+  background-color: #f44336;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

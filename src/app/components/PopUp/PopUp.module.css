@@ -1,0 +1,27 @@
+.popUp{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 5px;
+    min-width: 30%;
+    min-height: none;
+
+    max-width: 60%;
+    max-height: 60%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.content{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btns{
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px;
+}

@@ -28,7 +28,15 @@ async function postHandler(
             ppImage: true,
           },
         },
-        likes: true,
+        likes: {
+          include: {
+            user: {
+              include: {
+                ppImage: true,
+              },
+            },
+          },
+        },
         replies: {
           include: {
             author: {

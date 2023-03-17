@@ -1,10 +1,26 @@
 .wrapper {
   width: 100%;
-  margin: 2.5px 5px;
   padding: 10px;
   display: flex;
   flex-direction: column;
+}
+
+.julesDiv{
+  display: flex;
   outline: solid gray 1px;
+  margin: 2.5px 5px;
+}
+
+.responseSpace{
+  width: 12%;
+  display: flex;
+  justify-content: center;
+}
+
+.responseBar{
+  width: 10%;
+  height: 100%;
+  background-color: #000;
 }
 
 .userDiv{
@@ -35,10 +51,6 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-}
-
-.julesDiv{
-  display: flex;
 }
 
 .username {
@@ -83,11 +95,4 @@
   background-color: inherit;
   color: inherit;
   width: 2rem;
-}
-
-.responseSpace{
-  width: 12%;
-  height: 100%;
-  background-color: black;
-  color:black;
 }

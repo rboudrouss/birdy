@@ -9,7 +9,7 @@ export default function SurePopUp(props: {
   className?: string;
   showCloseBtn?: boolean;
 }) {
-  let text = props.text ?? "Are you sure?";
+  let text = props.text ?? "Êtes vous sûr.e ?";
   return (
     <ChoicePopUp
       className={props.className}

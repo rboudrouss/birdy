@@ -5,7 +5,14 @@
   flex-direction: column;
 }
 
+.all{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .julesDiv{
+  width: 100%;
   display: flex;
   outline: solid gray 1px;
   margin: 2.5px 5px;
@@ -43,15 +50,6 @@
   color: red;
 }
 
-.all{
-  width: 100%;
-}
-
-.postLink{
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-}
 
 .username {
   padding: 5px;
@@ -89,10 +87,36 @@
   padding-bottom: 5px;
 }
 
-.buttonDiv>button{
+.buttonDiv button{
   outline: none;
   border: none;
   background-color: inherit;
   color: inherit;
   width: 2rem;
+}
+
+
+.buttonDiv button:hover{
+  cursor: pointer;
+  filter: invert(50%);
+}
+
+.likesDiv{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+}
+
+.showLikes{
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.nbLikesText{
+  cursor: pointer;
+}
+
+.nbLikesText:hover{
+  text-decoration: underline;
 }

@@ -67,9 +67,9 @@ function FollowButton(props: { user: APIUser }) {
       <button
         className={styles.followButton}
         onClick={async () => {
+          setIsFollow(true);
           await props.user.follow(id);
           userService.updateConnectedUser();
-          setIsFollow(true);
         }}
       >
         Follow
@@ -80,9 +80,9 @@ function FollowButton(props: { user: APIUser }) {
     <button
       className={styles.followButton}
       onClick={async () => {
+        setIsFollow(false);
         await props.user.unfollow(id);
         userService.updateConnectedUser();
-        setIsFollow(false);
       }}
     >
       Unfollow

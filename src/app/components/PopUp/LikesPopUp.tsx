@@ -11,7 +11,7 @@ export default function LikesPopUp(props: {
   return <PopUp onClose={props.onClose} className={`${props.className ?? ''} ${styles.popUp}`}>
     <div className="">
       {props.Users.map((user, i) => (
-        <div key={i} className={styles.userElement}>
+        <div key={i} className={styles.userElement} onClick={() => {window.location.href = user.profileLink}}>
           <AvatarImg url={user.avatarImg} width={30} height={30} />
           <span className={styles.usernameText}>{user.username}</span>
         </div>

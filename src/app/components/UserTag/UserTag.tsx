@@ -40,9 +40,46 @@ export function UserTag(
             reply to {post?.replyTo.author.username}
           </span>
         )}
-          {post?.createdAt && (<span className={styles.dateText}>{post.createdAt.toDateString().slice(4, 10)}
-            </span>)}
+        {post?.createdAt && (
+          <span className={styles.dateText}>{timeSince(post.createdAt)}</span>
+        )}
       </div>
     </a>
   );
+}
+function timeSince(date: Date) {
+  var seconds = Math.floor((Date.now() - (date as any)) / 1000);
+
+  let interval = seconds / 86400;
+  if (interval > 3) {
+    return date.toDateString().slice(4, 10);
+  }
+
+  if (interval > 2) {
+    return "2 days ago";
+  }
+
+  if (interval > 1) {
+    return "yesterday";
+  }
+
+  interval = seconds / 3600;
+  if (interval > 2) {
+    return Math.floor(interval) + " hours ago";
+  }
+
+  if (interval > 1) {
+    return "an hour ago";
+  }
+
+  interval = seconds / 60;
+  if (interval > 2) {
+    return Math.floor(interval) + " minutes ago";
+  }
+
+  if (interval > 1) {
+    return "a minute ago";
+  }
+
+  return Math.floor(seconds) + " seconds ago";
 }

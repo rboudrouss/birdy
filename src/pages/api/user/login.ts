@@ -77,5 +77,7 @@ export async function loginHandler(
 }
 
 function generateSession(id: number) {
-  return `${randomBytes(5).toString("hex")}${Date.now().toString(16)}${id.toString(16)}`;
+  return `${randomBytes(5).toString("hex")}${Date.now().toString(
+    16
+  )}${id.toString(16)}`;
 }

@@ -54,7 +54,6 @@ export async function followHandler(
     return;
   }
 
-
   try {
     var f = await prisma.follows.create({
       data: {

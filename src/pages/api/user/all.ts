@@ -3,10 +3,7 @@ import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { APIdecorator, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const APIUserAll = APIdecorator(
-  userAll,
-  ["GET"]
-)
+const APIUserAll = APIdecorator(userAll, ["GET"]);
 export default APIUserAll;
 
 export async function userAll(

@@ -6,16 +6,16 @@ import type { Image } from "@prisma/client";
 const APIImageAll = APIdecorator(
   imageAll,
   ["GET"] // formater hack
-)
+);
 export default APIImageAll;
 
 async function imageAll(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Image[]>>
-){
+) {
   try {
     var images = await prisma.image.findMany();
-  } catch (e:any) {
+  } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;
     res.status(code).json({
       isError: true,

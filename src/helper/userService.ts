@@ -31,7 +31,9 @@ async function updateConnectedUser() {
   let user = getConnectedUser() as APIUser;
   localStorage.setItem(
     "User",
-      JSON.stringify((await fetchWrapper.get<UserWithoutPass>(user?.apiLink)).data)
+    JSON.stringify(
+      (await fetchWrapper.get<UserWithoutPass>(user?.apiLink)).data
+    )
   );
 }
 
@@ -67,10 +69,7 @@ async function login(email: string, password: string): Promise<void> {
     .then((u) => {
       // TODO set session cookie
       Cookies.set("session", u.data.session, { expires: 7 });
-      localStorage.setItem(
-        "User",
-        JSON.stringify(u.data.user)
-      ); // TODO make a real connection token
+      localStorage.setItem("User", JSON.stringify(u.data.user)); // TODO make a real connection token
       console.log("Logged in !");
       window.location.href = "/";
     });

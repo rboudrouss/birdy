@@ -40,8 +40,10 @@ export default function PostComp(props: {
     }
     setLiked(!liked);
     userService.updateConnectedUser();
-    if(liked){
-      post.likesUsers = post.likesUsers.filter(user => user.id !== userService.userId);
+    if (liked) {
+      post.likesUsers = post.likesUsers.filter(
+        (user) => user.id !== userService.userId
+      );
     } else {
       post.likesUsers.push(userService.getConnectedUser() as APIUser);
     }

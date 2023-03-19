@@ -24,7 +24,7 @@ export default function SettingsPage() {
         <ChangeProfileImg className={styles.profilePicture} type="cover" />
       </Dropdown>
 
-      <Dropdown label="Change profile or password" >
+      <Dropdown label="Change profile or password">
         <ChangeProfile />
       </Dropdown>
 
@@ -69,7 +69,7 @@ function ChangeProfileImg(props: { type: "cover" | "pp"; className?: string }) {
   };
 
   return (
-    <div className={`${styles.chageImgDiv} ${props.className ?? ''}`}>
+    <div className={`${styles.chageImgDiv} ${props.className ?? ""}`}>
       <input
         type="file"
         name="file"

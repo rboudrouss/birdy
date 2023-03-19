@@ -3,7 +3,7 @@ const ImageHelper = {
   getBlobfrom64,
   postBlob,
   fetchBlob,
-  fetchImgById
+  fetchImgById,
 };
 export default ImageHelper;
 
@@ -28,20 +28,20 @@ function getBlobfrom64(base64: string) {
   return new Blob([u8arr], { type: mime });
 }
 
-async function postBlob(blob:Blob | File, url:string){
+async function postBlob(blob: Blob | File, url: string) {
   let data = new FormData();
-  data.append("file", blob)
-  let response = await fetch(url,{
+  data.append("file", blob);
+  let response = await fetch(url, {
     method: "POST",
-    body: data
-  })
+    body: data,
+  });
   return response;
 }
 
-async function fetchBlob(url:string){
-  return await fetch(url).then((r) => r.blob())
+async function fetchBlob(url: string) {
+  return await fetch(url).then((r) => r.blob());
 }
 
-async function fetchImgById(id:string, server?:string){
-  return await fetchBlob(`${server ?? process.env.IMG_SERVER ?? ""}/${id}.jpg`)
+async function fetchImgById(id: string, server?: string) {
+  return await fetchBlob(`${server ?? process.env.IMG_SERVER ?? ""}/${id}.jpg`);
 }

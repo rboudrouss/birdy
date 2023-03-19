@@ -5,58 +5,57 @@
   flex-direction: column;
 }
 
-.all{
+.all {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.julesDiv{
+.julesDiv {
   width: 100%;
   display: flex;
   outline: solid gray 1px;
   margin: 2.5px 5px;
 }
 
-.responseSpace{
+.responseSpace {
   width: 12%;
   display: flex;
   justify-content: center;
 }
 
-.responseBar{
+.responseBar {
   width: 10%;
   height: 100%;
   background-color: #000;
 }
 
-.userDiv{
+.userDiv {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.delete{
+.delete {
   margin: 10px;
   padding-right: 5px;
-  color:inherit;
+  color: inherit;
   background-color: inherit;
   outline: none;
   border: none;
   cursor: pointer;
 }
 
-.delete:hover{
+.delete:hover {
   color: red;
 }
-
 
 .username {
   padding: 5px;
   font-weight: bold;
 }
 
-.contentDiv{
+.contentDiv {
   display: flex;
   flex-direction: row;
   padding: 10px;
@@ -73,21 +72,21 @@
   justify-content: space-around;
 }
 
-.avatar{
+.avatar {
   width: 25px;
   border-radius: 50%;
   background-color: #f5f5f5;
   margin: 0 5px;
 }
 
-.header{
+.header {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding-bottom: 5px;
 }
 
-.buttonDiv button{
+.buttonDiv button {
   outline: none;
   border: none;
   background-color: inherit;
@@ -95,28 +94,27 @@
   width: 2rem;
 }
 
-
-.buttonDiv button:hover{
+.buttonDiv button:hover {
   cursor: pointer;
   filter: invert(50%);
 }
 
-.likesDiv{
+.likesDiv {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 5px;
 }
 
-.showLikes{
+.showLikes {
   padding: 5px 0;
   cursor: pointer;
 }
 
-.nbLikesText{
+.nbLikesText {
   cursor: pointer;
 }
 
-.nbLikesText:hover{
+.nbLikesText:hover {
   text-decoration: underline;
 }

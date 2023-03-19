@@ -64,8 +64,8 @@ export async function postList(
       orderBy: {
         createdAt: "desc",
       },
-        // FIXME do not send the password
-      include: allPostInfoPrisma
+      // FIXME do not send the password
+      include: allPostInfoPrisma,
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;

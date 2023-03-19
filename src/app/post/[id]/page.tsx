@@ -18,10 +18,10 @@ export default function PostId({ params }: { params: { id: number } }) {
       if (!data) {
         throw new Error(message);
       }
-      console.log(data, "data")
+      console.log(data, "data");
       setPost(new APIPost(data));
-      console.log(post, new APIPost(data), "post")
-      console.log(post?.replies, "replies")
+      console.log(post, new APIPost(data), "post");
+      console.log(post?.replies, "replies");
     }
 
     getData();
@@ -32,7 +32,9 @@ export default function PostId({ params }: { params: { id: number } }) {
       {/* Reply to (le post auquel le post principale répon) */}
       {post && post.replyId && <PostComp data={post.replyTo as APIPost} />}
       {/* post principale */}
-      <div className={styles.mainPost}>{post && <PostComp data={post} showReply={true} />}</div>
+      <div className={styles.mainPost}>
+        {post && <PostComp data={post} showReply={true} />}
+      </div>
       {/* les réponses */}
       {post &&
         post.replies?.map((reply, i) => <PostComp data={reply} key={i} />)}

@@ -7,18 +7,24 @@ export default function handler(
   res.status(200).json({ request: JSON.stringify(req, censor(req)) });
 }
 
-function censor(censor:any) {
+function censor(censor: any) {
   var i = 0;
-  
-  return function(key:any, value:any) {
-    if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && censor == value) 
-      return '[Circular]'; 
-    
-    if(i >= 29) // seems to be a harded maximum of 30 serialized objects?
-      return '[Unknown]';
-    
+
+  return function (key: any, value: any) {
+    if (
+      i !== 0 &&
+      typeof censor === "object" &&
+      typeof value == "object" &&
+      censor == value
+    )
+      return "[Circular]";
+
+    if (i >= 29)
+      // seems to be a harded maximum of 30 serialized objects?
+      return "[Unknown]";
+
     ++i; // so we know we aren't using the original object anymore
-    
-    return value;  
-  }
+
+    return value;
+  };
 }

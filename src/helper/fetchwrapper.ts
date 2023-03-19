@@ -67,7 +67,7 @@ async function handleResponse<T>(
     ) {
       // if we are in the browser
       // auto logout if 401 response returned from api
-      console.log(error)
+      console.log(error);
       alert("You are not authorized to do this action");
       userService.logout();
       window.location.href = "/login";

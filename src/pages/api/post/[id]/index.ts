@@ -1,7 +1,12 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
-import { APIdecorator, prisma, isDigit, allPostInfoPrisma } from "@/helper/backendHelper";
+import {
+  APIdecorator,
+  prisma,
+  isDigit,
+  allPostInfoPrisma,
+} from "@/helper/backendHelper";
 
 const APIpostHander = APIdecorator(
   postHandler,
@@ -26,10 +31,10 @@ async function postHandler(
       include: {
         ...allPostInfoPrisma,
         replies: {
-          include: allPostInfoPrisma
+          include: allPostInfoPrisma,
         },
         replyTo: {
-          include: allPostInfoPrisma
+          include: allPostInfoPrisma,
         },
       },
     });

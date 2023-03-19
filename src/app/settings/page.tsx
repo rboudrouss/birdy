@@ -69,7 +69,7 @@ function ChangeProfileImg(props: { type: "cover" | "pp"; className?: string }) {
   };
 
   return (
-    <div className={`${styles.chageImgDiv} ${props.className}`}>
+    <div className={`${styles.chageImgDiv} ${props.className ?? ''}`}>
       <input
         type="file"
         name="file"

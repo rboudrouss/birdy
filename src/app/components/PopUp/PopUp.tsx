@@ -9,7 +9,7 @@ export default function PopUp(props: {
 }) {
   let showCloseBtn = props.showCloseBtn ?? true;
   return (
-    <div className={`${props.className} ${styles.popUp}`}>
+    <div className={`${props.className ?? ''} ${styles.popUp}`}>
       <div className={styles.btns}>
         {showCloseBtn && (
           <div className={styles.closeBtn} onClick={props.onClose}>

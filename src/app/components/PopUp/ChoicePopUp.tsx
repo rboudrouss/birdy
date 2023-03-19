@@ -20,10 +20,10 @@ export default function ChoicePopUp(props: {
       <div className={styles.content}>{props.children}</div>
       <div className={styles.btns}>
         <button className={styles.noBtn} onClick={onNo}>
-          No
+          Non
         </button>
         <button className={styles.yesBtn} onClick={props.onYes}>
-          Yes
+          Oui
         </button>
       </div>
     </PopUp>

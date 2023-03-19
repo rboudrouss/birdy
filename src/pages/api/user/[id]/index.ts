@@ -6,6 +6,7 @@ import {
   prisma,
   isDigit,
   verifyQuery,
+  allPostInfoPrisma,
 } from "@/helper/backendHelper";
 import bcrypt from "bcryptjs";
 
@@ -43,7 +44,7 @@ async function userHandler(
             createdAt: "desc",
           },
           include: {
-            images: true,
+            ...allPostInfoPrisma,
             replyTo: {
               include: {
                 author: true,

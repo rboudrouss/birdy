@@ -1,6 +1,6 @@
 // HACK all this file is ugly, there is probably a better way for all of this ?
 // NOTE this file is meant to be use in the fronted only <!>
-import { User, Post, postImages } from "@prisma/client";
+import { User, Post, postImages, Likes } from "@prisma/client";
 import { POSTAPI } from "../constants";
 import { fetchWrapper } from "../fetchwrapper";
 import { APIUser } from "./APIUser";
@@ -17,6 +17,8 @@ export class APIPost {
   nbReplies: number;
   replyTo: APIPost | null;
   images: string[];
+  likes: number[];
+  likesUsers: APIUser[];
 
   constructor(
     p: Post & {
@@ -25,6 +27,7 @@ export class APIPost {
       replyTo?: Post | null;
       images?: postImages[] | string[] | null;
       createdAt: Date | string;
+      likes?: Likes[] | number[] | null;
     }
   ) {
     this.id = p.id;
@@ -37,6 +40,14 @@ export class APIPost {
     this.nbReplies = p.nbReplies;
     this.images = p.images?.map((i: any) => i.imageId ?? i) ?? [];
     this.replyTo = p.replyTo ? new APIPost(p.replyTo) : null;
+
+    this.likes = p.likes?.map((l: any) => l.userId ?? l) ?? [];
+    this.likesUsers = p.likes?.map((l: any) => new APIUser(l.user)) ?? [];
+    if (this.likesUsers.length !== this.likes.length)
+      console.warn(
+        "APIPost.constructor: likesUsers and likes are not the same length"
+      );
+
     this.replies =
       p.replies
         ?.map((reply) => new APIPost(reply))

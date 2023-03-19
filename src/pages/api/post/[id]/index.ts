@@ -1,7 +1,7 @@
 import { Post } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
-import { APIdecorator, prisma, isDigit } from "@/helper/backendHelper";
+import { APIdecorator, prisma, isDigit, allPostInfoPrisma } from "@/helper/backendHelper";
 
 const APIpostHander = APIdecorator(
   postHandler,
@@ -17,45 +17,20 @@ async function postHandler(
 ) {
   const { query } = req;
 
+  // TODO that's a lot of includes, maybe we should do it in the frontend or make it easier to read
   try {
     var p = await prisma.post.findUnique({
       where: {
         id: parseInt(query.id as string),
       },
       include: {
-        author: {
-          include: {
-            ppImage: true,
-          },
-        },
-        likes: {
-          include: {
-            user: {
-              include: {
-                ppImage: true,
-              },
-            },
-          },
-        },
+        ...allPostInfoPrisma,
         replies: {
-          include: {
-            author: {
-              include: {
-                ppImage: true,
-              },
-            },
-          },
+          include: allPostInfoPrisma
         },
         replyTo: {
-          include: {
-            author: {
-              include: {
-                ppImage: true,
-              },
-            },
-          },
+          include: allPostInfoPrisma
         },
-        images: true,
       },
     });
   } catch (e: any) {

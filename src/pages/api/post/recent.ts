@@ -6,6 +6,7 @@ import {
   findConnectedUser,
   prisma,
   isDigit,
+  allPostInfoPrisma,
 } from "@/helper/backendHelper";
 
 const DEFAULT_N = 20;
@@ -63,14 +64,8 @@ export async function postList(
       orderBy: {
         createdAt: "desc",
       },
-      include: {
         // FIXME do not send the password
-        author: {
-          include: {
-            ppImage: true,
-          },
-        },
-      },
+      include: allPostInfoPrisma
     });
   } catch (e: any) {
     let code = HttpCodes.INTERNAL_ERROR;

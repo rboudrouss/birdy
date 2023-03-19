@@ -135,3 +135,22 @@ export function isDigit(a: any): boolean {
 
   return true;
 }
+
+// use with a include
+export const allPostInfoPrisma = {
+  author: {
+    include: {
+      ppImage: true,
+    },
+  },
+  likes: {
+    include: {
+      user: {
+        include: {
+          ppImage: true,
+        },
+      },
+    },
+  },
+  images: true,
+};

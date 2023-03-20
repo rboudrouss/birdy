@@ -67,9 +67,10 @@ async function login(email: string, password: string): Promise<void> {
       password,
     })
     .then((u) => {
-      // TODO set session cookie
-      Cookies.set("session", u.data.session, { expires: 7 });
-      localStorage.setItem("User", JSON.stringify(u.data.user)); // TODO make a real connection token
+      Cookies.set("session", u.data.session, {
+        expires: new Date(Date.now() + cookieWrapper.COOKIE_TTL),
+      });
+      localStorage.setItem("User", JSON.stringify(u.data.user));
       console.log("Logged in !");
       window.location.href = "/";
     });

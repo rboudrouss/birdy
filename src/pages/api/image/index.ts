@@ -58,7 +58,7 @@ async function imageGetter(
     user = parseInt(query.id as string);
   } else user = await findConnectedUser(cookies.session);
 
-  if (user === -1) {
+  if (user === null) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,

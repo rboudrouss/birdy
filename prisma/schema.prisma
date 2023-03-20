@@ -35,6 +35,7 @@ model Session {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+  expires   DateTime
 }
 
 model Post {

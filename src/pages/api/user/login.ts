@@ -1,9 +1,8 @@
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
-import { APIdecorator, prisma } from "@/helper/backendHelper";
+import { APIdecorator, generateSession, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
-import { randomBytes } from "crypto";
 
 const APILoginHandler = APIdecorator(
   loginHandler,
@@ -74,10 +73,4 @@ export async function loginHandler(
     },
     message: `Welcome ${u.username} (id:${u.id})`,
   });
-}
-
-function generateSession(id: number) {
-  return `${randomBytes(5).toString("hex")}${Date.now().toString(
-    16
-  )}${id.toString(16)}`;
 }

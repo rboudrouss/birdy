@@ -56,12 +56,13 @@ async function handleResponse<T>(
   let data: any = text && JSON.parse(text);
   if (!response.ok) {
     const error = data.message as string;
-    try {
-      window;
-    } catch {
+
+    // Is on backend
+    if (typeof window === 'undefined') {
       console.error(error);
       return Promise.reject(error);
     }
+
     if (
       [HttpCodes.UNAUTHORIZED, HttpCodes.FORBIDDEN].includes(response.status)
     ) {

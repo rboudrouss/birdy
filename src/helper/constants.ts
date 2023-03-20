@@ -7,6 +7,11 @@ export const UPLOADFOLDER = "./public/uploads";
 export const MAXIMGSIZE = 11 * 1024 * 1024; // 11 MB
 export const IMGEXT = ["jpeg", "png", "gif", "jpg"];
 
+export const defaultAvatarUrl = "/avatar.jpg";
+
+// in seconds
+export const sessionTTL = 3600 * 24 * 7; // 1 week
+
 export interface OKApiResponse<T> {
   message: string;
   status: number;
@@ -40,5 +45,3 @@ export const conditions: { [key: string]: (s: any) => boolean } = {
   password: (s) => typeof s === "string" && s.length > 3,
   bio: (s) => typeof s === "string" && s.length <= 256,
 };
-
-export const defaultAvatarUrl = "/avatar.jpg";

@@ -38,7 +38,7 @@ export async function postList(
     : undefined;
   let replies = !!query.replies;
 
-  if ((await findConnectedUser(req.cookies.session)) === -1) {
+  if ((await findConnectedUser(req.cookies.session)) === null) {
     let code = HttpCodes.FORBIDDEN;
     res
       .status(code)

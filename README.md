@@ -4,10 +4,11 @@
 - [ ] Option de recherche par mot clé
   - [ ] peut-être passé sous postgresql/mysql du coup ? ou implémenter from scratch. see https://www.prisma.io/docs/concepts/components/prisma-client/full-text-search
 - [ ] in home page, tage "Latest" (derniers message de tout birdy) et "following" ( dernier message des personnes que tu follows )
-- [ ] add expiration date coté serveur aux sessions (supprimer aussi la session en cas de logout (?))
+- [X] add expiration date coté serveur aux sessions (supprimer aussi la session en cas de logout (?))
 
 ### TODO list
 
+- [ ] FIX "bio is wrong type" when bio is empty
 - [ ] Add bookmarks ?
 - [X] Add Image store
 - [X] Add real sessions, instead of only the ID

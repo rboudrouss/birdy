@@ -1,4 +1,4 @@
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, HttpCodes, sessionTTL } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { APIdecorator, generateSession, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -55,6 +55,7 @@ export async function loginHandler(
       data: {
         id: session,
         userId: u.id,
+        expires: new Date(Date.now() + sessionTTL),
       },
     });
   } catch (e: any) {

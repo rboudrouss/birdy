@@ -1,6 +1,7 @@
 "use client";
 
 import { APIPost, APIUser } from "@/helper/APIwrapper";
+import { defaultAvatarUrl } from "@/helper/constants";
 import userService from "@/helper/userService";
 import { useState } from "react";
 import { FaImage } from "react-icons/fa";
@@ -19,10 +20,11 @@ export default function PostForm(props: {
 }) {
   let [content, setContent] = useState("");
 
-  if (!props.user) return <></>;
-
   const post = async (e: any) => {
     e.preventDefault();
+    if (!props.user)
+      return alert("You need to be connected to post something");
+
     if (!content || content.length > 256) return;
 
     if (props.parentPost) {
@@ -39,9 +41,9 @@ export default function PostForm(props: {
 
   return (
     <div className={styles.wrapper}>
-      <a href={props.user.profileLink}>
+      <a href={props.user?.profileLink}>
         <AvatarImg
-          url={props.user.avatarImg}
+          url={props.user?.avatarImg ?? defaultAvatarUrl}
           width={50}
           height={50}
           className={styles.avatar}
@@ -53,6 +55,7 @@ export default function PostForm(props: {
           name="content"
           placeholder="What's on your mind?"
           className={styles.textarea}
+          readOnly={!props.user}
         />
 
         <div className={styles.actions}>
@@ -79,7 +82,6 @@ export default function PostForm(props: {
               type="submit"
               onClick={post}
               className={styles.postButton}
-              color="red"
             >
               Post
             </button>

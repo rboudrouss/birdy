@@ -38,13 +38,13 @@ export async function postList(
     : undefined;
   let replies = !!query.replies;
 
-  if ((await findConnectedUser(req.cookies.session)) === null) {
-    let code = HttpCodes.FORBIDDEN;
-    res
-      .status(code)
-      .json({ isError: true, status: code, message: "Not connected" });
-    return;
-  }
+  // if ((await findConnectedUser(req.cookies.session)) === null) {
+  //   let code = HttpCodes.FORBIDDEN;
+  //   res
+  //     .status(code)
+  //     .json({ isError: true, status: code, message: "Not connected" });
+  //   return;
+  // }
 
   let requestobj: any = {
     take: n,

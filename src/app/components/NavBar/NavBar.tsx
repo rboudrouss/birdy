@@ -7,9 +7,9 @@ import userService from "@/helper/userService";
 import Cookies from "js-cookie";
 
 // HACK temporary solution to check if session is expired, copied function in backendHelper
-function isSessionExpired():boolean{
+function isSessionExpired(): boolean {
   let session = Cookies.get("session");
-  if(!session) return true;
+  if (!session) return true;
   try {
     const exp = parseInt(session.slice(6, 17), 16);
     return Date.now() > exp;
@@ -23,7 +23,7 @@ export default function NavBar() {
 
   useEffect(() => {
     setLoggedIn(cookieWrapper.front.isConnected());
-    if (loggedIn && isSessionExpired()) {
+    if (cookieWrapper.front.isConnected() && isSessionExpired()) {
       alert("Session expired, please login again");
       userService.logout();
     }

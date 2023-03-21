@@ -1,0 +1,220 @@
+@startuml uml
+
+
+package components <<Rectangle>> {
+
+  class AvatarImg {
+    -- props --
+    url: string
+    width?: number
+    height?: number
+    className?: string
+    priority?: boolean
+  }
+
+  class Dropdown {
+    -- props --
+    label: string
+    children: ReactNode
+    className?: string
+    isOpen?: boolean
+    fixed?: boolean
+    -- state --
+    isOpen: boolean
+  }
+
+  class FakeSekector {
+    -- props --
+    selected: string
+    options: string[]
+    urls: string[]
+  }
+
+  class InfoBar {
+  
+  }
+
+  class LoginForm {
+    -- state --
+    email: string
+    passw: string
+  }
+
+  class NavBar {
+    -- state --
+    loggedIn: boolean
+  }
+
+  package PopUp <<Rectangle>> {
+  
+    class PopUp {
+      -- props --
+      children: ReactNode
+      onClose: (e: MouseEvent) => void
+      className?: string
+      showCloseBtn?: boolean
+    }
+
+    class ChoicePopUp {
+      -- props --
+      children: ReactNode
+      onClose: (e: MouseEvent) => void
+      onYes: (e: MouseEvent) => void
+      onNo?: (e: MouseEvent) => void
+      showCloseBtn?: boolean
+      className?:string
+    }
+
+    class SurePopUp {
+      -- props --
+      onYes: (e: MouseEvent) => void
+      onClose: (e: MouseEvent) => void
+      text?: string
+      onNo?: (e: MouseEvent) => void
+      className?: string
+      showCloseBtn?: boolean
+    }
+
+    class LikesPopUp {
+      -- props --
+      Users: APIUser[]
+      onClose: (e: MouseEvent) => void
+      className?: string
+    }
+
+    class LoginPopUp {
+      -- props --
+      onClose: (e: MouseEvent) => void
+      className?: string
+      showCloseBtn?: boolean
+    }
+
+    PopUp <|-- LoginPopUp
+    PopUp <|-- ChoicePopUp 
+    PopUp <|-- LikesPopUp
+    ChoicePopUp <|-- SurePopUp
+
+  }
+
+  class PostComp {
+    -- props --
+    data: APIPost
+    showReply?: boolean
+    className?: string
+    showShowMore ?: boolean
+    -- state --
+    liked: boolean
+    showReply: boolean
+    showDeletePopUp: boolean
+    showLikesPopUp: boolean
+  }
+
+  class PostForm {
+    -- props --
+    parentPost: APIPost | null
+    user: APIUser | null
+    -- state --
+    content: string
+  }
+
+  class ProfileComp {
+    -- props --
+    user: APIUser | null
+    -- state --
+    showFollowers: boolean
+    showFollowing: boolean
+  }
+
+  class RegisterForm {
+    -- props --
+    url?: string
+    -- state --
+    email: string
+    passw: string
+    bio: string
+    username: string
+  }
+
+  class UserTag {
+    -- props --
+    EITHER post: APIPost | null
+    OR user : APIUser | null
+    class?: string
+  }
+
+  LoginForm <|-- LoginPopUp
+  PostForm <|-- PostComp
+  UserTag <|-- PostComp
+  SurePopUp <|-- PostComp
+  LikesPopUp <|-- PostComp
+  AvatarImg <|-- PostForm
+  AvatarImg <|-- ProfileComp
+  LikesPopUp <|-- ProfileComp
+  AvatarImg <|-- UserTag
+
+}
+
+package Pages <<Rectangle>> {
+
+  class Layout {
+    -- props --
+    children : ReactNode
+  }
+    InfoBar <|-- Layout
+    NavBar <|-- Layout
+  
+  class Follow {
+    -- state --
+    posts: APIPost[]
+    lastP: number (integer)
+    user: APIUser | null
+    showLoginPopUp: boolean
+  }
+    FakeSelector <|-- Follow
+    LoginPopUp <|-- Follow
+    PostComp <|-- Follow
+    PostForm <|-- Follow
+    Layout <|-- Follow
+
+  class Login {
+  }
+    Layout <|-- Login
+    LoginForm <|-- Login
+
+  class Logout {
+  }
+    Layout <|-- Logout
+
+  class Post<id> {
+    -- state --
+    post : APIPost | null
+  }
+  Layout <|-- Post
+  PostComp <|-- Post
+
+
+  class ProfileLikesReplies {
+    -- state --
+    user: APIUser
+  }
+    ProfileComp <|-- ProfileLikesReplies 
+    PostComp <|-- ProfileLikesReplies 
+    FakeSelector <|-- ProfileLikesReplies 
+    Layout <|-- ProfileLikesReplies 
+
+  class Register {
+  }
+    Layout <|-- Register
+    RegisterForm <|-- Register
+
+  class Settings {
+  }
+    Layout <|-- Settings
+    DropDown <|-- Settings
+    RegisterForm <|-- Settings
+
+}
+
+
+
+@end uml

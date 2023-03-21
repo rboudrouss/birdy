@@ -1,0 +1,79 @@
+@startuml uml
+
+package Components <<Rectangle>>{
+class InfoBar {}
+class NavBar{}
+class DropDown{}
+class RegisterForm{}
+class LoginForm{}
+class LoginPopUp{}
+class PostForm{}
+class PostComp{}
+class FakeSelector{}
+class ProfileComp{}
+}
+
+
+package Pages <<Rectangle>> {
+
+  class Layout {
+    -- props --
+    children : ReactNode
+  }
+    InfoBar <|-- Layout
+    NavBar <|-- Layout
+  
+  class Follow {
+    -- state --
+    posts: APIPost[]
+    lastP: number (integer)
+    user: APIUser | null
+    showLoginPopUp: boolean
+  }
+    FakeSelector <|-- Follow
+    LoginPopUp <|-- Follow
+    PostComp <|-- Follow
+    PostForm <|-- Follow
+    Layout <|-- Follow
+
+  class Login {
+  }
+    Layout <|-- Login
+    LoginForm <|-- Login
+
+  class Logout {
+  }
+    Layout <|-- Logout
+
+  class Post<id> {
+    -- state --
+    post : APIPost | null
+  }
+  Layout <|-- Post
+  PostComp <|-- Post
+
+
+  class ProfileLikesReplies {
+    -- state --
+    user: APIUser
+  }
+    ProfileComp <|-- ProfileLikesReplies 
+    PostComp <|-- ProfileLikesReplies 
+    FakeSelector <|-- ProfileLikesReplies 
+    Layout <|-- ProfileLikesReplies 
+
+  class Register {
+  }
+    Layout <|-- Register
+    RegisterForm <|-- Register
+
+  class Settings {
+  }
+    Layout <|-- Settings
+    DropDown <|-- Settings
+    RegisterForm <|-- Settings
+
+}
+
+
+@end uml

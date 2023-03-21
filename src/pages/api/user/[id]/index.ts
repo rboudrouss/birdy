@@ -91,7 +91,7 @@ async function userHandler(
               },
               orderBy: [
                 {
-                  createdAt: "desc",
+                  createdAt: "asc",
                 },
                 {
                   postId: "desc",

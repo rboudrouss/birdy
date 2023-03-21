@@ -28,6 +28,7 @@ export class APIPost {
       images?: postImages[] | string[] | null;
       createdAt: Date | string;
       likes?: Likes[] | number[] | null;
+      likesUsers?: APIUser[] | null;
     }
   ) {
     this.id = p.id;
@@ -42,7 +43,8 @@ export class APIPost {
     this.replyTo = p.replyTo ? new APIPost(p.replyTo) : null;
 
     this.likes = p.likes?.map((l: any) => l.userId ?? l) ?? [];
-    this.likesUsers = p.likes?.map((l: any) => new APIUser(l.user)) ?? [];
+    this.likesUsers =
+      p.likesUsers ?? p.likes?.map((l: any) => l.user && new APIUser(l.user)).filter(e => e) ?? [];
     if (this.likesUsers.length !== this.likes.length)
       console.warn(
         "APIPost.constructor: likesUsers and likes are not the same length"

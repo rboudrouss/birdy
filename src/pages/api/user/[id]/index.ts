@@ -22,7 +22,7 @@ const APIUserHandler = APIdecorator(
     password: false,
     bio: false,
   },
-  { id: isDigit }
+  { id: isDigit, replies: false, likes: false }
 );
 export default APIUserHandler;
 
@@ -32,6 +32,8 @@ async function userHandler(
 ) {
   const { body, query, method } = req;
   const id = parseInt(query.id as string);
+  const replies = !!(query.replies ?? false);
+  const likes = !!(query.likes ?? false);
 
   try {
     var u = await prisma.user.findUnique({
@@ -40,6 +42,9 @@ async function userHandler(
       },
       include: {
         posts: {
+          where: {
+            replyTo: replies ? undefined : null,
+          },
           orderBy: {
             createdAt: "desc",
           },
@@ -52,10 +57,40 @@ async function userHandler(
             },
           },
         },
-        followers: true,
-        following: true,
-        likes: true,
-        postsImages: true,
+        followers: {
+          include: {
+            follower: {
+              include: {
+                ppImage: true,
+              },
+            },
+          },
+        },
+        following: {
+          include: {
+            following: {
+              include: {
+                ppImage: true,
+              },
+            },
+          },
+        },
+        likes: likes
+          ? {
+              include: {
+                post: {
+                  include: {
+                    ...allPostInfoPrisma,
+                    replyTo: {
+                      include: {
+                        author: true,
+                      },
+                    },
+                  },
+                },
+              },
+            }
+          : true,
         coverImage: true,
         ppImage: true,
       },

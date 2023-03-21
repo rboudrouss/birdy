@@ -6,6 +6,7 @@ export default function AvatarImg(props: {
   width?: number;
   height?: number;
   className?: string;
+  priority?: boolean;
 }) {
   return (
     <Image
@@ -15,6 +16,7 @@ export default function AvatarImg(props: {
       width={props.width ?? 100}
       height={props.height ?? 100}
       className={`${props.className ?? ""} ${styles.avatarImg}`}
+      priority={props.priority}
     />
   );
 }

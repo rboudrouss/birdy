@@ -1,9 +1,9 @@
 ### Cachier des charges <!>
 
-- [ ] dans les profils afficher les followers, following
+- [X] dans les profils afficher les followers, following
 - [ ] Option de recherche par mot clé
   - [ ] peut-être passé sous postgresql/mysql du coup ? ou implémenter from scratch. see https://www.prisma.io/docs/concepts/components/prisma-client/full-text-search
-- [ ] in home page, tage "Latest" (derniers message de tout birdy) et "following" ( dernier message des personnes que tu follows )
+- [X] in home page, tage "Latest" (derniers message de tout birdy) et "following" ( dernier message des personnes que tu follows )
 - [X] add expiration date coté serveur aux sessions (supprimer aussi la session en cas de logout (?))
 
 ### TODO list

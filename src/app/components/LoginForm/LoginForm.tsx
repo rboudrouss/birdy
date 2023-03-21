@@ -26,7 +26,7 @@ export default function LoginForm() {
         />
         <p>password</p>
         <input
-          type="text"
+          type="password"
           required={true}
           onChange={(e) => setPassw(e.target.value)}
         />

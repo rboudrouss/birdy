@@ -56,7 +56,7 @@ export default function RegisterForm(props: { url?: string }) {
         />
         <p>password</p>
         <input
-          type="text"
+          type="password"
           required
           onChange={(e) => setPassw(e.target.value)}
         />

@@ -4,10 +4,10 @@ import { APIPost, APIUser } from "@/helper/APIwrapper";
 import cookieWrapper from "@/helper/cookiewrapper";
 import userService from "@/helper/userService";
 import { useState, useEffect } from "react";
-import FakeSelector from "./components/FakeSelector/FakeSelector";
-import LoginPopUp from "./components/PopUp/LoginPopUp";
-import PostComp from "./components/PostComp/PostComp";
-import PostForm from "./components/PostForm/PostForm";
+import FakeSelector from "../components/FakeSelector/FakeSelector";
+import LoginPopUp from "../components/PopUp/LoginPopUp";
+import PostComp from "../components/PostComp/PostComp";
+import PostForm from "../components/PostForm/PostForm";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -24,7 +24,11 @@ export default function Home() {
     userService.updateConnectedUser();
 
     async function getData() {
-      let { data, message } = await userService.getRecentPosts({all: true});
+      let { data, message } = await userService.getRecentPosts({
+        all: true,
+        follow: true,
+        replies: true,
+      });
       if (!data) {
         throw new Error(message);
       }
@@ -47,7 +51,7 @@ export default function Home() {
         />
       )}
       <PostForm parentPost={null} user={user} />
-      <FakeSelector selected="Recent" options={["Recent", "Following"]} urls={["/", "/follow"]} />
+      <FakeSelector selected="Following" options={["Recent", "Following"]} urls={["/", "/follow"]} />
       {posts.map((post, i) => (
         <PostComp data={post} key={i} />
       ))}

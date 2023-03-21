@@ -39,6 +39,9 @@ export class APIUser {
   coverImage?: string;
   followers: number[];
   following: number[];
+  followingUsers: APIUser[];
+  followerUsers: APIUser[];
+  likedPosts: APIPost[];
 
   constructor(
     u: (User | UserWithoutPass | APIUser) & {
@@ -50,6 +53,9 @@ export class APIUser {
       coverImage?: coverImage | string | null;
       followers?: Follows[] | number[] | null;
       following?: Follows[] | number[] | null;
+      followingUsers?: APIUser[] | null;
+      followerUsers?: APIUser[] | null;
+      likedPosts?: APIPost[] | null;
     }
   ) {
     this.id = u.id;
@@ -67,6 +73,17 @@ export class APIUser {
     this.coverImage = (u.coverImage as any)?.imageid ?? u.coverImage ?? null;
     this.followers = u.followers?.map((f: any) => f.followerId ?? f) ?? [];
     this.following = u.following?.map((f: any) => f.followingId ?? f) ?? [];
+    this.followingUsers =
+      u.followingUsers ??
+      u.following?.map((f: any) => f.following && new APIUser(f.following)).filter((a) => a) ??
+      [];
+    this.followerUsers =
+      u.followerUsers ??
+      u.followers?.map((f: any) => f.follower && new APIUser(f.follower)).filter((a) => a) ??
+      [];
+    // HACK any cause if there isn't u.likedPosts then it's already a Likes[]
+    this.likedPosts = u.likedPosts ?? u.likes?.map((likes: any) => likes.post && new APIPost(likes.post)) ?? [];
+
     this.posts =
       u.posts
         ?.map((post) => new APIPost(post))
@@ -131,11 +148,17 @@ export class APIUser {
     return await fetchWrapper.post(this.unfollowApi, { author });
   }
 
-  static async fetch(id: number) {
+  static async fetch(id: number, replies?: boolean, likes?: boolean) {
     if (isNaN(id) || id < 1)
       throw new Error(`APIUser.fetch: got a NaN id or invalid (id=${id})`);
     return new APIUser(
-      await fetchWrapper.get<User>(`${USERAPI}/${id}`).then((u) => u.data)
+      await fetchWrapper
+        .get<User>(
+          `${USERAPI}/${id}?${replies ? "replies=true" : ""}${
+            likes ? "&likes=true" : ""
+          }`
+        )
+        .then((u) => u.data)
     );
   }
 

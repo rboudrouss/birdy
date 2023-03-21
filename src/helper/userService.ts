@@ -105,11 +105,13 @@ async function createPost(content: string, author: number): Promise<void> {
     });
 }
 
-async function getRecentPosts(
-  all: boolean,
-  n?: number,
-  start?: number
-): Promise<
+async function getRecentPosts(data?: {
+  all?: boolean;
+  n?: number;
+  start?: number;
+  follow?: boolean;
+  replies?: boolean;
+}): Promise<
   OKApiResponse<{
     start: number;
     end: number;
@@ -117,11 +119,14 @@ async function getRecentPosts(
     data: (Post & { author: User })[];
   }>
 > {
-  if (all) return fetchWrapper.get(`/api/post/recent?all=true`);
-
-  return fetchWrapper.get(
-    `/api/post/recent?${n ? `n=${n}}` : ""}${start ? `start=${start}` : ""}`
-  );
+  const { all, n, start, follow, replies } = data ?? {};
+  let url = "/api/post/recent?";
+  if (all) url += "&all=true";
+  if (n) url += `&n=${n}`;
+  if (start) url += `&skip=${start}`;
+  if (follow) url += `&follow=true`;
+  if (replies) url += `&replies=true`;
+  return fetchWrapper.get(url);
 }
 
 async function getPostById(id: number): Promise<

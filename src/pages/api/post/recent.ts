@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import {
   APIdecorator,
-  findConnectedUser,
   prisma,
   isDigit,
   allPostInfoPrisma,
@@ -16,9 +15,12 @@ const APIPostList = APIdecorator(
   ["GET"],
   null, // formater hack
   {
-    n: false, // false here means facultatif
-    skip: false,
-    replies: false,
+    // false means not required
+    all: false, // if true, return all posts
+    n: false, // if all is false, return <n> posts
+    skip: false, // if all is false, skip <skip> first posts
+    replies: false, // if true, return replies to posts
+    follow: false, // if true, return posts from followed users
   }
 );
 export default APIPostList;
@@ -37,14 +39,7 @@ export async function postList(
     ? parseInt(query.skip as string)
     : undefined;
   let replies = !!query.replies;
-
-  // if ((await findConnectedUser(req.cookies.session)) === null) {
-  //   let code = HttpCodes.FORBIDDEN;
-  //   res
-  //     .status(code)
-  //     .json({ isError: true, status: code, message: "Not connected" });
-  //   return;
-  // }
+  let follow = !!query.follow;
 
   let requestobj: any = {
     take: n,
@@ -53,6 +48,107 @@ export async function postList(
   if (query.all) {
     requestobj = {};
     skip = 0;
+  }
+
+  if (follow) {
+    if (!req.cookies.session) {
+      let code = HttpCodes.UNAUTHORIZED;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: "Not logged in" });
+      return;
+    }
+
+    try {
+      var session = await prisma.session.findUnique({
+        where: {
+          id: req.cookies.session,
+        },
+        include: {
+          user: {
+            include: {
+              following: true,
+            },
+          },
+        },
+      });
+    } catch (e: any) {
+      let code = HttpCodes.INTERNAL_ERROR;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: e.message });
+      return;
+    }
+
+    if (!session) {
+      let code = HttpCodes.UNAUTHORIZED;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: "Not logged in" });
+      return;
+    }
+
+    if (!session.user.following) {
+      let code = HttpCodes.OK;
+      res.status(code).json({
+        isError: false,
+        status: code,
+        message: "Ok !",
+        data: {
+          start: 0,
+          end: 0,
+          n: 0,
+          data: [],
+        },
+      });
+      return;
+    }
+
+    let following = session.user.following.map((f) => {
+      return { authorId: f.followingId };
+    });
+    console.log(following)
+
+    try {
+      var p2 = await prisma.post.findMany({
+        where: {
+          AND: [
+            {
+              OR: following,
+            },
+            {
+              replyId: replies ? undefined : null,
+            },
+          ],
+        },
+        ...requestobj,
+        orderBy: {
+          createdAt: "desc",
+        },
+        // FIXME do not send the password
+        include: allPostInfoPrisma,
+      });
+    } catch (e: any) {
+      let code = HttpCodes.INTERNAL_ERROR;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: e.message });
+      return;
+    }
+
+    let code = HttpCodes.OK;
+    res.status(code).json({
+      isError: false,
+      status: code,
+      message: "Ok !",
+      data: {
+        start: skip ?? 0,
+        end: (skip ?? 0) + p2.length,
+        n: p2.length,
+        data: p2,
+      },
+    });
+    return;
   }
 
   try {

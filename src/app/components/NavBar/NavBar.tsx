@@ -27,7 +27,7 @@ export default function NavBar() {
       alert("Session expired, please login again");
       userService.logout();
     }
-  }, []);
+  });
 
   return (
     <header className={styles.header}>

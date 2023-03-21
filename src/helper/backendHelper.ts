@@ -8,9 +8,9 @@ export const prisma = new PrismaClient();
 
 // 5 first bytes are random, 11 next bytes are the expiration date in hex, last bytes are the user id in hex
 export function generateSession(id: number) {
-  return `${randomBytes(5).toString("hex")}${(Date.now() + sessionTTL).toString(
-    16
-  )}${id.toString(16)}`;
+  return `${randomBytes(5).toString("hex").padStart(5, "0")}${(
+    Date.now() + sessionTTL
+  ).toString(16)}${id.toString(16)}`;
 }
 
 export function sessionExpired(session?: string | null): boolean {

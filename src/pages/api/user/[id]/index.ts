@@ -89,6 +89,14 @@ async function userHandler(
                   },
                 },
               },
+              orderBy: [
+                {
+                  createdAt: "desc",
+                },
+                {
+                  postId: "desc",
+                },
+              ],
             }
           : true,
         coverImage: true,

@@ -14,3 +14,16 @@
 .posts {
   width: 50%;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    width: 25%;
+  }
+  .followers {
+    display: none;
+  }
+  .posts {
+    width: 75%;
+  }
+}
+  

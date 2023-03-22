@@ -3,7 +3,6 @@ const ImageHelper = {
   getBlobfrom64,
   postBlob,
   fetchBlob,
-  fetchImgById,
 };
 export default ImageHelper;
 
@@ -40,8 +39,4 @@ async function postBlob(blob: Blob | File, url: string) {
 
 async function fetchBlob(url: string) {
   return await fetch(url).then((r) => r.blob());
-}
-
-async function fetchImgById(id: string, server?: string) {
-  return await fetchBlob(`${server ?? process.env.IMG_SERVER ?? ""}/${id}.jpg`);
 }

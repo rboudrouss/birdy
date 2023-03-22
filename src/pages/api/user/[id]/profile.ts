@@ -2,7 +2,6 @@
 import {
   ApiResponse,
   HttpCodes,
-  IMAGEAPI,
   IMGEXT,
   MAXIMGSIZE,
   UPLOADFOLDER,
@@ -16,12 +15,11 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
-import ImageHelper from "@/helper/ImageHelper";
 import { randomUUID } from "crypto";
 
 const APIimageGetter = APIdecorator(
   imageGetter,
-  ["POST", "GET"], // formater hack
+  ["POST"], // formater hack
   null,
   {
     id: isDigit,
@@ -35,19 +33,7 @@ async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  let URL = process.env.URL;
-
-  if (!URL) {
-    let code = HttpCodes.INTERNAL_ERROR;
-    res.status(code).json({
-      isError: true,
-      status: code,
-      message: "env URL not set",
-    });
-    return;
-  }
-
-  const { cookies, method, query } = req;
+  const { cookies, query } = req;
 
   const id = parseInt(query.id as string);
   const type = query.type as string | undefined;
@@ -80,60 +66,6 @@ async function imageGetter(
       message: "user not found",
     });
     return;
-  }
-
-  // <!> Deprecated
-  if (method === "GET") {
-    try {
-      var user2 = await prisma.user.findUnique({
-        where: {
-          id,
-        },
-        include: {
-          ppImage: {
-            select: {
-              imageId: true,
-            },
-          },
-        },
-      });
-    } catch (e: any) {
-      let code = HttpCodes.INTERNAL_ERROR;
-      res.status(code).json({
-        isError: true,
-        status: code,
-        message: e.message,
-      });
-      return;
-    }
-
-    if (!user2?.ppImage?.imageId) {
-      let image = fs.readFileSync("public/avatar.jpg");
-      let out = new Blob([image]);
-      let code = HttpCodes.OK;
-      res.setHeader("Content-Type", "image/jpeg");
-      res.status(code).end(Buffer.from(await out.arrayBuffer()));
-      return;
-    }
-
-    let imageBlob;
-    try {
-      imageBlob = await fetch(`${URL}/api/image/${user2.ppImage.imageId}`).then(
-        (r) => r.blob()
-      );
-    } catch (e: any) {
-      let code = HttpCodes.NOT_FOUND;
-      res.status(code).json({
-        isError: true,
-        status: code,
-        message: "Image not found\n" + e.message ?? "",
-      });
-      return;
-    }
-
-    res.setHeader("Content-Type", "image/jpg");
-    // HACK but hey it works
-    res.end(Buffer.from(await imageBlob.arrayBuffer()));
   }
 
   // TODO Try catch this thing

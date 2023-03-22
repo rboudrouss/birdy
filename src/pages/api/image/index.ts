@@ -29,18 +29,6 @@ async function imageGetter(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<string>>
 ) {
-  // let imgServer = process.env.IMG_SERVER;
-
-  // if (!imgServer) {
-  //   let code = HttpCodes.INTERNAL_ERROR;
-  //   res.status(code).json({
-  //     isError: true,
-  //     status: code,
-  //     message: "env IMG_SERVER not set",
-  //   });
-  //   return;
-  // }
-
   const { cookies, method, query } = req;
 
   let user;

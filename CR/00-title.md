@@ -9,8 +9,17 @@
        \textbf{Boudrouss Réda}
 
        \vspace{0.5cm}
-        Groupe 7
+        Groupe 2
         n°28712638
+
+       \vspace{0.5cm}
+      
+       \textbf{Mouine Youssef}
+
+       \vspace{0.5cm}
+        Groupe 2
+        n°28706232
+       
 
 
        \vfill

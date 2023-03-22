@@ -4,7 +4,7 @@
 
 Ce projet est un projet universitaire qui a pour but de créer un site web comparable à [Twitter](https://twitter.com/). Ce projet est réalisé dans le cadre de l'UE technologie du web (LU3IN017) à Sorbonne Université.
 
-Une version en ligne est disponible à l'adresse suivante : [https://birdy.rboud.com](https://birdy.rboud.com).
+Une version en ligne est disponible à l'adresse suivante : [https://birdy.rboud.com](https://birdy.rboud.com). Le projet est entièrement open source et disponible sur [Github](https://github.com/rboudrouss/birdy/).
 
 # Outils utilisés
 

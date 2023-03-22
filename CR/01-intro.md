@@ -1,5 +1,11 @@
 \tableofcontents
 
+# Introduction
+
+Ce projet est un projet universitaire qui a pour but de créer un site web comparable à [Twitter](https://twitter.com/). Ce projet est réalisé dans le cadre de l'UE technologie du web (LU3IN017) à Sorbonne Université.
+
+Une version en ligne est disponible à l'adresse suivante : [https://birdy.rboud.com](https://birdy.rboud.com).
+
 # Outils utilisés
 
 Ce projet est réalisé avec les frameworks et outils suivants :
@@ -28,4 +34,4 @@ Concernant le dossier `src` il contient plusieurs sous-dossiers :
 
 - `pages/api` : contient le coté serveur et plus précisément l'API.
 
-- `helper` : contient des fonctions utilitaires.
+- `helper` : contient toutes fonctions utilitaires.

@@ -1,6 +1,16 @@
 import Image from "next/image";
 import styles from "./AvatarImg.module.css";
 
+/*
+ * This component is used to display the avatar image of the user using the next/image component.
+ * The next/image component is used to optimize the image loading and to lazy load the images.
+ *
+ * @param url: The url of the image
+ * @param width: width
+ * @param height: height
+ * @param className: CSS class name to be applied to the image.
+ * @param priority: if true, the image will be priortized to be loaded.
+ */
 export default function AvatarImg(props: {
   url: string;
   width?: number;

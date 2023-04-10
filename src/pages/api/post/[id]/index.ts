@@ -6,11 +6,12 @@ import {
   prisma,
   isDigit,
   allPostInfoPrisma,
+  findConnectedUser,
 } from "@/helper/backendHelper";
 
 const APIpostHander = APIdecorator(
   postHandler,
-  ["GET"],
+  ["GET", "DELETE"],
   null, // formater hack
   { id: isDigit }
 );
@@ -18,15 +19,15 @@ export default APIpostHander;
 
 async function postHandler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Post>>
+  res: NextApiResponse<ApiResponse<Post | null>>
 ) {
-  const { query } = req;
+  const { query, method, cookies } = req;
+  const postId = parseInt(query.id as string);
 
-  // TODO that's a lot of includes, maybe we should do it in the frontend or make it easier to read
   try {
     var p = await prisma.post.findUnique({
       where: {
-        id: parseInt(query.id as string),
+        id: postId,
       },
       include: {
         ...allPostInfoPrisma,
@@ -58,11 +59,46 @@ async function postHandler(
     return;
   }
 
+  if (method === "GET") {
+    let code = HttpCodes.OK;
+    res.status(code).json({
+      isError: false,
+      data: p,
+      status: code,
+      message: `Info of post with id ${postId}`,
+    });
+    return;
+  }
+
+  // Method is DELETE
+  if ((await findConnectedUser(cookies.session)) !== p.authorId) {
+    let code = HttpCodes.UNAUTHORIZED;
+    res.status(code).json({
+      isError: true,
+      status: code,
+      message: "You are not authorized to delete this post",
+    });
+    return;
+  }
+
+  try {
+    await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+  } catch (e: any) {
+    let code = HttpCodes.INTERNAL_ERROR;
+    res.status(code).json({ isError: true, status: code, message: e.message });
+    return;
+  }
+
   let code = HttpCodes.OK;
   res.status(code).json({
     isError: false,
-    data: p,
     status: code,
-    message: `Info of post with id ${query.id}`,
+    data: null,
+    message: `Post n°${query.id} has been deleted successfully`,
   });
+  return;
 }

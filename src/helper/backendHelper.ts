@@ -122,7 +122,7 @@ export function verify(
 
 export function APIdecorator<T>(
   target: (req: NextApiRequest, res: NextApiResponse<ApiResponse<T>>) => void,
-  allowedMethod?: string[] | null,
+  allowedMethod?: string[],
   bodyAttr?: { [key: string]: boolean | verifyBodyT } | null,
   queryAttr?: { [key: string]: boolean | verifyQueryT } | null
 ) {

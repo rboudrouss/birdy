@@ -1,4 +1,4 @@
-import { ApiResponse, HttpCodes, sessionTTL } from "@/helper/constants";
+import { ApiResponse, conditions, HttpCodes, sessionTTL } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { APIdecorator, generateSession, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -8,8 +8,8 @@ const APILoginHandler = APIdecorator(
   loginHandler,
   ["POST"], // formater hack
   {
-    password: (s) => typeof s === "string" && s.length > 3 && s.length > 0,
-    email: (s) => typeof s === "string" && s.length < 257 && s.length > 0,
+    password: conditions.password,
+    email: conditions.email,
   }
 );
 export default APILoginHandler;

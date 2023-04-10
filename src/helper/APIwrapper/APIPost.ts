@@ -75,20 +75,12 @@ export class APIPost {
     return `${POSTAPI}/${this.id}`;
   }
 
-  public get replyApi(): string {
-    return `${this.apiLink}/reply`;
-  }
-
   public get likeAPI(): string {
     return `${this.apiLink}/like`;
   }
 
   public get unlikeAPI(): string {
     return `${this.apiLink}/unlike`;
-  }
-
-  public get deleteAPI(): string {
-    return `${this.apiLink}/delete`;
   }
 
   public get imageLinks(): string[] {
@@ -114,7 +106,7 @@ export class APIPost {
   }
 
   public async delete() {
-    await fetchWrapper.delete(this.deleteAPI);
+    await fetchWrapper.delete(this.apiLink);
   }
 
   public get isReply(): boolean {
@@ -134,9 +126,10 @@ export class APIPost {
 
     return new APIPost(
       (
-        await fetchWrapper.post<Post>(this.replyApi, {
+        await fetchWrapper.post<Post>(POSTAPI, {
           content,
           author,
+          replyId: this.id,
         })
       ).data
     );

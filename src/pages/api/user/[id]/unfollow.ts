@@ -10,9 +10,7 @@ import {
 const APIUnfollowHandler = APIdecorator(
   unfollowHandler,
   ["POST"],
-  {
-    author: Number.isInteger,
-  },
+  null, // formater hack
   { id: isDigit }
 );
 export default APIUnfollowHandler;
@@ -23,14 +21,14 @@ export async function unfollowHandler(
 ) {
   const { query, body, cookies } = req;
   const userId = parseInt(query.id as string);
-  const authorId = body.author as number;
+  const authorId = await findConnectedUser(cookies.session);
 
-  if ((await findConnectedUser(cookies.session)) !== authorId) {
+  if (!authorId) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "Unauthorized, not current connected User",
+      message: "not connected",
     });
     return;
   }

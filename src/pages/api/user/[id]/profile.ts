@@ -23,7 +23,7 @@ const APIimageGetter = APIdecorator(
   null,
   {
     id: isDigit,
-    type: (s) => typeof s === "string" || typeof s === "undefined",
+    type: (s) => s === "cover" || s === "pp" || typeof s === "undefined",
   }
 );
 

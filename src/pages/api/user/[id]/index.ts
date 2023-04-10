@@ -5,7 +5,6 @@ import {
   APIdecorator,
   prisma,
   isDigit,
-  verifyQuery,
   allPostInfoPrisma,
 } from "@/helper/backendHelper";
 import bcrypt from "bcryptjs";
@@ -15,7 +14,7 @@ import bcrypt from "bcryptjs";
 
 const APIUserHandler = APIdecorator(
   userHandler,
-  ["GET", "PUT"],
+  ["GET", "PUT", "DELETE"],
   {
     email: false,
     username: false,
@@ -128,48 +127,76 @@ async function userHandler(
     return;
   }
 
-  // Methode is then PUT
+  if (method == "PUT") {
+    if (
+      (body.username && !conditions.username(body.username)) ||
+      (body.email && !conditions.email(body.email)) ||
+      (body.password && !conditions.password(body.password)) ||
+      (body.bio && !conditions.bio(body.bio))
+    ) {
+      let code = HttpCodes.BAD_REQUEST;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: "Incorrect attributes" });
+      return;
+    }
 
-  if (
-    (body.username && !conditions.username(body.username)) ||
-    (body.email && !conditions.email(body.email)) ||
-    (body.password && !conditions.password(body.password)) ||
-    (body.bio && !conditions.bio(body.bio))
-  ) {
-    let code = HttpCodes.BAD_REQUEST;
-    res
-      .status(code)
-      .json({ isError: true, status: code, message: "Incorrect attributes" });
-    return;
-  }
+    let password: string | null = null;
+    if (body.password)
+      password = await bcrypt.hash(body.password as string, 10);
 
-  let password: string | null = null;
-  if (body.password) password = await bcrypt.hash(body.password as string, 10);
+    try {
+      var u2 = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          email: (body.email as string) ?? u.email,
+          username: (body.username as string) ?? u.username,
+          password: password ?? u.password,
+          bio: (body.bio as string) ?? u.bio,
+        },
+      });
+    } catch (e: any) {
+      let code = HttpCodes.INTERNAL_ERROR;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: e.message });
+      return;
+    }
 
-  try {
-    var u2 = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        email: (body.email as string) ?? u.email,
-        username: (body.username as string) ?? u.username,
-        password: password ?? u.password,
-        bio: (body.bio as string) ?? u.bio,
-      },
+    let code = HttpCodes.ACCEPTED;
+    res.status(code).json({
+      isError: false,
+      status: code,
+      message: "changed !",
+      data: removePassw(u2),
     });
-  } catch (e: any) {
-    let code = HttpCodes.INTERNAL_ERROR;
-    res.status(code).json({ isError: true, status: code, message: e.message });
     return;
   }
 
-  let code = HttpCodes.ACCEPTED;
-  res.status(code).json({
-    isError: false,
-    status: code,
-    message: "changed !",
-    data: removePassw(u2),
-  });
-  return;
+  if (method == "DELETE") {
+    try {
+      await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e: any) {
+      let code = HttpCodes.INTERNAL_ERROR;
+      res
+        .status(code)
+        .json({ isError: true, status: code, message: e.message });
+      return;
+    }
+
+    let code = HttpCodes.ACCEPTED;
+    res.status(code).json({
+      isError: false,
+      status: code,
+      message: "deleted !",
+      data: removePassw(u),
+    });
+    return;
+  }
 }

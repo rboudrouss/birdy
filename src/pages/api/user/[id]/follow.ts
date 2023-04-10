@@ -11,7 +11,7 @@ import {
 const APIFollowHandler = APIdecorator(
   followHandler,
   ["POST"],
-  { author: Number.isInteger },
+  null,
   { id: isDigit }
 );
 export default APIFollowHandler;
@@ -22,7 +22,7 @@ export async function followHandler(
 ) {
   const { query, body, cookies } = req;
   const userId = parseInt(query.id as string);
-  const authorID = body.author as number;
+  const authorID = await findConnectedUser(cookies.session);
 
   try {
     var u = await prisma.user.findUnique({
@@ -44,12 +44,12 @@ export async function followHandler(
     return;
   }
 
-  if ((await findConnectedUser(cookies.session)) !== authorID) {
+  if (!authorID) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "Unauthorized, not current connected User",
+      message: "Not Connected",
     });
     return;
   }

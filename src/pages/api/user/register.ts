@@ -1,4 +1,4 @@
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, conditions, HttpCodes } from "@/helper/constants";
 import { removePassw, UserWithoutPass } from "@/helper/APIwrapper";
 import { APIdecorator, prisma } from "@/helper/backendHelper";
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -8,9 +8,9 @@ const APIRegisterHandler = APIdecorator(
   registerHandler,
   ["POST"], // formater hack
   {
-    username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
-    email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
-    password: (s) => typeof s === "string" && s.length > 3,
+    username: conditions.username,
+    email: conditions.email,
+    password: conditions.password,
     bio: false,
   }
 );
@@ -22,10 +22,7 @@ export async function registerHandler(
 ) {
   const { body } = req;
 
-  if (
-    (!body.bio && body.bio !== "") ||
-    !(typeof body.bio === "string" && body.bio.length <= 256)
-  ) {
+  if (body.bio && !conditions.bio(body.bio)) {
     let code = HttpCodes.BAD_REQUEST;
     res
       .status(code)

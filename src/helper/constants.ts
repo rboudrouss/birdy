@@ -39,9 +39,17 @@ export enum HttpCodes {
   INTERNAL_ERROR = 500,
 }
 
-export const conditions: { [key: string]: (s: any) => boolean } = {
+export const conditions: { [key: string]: (x: any) => boolean } = {
   username: (s) => typeof s === "string" && s.length <= 20 && s.length > 0,
   email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
   password: (s) => typeof s === "string" && s.length > 3,
   bio: (s) => typeof s === "string" && s.length <= 256,
+  content: (s) => typeof s === "string" && s.length <= 256,
+  author: Number.isInteger,
+  images: (x) =>
+    typeof x === "undefined" ||
+    (Array.isArray(x) &&
+      x.length < 4 &&
+      x.map((x) => typeof x === "string").reduce((a, b) => a && b, true)),
+  replyId: (x) => typeof x === "undefined" || x === null || Number.isInteger(x), // null, undefined or integer
 };

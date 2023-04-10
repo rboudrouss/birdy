@@ -8,11 +8,11 @@
 
 ### TODO list
 
-- [ ] FIX "bio is wrong type" when bio is empty
+- [X] FIX "bio is wrong type" when bio is empty
 - [ ] Add bookmarks ?
 - [X] Add Image store
 - [X] Add real sessions, instead of only the ID
-  - [X] remove the author in body in requests (meh don't think i'll do that, the double verification is cool)
+  - [X] remove the author in body in requests (i've done it anyway) 
 - [X] Hash passwords
   - [ ] add salt
 - [X] Write an OOP API like `new Post({id : 2}).fetchlikes()/.getlikes()`
@@ -35,6 +35,7 @@
 
 birdy : a twitter clone (not really but hey)
 
+contraintes : utiliser nextjs (une nouvelle framework) se limiter à React en frontend sans aucune autre libraire
 
 ## Lunch app
 

@@ -1,6 +1,6 @@
 import { Likes } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiResponse, HttpCodes } from "@/helper/constants";
+import { ApiResponse, conditions, HttpCodes } from "@/helper/constants";
 import {
   APIdecorator,
   findConnectedUser,
@@ -11,7 +11,7 @@ import {
 const APILikeHandler = APIdecorator(
   likeHandler,
   ["POST"],
-  { author: Number.isInteger },
+  null,
   { id: isDigit }
 );
 export default APILikeHandler;
@@ -24,14 +24,14 @@ export async function likeHandler(
 
   const postId = parseInt(query.id as string);
 
-  const userId = body.author as number;
+  const userId = await findConnectedUser(cookies.session);
 
-  if ((await findConnectedUser(cookies.session)) !== userId) {
+  if (!userId) {
     let code = HttpCodes.UNAUTHORIZED;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "Unauthorized, not current connected User",
+      message: "Not connected",
     });
     return;
   }

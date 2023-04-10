@@ -10,7 +10,7 @@ import {
 const APIUnlikeHandler = APIdecorator(
   unlikeHandler,
   ["POST"],
-  { author: Number.isInteger },
+  null,
   { id: isDigit }
 );
 export default APIUnlikeHandler;
@@ -22,14 +22,14 @@ export async function unlikeHandler(
   const { query, body, cookies } = req;
 
   const postId = parseInt(query.id as string);
-  const userId = body.author as number;
+  const userId = await findConnectedUser(cookies.session);
 
-  if ((await findConnectedUser(cookies.session)) !== userId) {
+  if (!userId) {
     let code = HttpCodes.FORBIDDEN;
     res.status(code).json({
       isError: true,
       status: code,
-      message: "Unauthorized, not current connected User",
+      message: "Not Connected",
     });
     return;
   }

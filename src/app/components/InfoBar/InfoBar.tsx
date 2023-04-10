@@ -12,7 +12,7 @@ export default function InfoBar() {
         </div>
         <div className={styles.author}>
           <span>
-            <a href="https://rboud.com">rboud</a>- 2023 - MIT License
+            <a href="https://rboud.com">rboud</a>- 2023 - GPL3 License
           </span>
         </div>
       </div>

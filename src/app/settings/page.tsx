@@ -3,8 +3,8 @@
 import ImageHelper from "@/helper/ImageHelper";
 import userService from "@/helper/userService";
 import { useState } from "react";
-import { Dropdown } from "../components/Dropdown/Dropdown";
-import RegisterForm from "../components/RegisterForm/RegisterForm";
+import { Dropdown } from "../components/layouts/Dropdown/Dropdown";
+import RegisterForm from "../components/form/RegisterForm/RegisterForm";
 import styles from "./page.module.css";
 
 export default function SettingsPage() {

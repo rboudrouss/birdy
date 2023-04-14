@@ -52,4 +52,5 @@ export const conditions: { [key: string]: (x: any) => boolean } = {
       x.length < 4 &&
       x.map((x) => typeof x === "string").reduce((a, b) => a && b, true)),
   replyId: (x) => typeof x === "undefined" || x === null || Number.isInteger(x), // null, undefined or integer
+  searchText: (s) => typeof s === "string" && s.length <= 256,
 };

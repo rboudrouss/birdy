@@ -4,10 +4,10 @@ import { APIPost, APIUser } from "@/helper/APIwrapper";
 import cookieWrapper from "@/helper/cookiewrapper";
 import userService from "@/helper/userService";
 import { useState, useEffect } from "react";
-import FakeSelector from "./components/FakeSelector/FakeSelector";
-import LoginPopUp from "./components/PopUp/LoginPopUp";
-import PostComp from "./components/PostComp/PostComp";
-import PostForm from "./components/PostForm/PostForm";
+import FakeSelector from "./components/ui/FakeSelector/FakeSelector";
+import LoginPopUp from "./components/layouts/PopUp/LoginPopUp";
+import PostComp from "./components/ui/PostComp/PostComp";
+import PostForm from "./components/form/PostForm/PostForm";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
   let [user, setUser] = useState<APIUser | null>(null);
   let [showLoginPopUp, setShowLoginPopUp] = useState(false);
 
-  // TODO fetchs 2 times, find a better way like useMemo ?
+  // TODO fetch 2 times, find a better way like useMemo ?
   useEffect(() => {
     if (!cookieWrapper.front.isConnected()) {
       setShowLoginPopUp(true);

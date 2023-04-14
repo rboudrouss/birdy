@@ -1,8 +1,8 @@
 "use client";
 
-import FakeSelector from "@/app/components/FakeSelector/FakeSelector";
-import PostComp from "@/app/components/PostComp/PostComp";
-import ProfileComp from "@/app/components/ProfileComp/ProfileComp";
+import FakeSelector from "@/app/components/ui/FakeSelector/FakeSelector";
+import PostComp from "@/app/components/ui/PostComp/PostComp";
+import ProfileComp from "@/app/components/ui/ProfileComp/ProfileComp";
 import { APIUser } from "@/helper/APIwrapper";
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";

@@ -1,5 +1,5 @@
 import PopUp from "./PopUp";
-import LoginForm from "../LoginForm/LoginForm";
+import LoginForm from "../../form/LoginForm/LoginForm";
 import styles from "./LoginPopUp.module.css";
 
 export default function LoginPopUp(

@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import { FaHeart, FaComment, FaLink, FaTrash } from "react-icons/fa";
 import userService from "@/helper/userService";
 import cookieWrapper from "@/helper/cookiewrapper";
-import PostForm from "../PostForm/PostForm";
-import { UserTag } from "../UserTag/UserTag";
-import SurePopUp from "../PopUp/SurePopUp";
-import LikesPopUp from "../PopUp/LikesPopUp";
+import PostForm from "../../form/PostForm/PostForm";
+import { UserTag } from "../../ui/UserTag/UserTag";
+import SurePopUp from "../../layouts/PopUp/SurePopUp";
+import LikesPopUp from "../../layouts/PopUp/LikesPopUp";
 
 export default function PostComp(props: {
   data: APIPost;

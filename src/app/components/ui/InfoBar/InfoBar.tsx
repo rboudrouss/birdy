@@ -1,9 +1,11 @@
 import styles from "./InfoBar.module.css";
 import { FaGithub } from "react-icons/fa";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function InfoBar() {
   return (
     <div className={styles.infoBar}>
+      <SearchBar />
       <div className={styles.footer}>
         <div className={styles.icons}>
           <a href="https://github.com/rboudrouss/birdy">

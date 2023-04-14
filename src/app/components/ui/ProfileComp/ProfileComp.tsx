@@ -4,7 +4,7 @@ import { APIUser } from "@/helper/APIwrapper";
 import userService from "@/helper/userService";
 import { useState } from "react";
 import AvatarImg from "../AvatarImg/AvatarImg";
-import LikesPopUp from "../PopUp/LikesPopUp";
+import LikesPopUp from "../../layouts/PopUp/LikesPopUp";
 import styles from "./ProfileComp.module.css";
 
 export default function ProfileComp(props: { user: APIUser | null }) {

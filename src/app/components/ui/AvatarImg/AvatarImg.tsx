@@ -9,7 +9,7 @@ import styles from "./AvatarImg.module.css";
  * @param width: width
  * @param height: height
  * @param className: CSS class name to be applied to the image.
- * @param priority: if true, the image will be priortized to be loaded.
+ * @param priority: if true, the image will be prioritized to be loaded.
  */
 export default function AvatarImg(props: {
   url: string;

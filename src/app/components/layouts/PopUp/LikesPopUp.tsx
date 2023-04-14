@@ -1,5 +1,5 @@
 import { APIUser } from "@/helper/APIwrapper";
-import AvatarImg from "../AvatarImg/AvatarImg";
+import AvatarImg from "../../ui/AvatarImg/AvatarImg";
 import PopUp from "./PopUp";
 import styles from "./LikesPopUp.module.css";
 

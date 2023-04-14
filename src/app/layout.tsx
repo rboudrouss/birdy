@@ -1,5 +1,5 @@
-import InfoBar from "./components/InfoBar/InfoBar";
-import NavBar from "./components/NavBar/NavBar";
+import InfoBar from "./components/ui/InfoBar/InfoBar";
+import NavBar from "./components/ui/NavBar/NavBar";
 import "./globals.css";
 
 import styles from "./layout.module.css";

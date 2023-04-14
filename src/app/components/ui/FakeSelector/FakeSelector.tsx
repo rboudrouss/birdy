@@ -1,5 +1,3 @@
-"use client";
-
 import styles from "./FakeSelector.module.css";
 
 export default function FakeSelector(

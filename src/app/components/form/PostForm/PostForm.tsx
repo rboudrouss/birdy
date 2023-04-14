@@ -5,7 +5,7 @@ import { defaultAvatarUrl } from "@/helper/constants";
 import userService from "@/helper/userService";
 import { useState } from "react";
 import { FaImage } from "react-icons/fa";
-import AvatarImg from "../AvatarImg/AvatarImg";
+import AvatarImg from "../../ui/AvatarImg/AvatarImg";
 import styles from "./PostForm.module.css";
 
 function color(length: number) {

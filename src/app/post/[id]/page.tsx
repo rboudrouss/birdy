@@ -1,7 +1,7 @@
 "use client";
 
-import PostComp from "@/app/components/PostComp/PostComp";
-import PostForm from "@/app/components/PostForm/PostForm";
+import PostComp from "@/app/components/ui/PostComp/PostComp";
+import PostForm from "@/app/components/form/PostForm/PostForm";
 import { APIPost, APIUser } from "@/helper/APIwrapper";
 import userService from "@/helper/userService";
 import { useState, useEffect } from "react";

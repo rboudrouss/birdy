@@ -1,5 +1,5 @@
 import { APIPost, APIUser } from "@/helper/APIwrapper";
-import AvatarImg from "../AvatarImg/AvatarImg";
+import AvatarImg from "../../ui/AvatarImg/AvatarImg";
 import styles from "./UserTag.module.css";
 
 export function UserTag(

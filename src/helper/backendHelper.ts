@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { PrismaClient } from "@prisma/client";
+import { Post, PrismaClient } from "@prisma/client";
 import { ApiResponse, HttpCodes, sessionTTL } from "./constants";
 import { randomBytes } from "crypto";
 
@@ -73,6 +73,22 @@ export const allPostInfoPrisma = {
   },
   images: true,
 };
+
+export function sanitizeSearch(search: string) {
+  return search.replace(/[^a-zA-Z0-9 ]/g, "");
+}
+
+// prisma doesn't support sqlite full text search, so we have to do it ourselves
+export async function textSearch(text: string) {
+  const words = sanitizeSearch(text)
+    .split(" ")
+    .map((e) => `%${e}%`)
+    .filter((e) => e.length > 0);
+  let conditions = words.map((word) => `content LIKE '${word}'`).join(" AND ");
+  return await prisma.$queryRawUnsafe<Post[]>(
+    `SELECT * FROM "Post" WHERE ${conditions}`
+  );
+}
 
 type verifyQueryT = (x: string | string[] | undefined) => boolean;
 type verifyBodyT = (x: any) => boolean;
@@ -155,7 +171,7 @@ export function APIdecorator<T>(
       res.status(code).json({
         isError: true,
         status: code,
-        message: `Attributes not found or incorect (needed body attributes : ${Object.keys(
+        message: `Attributes not found or incorrect (needed body attributes : ${Object.keys(
           bodyAttr
         ).join(", ")})`,
       });
@@ -167,7 +183,7 @@ export function APIdecorator<T>(
       res.status(code).json({
         isError: true,
         status: code,
-        message: `Important Attribute not found or incorect`,
+        message: `Important Attribute not found or incorrect`,
       });
       return;
     }

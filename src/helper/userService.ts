@@ -1,7 +1,7 @@
 import { Likes, Post, User } from "@prisma/client";
 import Cookies from "js-cookie";
-import { OKApiResponse, POSTAPI, USERAPI } from "./constants";
-import { APIUser, UserWithoutPass } from "./APIwrapper";
+import { APILINK, OKApiResponse, POSTAPI, USERAPI } from "./constants";
+import { APIUser, APIPost, UserWithoutPass } from "./APIwrapper";
 import { fetchWrapper } from "./fetchwrapper";
 import cookieWrapper from "./cookiewrapper";
 
@@ -18,7 +18,14 @@ const userService = {
   getConnectedUser,
   updateConnectedUser,
   isPostLiked,
+  search
 };
+
+async function search(searchText: string) {
+  return await fetchWrapper
+    .get<Post[]>(`${APILINK}/search?s=${searchText}`)
+    .then((p) => p.data.map((e) => new APIPost(e)));
+}
 
 function isPostLiked(postId: number) {
   const user = getConnectedUser();

@@ -19,8 +19,8 @@ const APIPostList = APIdecorator(
     all: false, // if true, return all posts
     n: false, // if all is false, return <n> posts
     skip: false, // if all is false, skip <skip> first posts
-    replies: false, // if true, return replies to posts
-    follow: false, // if true, return posts from followed users
+    replies: false, // if true, include replies to posts
+    follow: false, // if true, return posts only from followed users
   }
 );
 export default APIPostList;

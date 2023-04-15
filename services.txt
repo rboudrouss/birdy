@@ -1,0 +1,64 @@
+L'api ce trouve dans le dossier pages/api, l'url est déterminé par le chemin d'accès au fichier à partir de /pages
+
+<!-- ---------- INDEX ------------ -->
+/status
+- ANY devrais toujours retourner OK avec message "OK !"
+
+/search
+- GET permet de chercher les postes contenant certains mots (nous comptons étendre ça au profile aussi)
+
+/echo (debug, à retirer)
+- ANY retourne la requête en réponse
+
+<!-- ---------- USER ------------ -->
+
+/user/all
+- GET retourne la liste des utilisateurs
+
+/user/login
+- POST permet de se connecter
+
+/user/register
+- POST permet de créer un nouveau compte
+
+/user/[id]
+- GET retourne les infos de l'utilisateur avec l'id [id]
+- PUT permet de modifier les infos de l'utilisateur [id]
+- DELETE <!>pas implémenté<!> Permet de supprimer l'utilisateur [id]
+
+/user/[id]/follow 
+- POST permet de follow l'utilisateur [id]
+
+/user/[id]/unfollow
+- POST permet de unfollow l'utilisateur [id]
+
+/user/[id]/profile
+- POST permet de modifier la photo de profile ou de couverture de l'utilisateur [id]
+
+<!-- ---------- POST ------------ -->
+
+/post/recent
+- GET permet de récupérer les posts les plus récents
+
+/post/create
+- POST permet de créer un post (et une réponse (qui est un post))
+
+/post/[id]
+- GET permet de récupérer toutes les infos du post
+- DELETE permet de supprimer le post
+
+/post/[id]/like
+- POST permet de liker le post
+
+/post/[id]/unlike
+- POst permet d'unlike un post
+
+
+<!-- ---------- IMAGE ------------ -->
+
+/image
+- POST stocke une image et l'associe à un utilisateur
+- GET (debug only) retourne de l'html, un form pour post une image
+
+/image/all (debug)
+- GET retourne le noms de toutes les images stockés et leurs auteurs

@@ -2,7 +2,7 @@
 
 birdy : a twitter clone (not really but hey)
 
-contraintes : utiliser nextjs (une nouvelle framework) se limiter à React en frontend sans aucune autre libraire
+contraintes : utiliser nextjs (une nouvelle framework) se limiter à React en frontend sans aucune autre librairie
 
 ## Lunch app
 

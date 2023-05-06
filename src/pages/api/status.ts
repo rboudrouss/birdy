@@ -1,4 +1,3 @@
-import { prisma } from "@/helper/backendHelper";
 import { ApiResponse, HttpCodes } from "@/helper/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 

@@ -126,7 +126,7 @@ export class APIPost {
 
     return new APIPost(
       (
-        await fetchWrapper.post<Post>(POSTAPI, {
+        await fetchWrapper.post<Post>(`${POSTAPI}/create`, {
           content,
           author,
           replyId: this.id,

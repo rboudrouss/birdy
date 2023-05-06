@@ -81,12 +81,12 @@ export async function postCreate(
         data: {
           content: body.content as string,
           authorId: author,
-          replyId: body.replyTo,
+          replyId: body.replyId,
         },
       });
       await prisma.post.update({
         where: {
-          id: body.replyTo,
+          id: body.replyId,
         },
         data: {
           nbReplies: { increment: 1 },

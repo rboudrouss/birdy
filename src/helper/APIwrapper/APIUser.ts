@@ -23,13 +23,13 @@ export function removePassw(u: User): UserWithoutPass {
 }
 
 export class APIUser {
-  id: number;
+  id: string;
   email: string;
   password: string | null;
   username: string;
   bio: string | null;
   posts: APIPost[];
-  likes: number[];
+  likes: string[];
   nbFollowers: number;
   nbFollowing: number;
   nbLikes: number;
@@ -93,7 +93,6 @@ export class APIUser {
         }) ?? [];
     if (
       [
-        this.id,
         ...(this.likes ?? []),
         this.nbFollowers,
         this.nbFollowing,

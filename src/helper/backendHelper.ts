@@ -27,7 +27,7 @@ export function sessionExpired(session?: string | null): boolean {
 // Return null if session not found
 export async function findConnectedUser(
   session: string | undefined | null
-): Promise<number | null> {
+): Promise<string | null> {
   if (!session) return null;
   if (sessionExpired(session)) return null;
 
@@ -79,16 +79,16 @@ export function sanitizeSearch(search: string) {
 }
 
 // prisma doesn't support sqlite full text search, so we have to do it ourselves
-export async function textSearch(text: string) {
-  const words = sanitizeSearch(text)
-    .split(" ")
-    .map((e) => `%${e}%`)
-    .filter((e) => e.length > 0);
-  let conditions = words.map((word) => `content LIKE '${word}'`).join(" AND ");
-  return await prisma.$queryRawUnsafe<Post[]>(
-    `SELECT * FROM "Post" WHERE ${conditions}`
-  );
-}
+// export async function textSearch(text: string) {
+//   const words = sanitizeSearch(text)
+//     .split(" ")
+//     .map((e) => `%${e}%`)
+//     .filter((e) => e.length > 0);
+//   let conditions = words.map((word) => `content LIKE '${word}'`).join(" AND ");
+//   return await prisma.$queryRawUnsafe<Post[]>(
+//     `SELECT * FROM "Post" WHERE ${conditions}`
+//   );
+// }
 
 type verifyQueryT = (x: string | string[] | undefined) => boolean;
 type verifyBodyT = (x: any) => boolean;

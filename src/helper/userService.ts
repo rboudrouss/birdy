@@ -27,7 +27,7 @@ async function search(searchText: string) {
     .then((p) => p.data.map((e) => new APIPost(e)));
 }
 
-function isPostLiked(postId: number) {
+function isPostLiked(postId: string) {
   const user = getConnectedUser();
   return user?.likes?.includes(postId) ?? false;
 }
@@ -101,7 +101,7 @@ async function register(user: {
   });
 }
 
-async function createPost(content: string, author: number): Promise<void> {
+async function createPost(content: string, author: string): Promise<void> {
   return fetchWrapper
     .post<Post>(`${POSTAPI}/create`, {
       author,

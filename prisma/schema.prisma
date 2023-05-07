@@ -6,17 +6,17 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // "postgresql" 
-  url      = "file:./dev.db" // env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  email       String       @unique // @db.VarChar(255)
-  password    String // @db.VarChar(16)
-  username    String // @db.VarChar(20)
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  email       String       @unique
+  password    String
+  username    String
   posts       Post[]
-  bio         String? // @db.VarChar(256)
+  bio         String?
   followers   Follows[]    @relation("follower")
   following   Follows[]    @relation("following")
   likes       Likes[]
@@ -31,31 +31,33 @@ model User {
 }
 
 model Session {
-  id        String   @id
-  userId    Int
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   expires   DateTime
+  string    String   @unique // TODO
 }
 
 model Post {
-  id        Int          @id @default(autoincrement())
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime     @default(now())
-  content   String // @db.VarChar(256)
+  content   String
   author    User         @relation(fields: [authorId], references: [id])
-  authorId  Int
+  authorId  String       @db.ObjectId
   likes     Likes[]
-  replyTo   Post?        @relation("replies", fields: [replyId], references: [id], onDelete: SetNull)
+  replyTo   Post?        @relation("replies", fields: [replyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies   Post[]       @relation("replies")
-  replyId   Int?
+  replyId   String?      @db.ObjectId
   nbLikes   Int          @default(0)
   nbReplies Int          @default(0)
   images    postImages[]
 }
 
 model Image {
-  id         String      @id @unique
-  userId     Int
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String      @unique
+  userId     String      @db.ObjectId
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime    @default(now())
   postImage  postImages?
@@ -64,50 +66,55 @@ model Image {
 }
 
 model postImages {
-  userId  Int
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  postId  Int
+  postId  String @db.ObjectId
   post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  imageId String @unique
+  imageId String @unique @db.ObjectId
   image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
-  @@id([postId, imageId])
+  @@unique([postId, imageId])
 }
 
 model coverImage {
-  userId  Int    @unique
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @unique @db.ObjectId
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  imageId String @unique
+  imageId String @unique @db.ObjectId
   image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
-  @@id([imageId, userId])
+  @@unique([imageId, userId])
 }
 
 model ppImage {
-  userId  Int    @unique
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @unique @db.ObjectId
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  imageId String @unique
+  imageId String @unique @db.ObjectId
   image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
 
-  @@id([imageId, userId])
+  @@unique([imageId, userId])
 }
 
 model Follows {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   follower    User     @relation("following", fields: [followerId], references: [id], onDelete: Cascade)
-  followerId  Int
+  followerId  String   @db.ObjectId
   following   User     @relation("follower", fields: [followingId], references: [id], onDelete: Cascade)
-  followingId Int
+  followingId String   @db.ObjectId
   createdAt   DateTime @default(now())
 
-  @@id([followerId, followingId])
+  @@unique([followerId, followingId])
 }
 
 model Likes {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String   @db.ObjectId
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    Int
+  postId    String   @db.ObjectId
   createdAt DateTime @default(now())
 
-  @@id([userId, postId])
+  @@unique([userId, postId])
 }

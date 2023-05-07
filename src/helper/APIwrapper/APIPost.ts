@@ -6,11 +6,11 @@ import { fetchWrapper } from "../fetchwrapper";
 import { APIUser } from "./APIUser";
 
 export class APIPost {
-  id: number;
+  id: string;
   createdAt: Date;
   content: string;
-  authorId: number;
-  replyId: number | null;
+  authorId: string;
+  replyId:string | null;
   author: APIUser | null;
   replies: APIPost[] | null;
   nbLikes: number;
@@ -58,7 +58,7 @@ export class APIPost {
           return reply;
         }) ?? [];
     if (
-      [this.id, this.replyId ?? 0, this.nbLikes, this.nbReplies].some(
+      [this.nbLikes, this.nbReplies].some(
         (e) => isNaN(e) || !Number.isInteger(e)
       )
     )
@@ -117,11 +117,7 @@ export class APIPost {
     return !this.isReply;
   }
 
-  public async reply(content: string, author: number) {
-    if (isNaN(author) || author < 1)
-      throw new Error(
-        `APIPost.reply: got a NaN author or invalid (author=${author})`
-      );
+  public async reply(content: string, author: string) {
     if (content.length < 1) throw new Error("APIPost.reply: got empty content");
 
     return new APIPost(

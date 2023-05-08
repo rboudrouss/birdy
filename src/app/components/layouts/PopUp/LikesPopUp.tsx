@@ -12,6 +12,7 @@ export default function LikesPopUp(props: {
     <PopUp
       onClose={props.onClose}
       className={`${props.className ?? ""} ${styles.popUp}`}
+      title={"List of Users"}
     >
       <div className="">
         {props.Users.map((user, i) => (

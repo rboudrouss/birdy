@@ -3,6 +3,8 @@
 import { fetchWrapper } from "@/helper/fetchwrapper";
 import userService from "@/helper/userService";
 import { MouseEvent, useState } from "react";
+import CustomButton from "../CustomButton/CustomButton";
+import CustomInput from "../CustomInput/CustomInput";
 import styles from "./RegisterForm.module.css";
 
 export default function RegisterForm(props: { url?: string }) {
@@ -38,38 +40,45 @@ export default function RegisterForm(props: { url?: string }) {
   };
 
   return (
-    <main>
       <form action="">
-        <p>Username</p>
-        <input
-          type="text"
-          required
+        <div className={styles.wrapper}>
+        <CustomInput
+          label="Username"
+          id="username"
           onChange={(e) => setUsername(e.target.value)}
-          defaultValue={(user && user.username) ?? ""}
+          required={true}
+          type={"text"}
+          defaultValue={user?.username}
         />
-        <p>Email</p>
-        <input
-          type="email"
-          required
+        <CustomInput
+          label="Email"
+          id="email"
           onChange={(e) => setEmail(e.target.value)}
-          defaultValue={(user && user.email) ?? ""}
+          required={true}
+          type={"email"}
+          defaultValue={user?.email}
         />
-        <p>password</p>
-        <input
-          type="password"
-          required
+        <CustomInput
+          label="Password"
+          id="password"
           onChange={(e) => setPassw(e.target.value)}
+          required={true}
+          type={"password"}
         />
-        <p>Bio (facultatif)</p>
-        <input
-          type="text"
+        <CustomInput
+          label="Bio"
+          id="bio"
           onChange={(e) => setBio(e.target.value)}
-          defaultValue={(user && user.bio) ?? ""}
+          required={false}
+          type={"text"}
+          defaultValue={user?.bio}
         />
-        <button type="submit" onClick={register}>
-          register
-        </button>
+        <CustomButton
+          label="Register"
+          onClick={register}
+          type={"submit"}
+        />
+        </div>
       </form>
-    </main>
   );
 }

@@ -7,6 +7,7 @@ export default function Login() {
   if (cookieWrapper.front.isConnected()) window.location.href = "/";
   return (
     <main>
+      <h1>Login</h1>
       <LoginForm />
     </main>
   );

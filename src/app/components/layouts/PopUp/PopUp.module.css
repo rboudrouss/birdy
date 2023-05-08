@@ -10,19 +10,24 @@
 
   max-width: 60%;
   max-height: 60%;
-  box-shadow: 0 0 0 max(50vh, 50vw) rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 max(100vh, 100vw) rgba(0, 0, 0, 0.5);
 }
 
 .content {
-  /* padding: 20px; */
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.btns {
+.title{
+  width: 100%;
+  text-align: center;
+}
+
+.head {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row;  /* justify-content: flex-end; */
   margin: 10px;
 }
 

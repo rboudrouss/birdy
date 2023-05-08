@@ -5,6 +5,8 @@ import userService from "@/helper/userService";
 import styles from "./LoginForm.module.css";
 
 import { useState } from "react";
+import CustomInput from "../CustomInput/CustomInput";
+import CustomButton from "../CustomButton/CustomButton";
 
 export default function LoginForm() {
   let [email, setEmail] = useState("");
@@ -18,21 +20,30 @@ export default function LoginForm() {
   return (
     <form onSubmit={login}>
       <div className={styles.wrapper}>
-        <p>Email</p>
-        <input
-          type="email"
-          required={true}
+        <CustomInput
+          label="Email"
+          id="email"
           onChange={(e) => setEmail(e.target.value)}
-        />
-        <p>password</p>
-        <input
-          type="password"
           required={true}
-          onChange={(e) => setPassw(e.target.value)}
+          type={"email"}
         />
-        <button type="submit" onClick={login}>
+
+        <CustomInput
+          label="Password"
+          id="password"
+          onChange={(e) => setPassw(e.target.value)}
+          required={true}
+          type={"password"}
+        />
+
+        <CustomButton
+          label="Login"
+          onClick={login}
+          type={"submit"}
+        />
+        {/* <button type="submit" onClick={login}>
           Login
-        </button>
+        </button> */}
       </div>
     </form>
   );

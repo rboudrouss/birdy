@@ -1,5 +1,7 @@
 "use client";
 
+// HACK, utiliser un context react & layout.tsx
+
 import FakeSelector from "@/app/components/ui/FakeSelector/FakeSelector";
 import PostComp from "@/app/components/ui/PostComp/PostComp";
 import ProfileComp from "@/app/components/ui/ProfileComp/ProfileComp";
@@ -9,7 +11,6 @@ import styles from "./page.module.css";
 
 export default function Profile(props: { params: { id: number } }) {
   let [user, setUser] = useState<APIUser | null>(null);
-  let [showResp, setShowResp] = useState(true);
 
   useEffect(() => {
     async function getData() {

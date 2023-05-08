@@ -1,5 +1,8 @@
 "use client";
 
+// HACK, en vrai on devrait plutôt mettre dans un fichier layout.tsx
+// les trucs en commun entre les pages et utiliser un react context
+
 import FakeSelector from "@/app/components/ui/FakeSelector/FakeSelector";
 import PostComp from "@/app/components/ui/PostComp/PostComp";
 import ProfileComp from "@/app/components/ui/ProfileComp/ProfileComp";

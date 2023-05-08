@@ -7,6 +7,7 @@ export default function SearchBar(props: {
   defaultValue?: string;
   placeholder?: string;
   onSearch?: (value: string) => void;
+  className?: string;
 }) {
   const onSearch =
     props.onSearch ??
@@ -18,15 +19,27 @@ export default function SearchBar(props: {
   const [text, setText] = useState<string>("");
 
   return (
-    <div className={styles.searchBar}>
+    <form
+      className={`${styles.searchBar} ${props.className ?? ""}`}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSearch(text);
+      }}
+    >
       <input
         type="text"
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
-        onSubmit={(e) => onSearch(text)}
+        onSubmit={() => onSearch(text)}
         defaultValue={props.defaultValue ?? ""}
+        className={styles.input}
       />
-      <input type="submit" value="Search" onClick={() => onSearch(text)} />
-    </div>
+      <input
+        className={styles.submit}
+        type="submit"
+        value="Search"
+        onClick={() => onSearch(text)}
+      />
+    </form>
   );
 }

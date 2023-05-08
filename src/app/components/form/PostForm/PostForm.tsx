@@ -19,11 +19,13 @@ export default function PostForm(props: {
   user: APIUser | null;
 }) {
   let [content, setContent] = useState("");
+  let [posting, setPosting] = useState(false);
 
   const post = async (e: any) => {
     e.preventDefault();
-    if (!props.user)
-      return alert("You need to be connected to post something");
+    if (posting) return;
+    setPosting(true);
+    if (!props.user) return alert("You need to be connected to post something");
 
     if (!content || content.length > 256) return;
 
@@ -33,6 +35,7 @@ export default function PostForm(props: {
         (props.user as APIUser).id
       );
       window.location.href = post.postLink;
+      setPosting(false);
       return;
     }
 
@@ -78,12 +81,8 @@ export default function PostForm(props: {
                 ({content.length}/256)
               </span>
             )}
-            <button
-              type="submit"
-              onClick={post}
-              className={styles.postButton}
-            >
-              Post
+            <button type="submit" onClick={post} className={styles.postButton}>
+              {posting ? "Posting..." : "Post"}
             </button>
           </div>
         </div>

@@ -18,13 +18,18 @@ const userService = {
   getConnectedUser,
   updateConnectedUser,
   isPostLiked,
-  search
+  search,
 };
 
 async function search(searchText: string) {
   return await fetchWrapper
-    .get<Post[]>(`${APILINK}/search?s=${searchText}`)
-    .then((p) => p.data.map((e) => new APIPost(e)));
+    .get<{ users: User[]; posts: Post[] }>(`${APILINK}/search?s=${searchText}`)
+    .then((p) => {
+      return {
+        users: p.data.users.map((u) => new APIUser(u)),
+        posts: p.data.posts.map((p) => new APIPost(p)),
+      };
+    });
 }
 
 function isPostLiked(postId: number) {

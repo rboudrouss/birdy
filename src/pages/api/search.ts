@@ -1,10 +1,11 @@
-import { Post, Prisma } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, conditions, HttpCodes } from "@/helper/constants";
 import {
   APIdecorator,
   sanitizeSearch,
   textSearch,
+  userSearch,
 } from "@/helper/backendHelper";
 
 const APIPostList = APIdecorator(
@@ -19,7 +20,7 @@ export default APIPostList;
 
 export async function postList(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Post[]>>
+  res: NextApiResponse<ApiResponse<{users: User[], posts:Post[]}>>
 ) {
   const { query } = req;
   let searchText = query.s as string;
@@ -36,6 +37,7 @@ export async function postList(
 
   try {
     var p = await textSearch(searchText);
+    var u = await userSearch(searchText);
   } catch (e: any) {
     res.status(HttpCodes.INTERNAL_ERROR).json({
       message: e.message,
@@ -49,6 +51,9 @@ export async function postList(
     message: "OK",
     status: HttpCodes.OK,
     isError: false,
-    data: p,
+    data: {
+      users: u,
+      posts: p,
+    }
   });
 }

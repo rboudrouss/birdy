@@ -85,16 +85,41 @@ export async function textSearch(text: string) {
     .map((e) => `%${e}%`)
     .filter((e) => e.length > 0);
   let conditions = words.map((word) => `content LIKE '${word}'`).join(" AND ");
-  let ids = (await prisma.$queryRawUnsafe<{id:number}[]>(
-    `SELECT id FROM "Post" WHERE ${conditions}`
-  )).map(e => e.id);
+  let ids = (
+    await prisma.$queryRawUnsafe<{ id: number }[]>(
+      `SELECT id FROM "Post" WHERE ${conditions}`
+    )
+  ).map((e) => e.id);
   return await prisma.post.findMany({
     where: {
       id: {
-        in: ids
-      }
+        in: ids,
+      },
     },
-    include: allPostInfoPrisma
+    include: allPostInfoPrisma,
+  });
+}
+
+export async function userSearch(text: string) {
+  const words = sanitizeSearch(text)
+    .split(" ")
+    .map((e) => `%${e}%`);
+
+  let conditions = words.map((word) => `username LIKE '${word}'`).join(" AND ");
+  let ids = (
+    await prisma.$queryRawUnsafe<{ id: number }[]>(
+      `SELECT id FROM "User" WHERE ${conditions}`
+    )
+  ).map((e) => e.id);
+  return await prisma.user.findMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+    include: {
+      ppImage: true,
+    },
   });
 }
 

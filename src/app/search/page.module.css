@@ -1,4 +1,21 @@
-.title{
+.title {
   width: 100%;
   text-align: center;
+}
+
+.subtitle {
+  /* width: 100%;
+  text-align: center; */
+  padding-top: 10px;
+}
+
+.carousel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px;
 }

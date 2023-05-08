@@ -75,7 +75,7 @@ export const allPostInfoPrisma = {
 };
 
 export function sanitizeSearch(search: string) {
-  return search.replace(/[^a-zA-Z0-9 ]/g, "");
+  return search.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9]/g, "");
 }
 
 // prisma doesn't support sqlite full text search, so we have to do it ourselves

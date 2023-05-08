@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "./SearchBar.module.css";
 
 export default function SearchBar(props: {
+  defaultValue?: string;
   placeholder?: string;
   onSearch?: (value: string) => void;
 }) {
@@ -23,6 +24,7 @@ export default function SearchBar(props: {
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
         onSubmit={(e) => onSearch(text)}
+        defaultValue={props.defaultValue ?? ""}
       />
       <input type="submit" value="Search" onClick={() => onSearch(text)} />
     </div>

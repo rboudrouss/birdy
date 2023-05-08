@@ -27,8 +27,7 @@ export default function Page() {
   return (
     <>
       <h1>Search</h1>
-      <SearchBar onSearch={(e) => setSearchText(e)} />
-      <p>{searchText}</p>
+      <SearchBar onSearch={(e) => setSearchText(e)} defaultValue={searchText}/>
       {data.map((post, i) => (
         <PostComp data={post} key={i} />
       ))}

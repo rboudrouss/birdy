@@ -3,9 +3,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiResponse, conditions, HttpCodes } from "@/helper/constants";
 import {
   APIdecorator,
-  prisma,
-  isDigit,
-  allPostInfoPrisma,
   sanitizeSearch,
   textSearch,
 } from "@/helper/backendHelper";

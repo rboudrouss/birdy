@@ -85,9 +85,17 @@ export async function textSearch(text: string) {
     .map((e) => `%${e}%`)
     .filter((e) => e.length > 0);
   let conditions = words.map((word) => `content LIKE '${word}'`).join(" AND ");
-  return await prisma.$queryRawUnsafe<Post[]>(
-    `SELECT * FROM "Post" WHERE ${conditions}`
-  );
+  let ids = (await prisma.$queryRawUnsafe<{id:number}[]>(
+    `SELECT id FROM "Post" WHERE ${conditions}`
+  )).map(e => e.id);
+  return await prisma.post.findMany({
+    where: {
+      id: {
+        in: ids
+      }
+    },
+    include: allPostInfoPrisma
+  });
 }
 
 type verifyQueryT = (x: string | string[] | undefined) => boolean;

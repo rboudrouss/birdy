@@ -18,10 +18,8 @@ export default function PostId({ params }: { params: { id: number } }) {
       if (!data) {
         throw new Error(message);
       }
-      console.log(data, "data");
       setPost(new APIPost(data));
-      console.log(post, new APIPost(data), "post");
-      console.log(post?.replies, "replies");
+      console.info("post data \n", data);
     }
 
     getData();

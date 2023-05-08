@@ -16,6 +16,7 @@ export default function Profile(props: { params: { id: number } }) {
     async function getData() {
       let user = await APIUser.fetch(props.params.id, false, true);
       setUser(user);
+      console.log("user data\n", user);
     }
 
     getData();

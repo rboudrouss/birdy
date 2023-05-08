@@ -33,7 +33,7 @@ function isPostLiked(postId: number) {
 }
 
 async function updateConnectedUser() {
-  console.log("Updating connected user");
+  console.info("Updating connected user");
   if (!cookieWrapper.front.isConnected()) return;
   let user = getConnectedUser() as APIUser;
   localStorage.setItem(
@@ -78,13 +78,13 @@ async function login(email: string, password: string): Promise<void> {
         expires: new Date(Date.now() + cookieWrapper.COOKIE_TTL),
       });
       localStorage.setItem("User", JSON.stringify(u.data.user));
-      console.log("Logged in !");
+      console.info("Logged in !");
       window.location.href = "/";
     });
 }
 
 function logout() {
-  console.log("Loging out");
+  console.info("Logging out");
   Cookies.remove("session");
   localStorage.removeItem("User");
   window.location.href = "/login";

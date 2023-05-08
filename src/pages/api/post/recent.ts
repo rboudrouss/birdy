@@ -88,12 +88,12 @@ export async function postList(
       return;
     }
 
-    if (!session.user.following) {
+    if (session.user.following.length === 0) {
       let code = HttpCodes.OK;
       res.status(code).json({
         isError: false,
         status: code,
-        message: "Ok !",
+        message: "Ok! You don't follow anyone though",
         data: {
           start: 0,
           end: 0,
@@ -104,17 +104,16 @@ export async function postList(
       return;
     }
 
-    let following = session.user.following.map((f) => {
-      return { authorId: f.followingId };
-    });
-    console.log(following)
+    let following = session.user.following.map((f) => f.followingId);
 
     try {
       var p2 = await prisma.post.findMany({
         where: {
           AND: [
             {
-              OR: following,
+              authorId: {
+                in: following,
+              },
             },
             {
               replyId: replies ? undefined : null,

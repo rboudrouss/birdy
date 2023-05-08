@@ -17,6 +17,7 @@ export default function Profile(props: { params: { id: number } }) {
     async function getData() {
       let user = await APIUser.fetch(props.params.id);
       setUser(user);
+      console.log("user data\n", user);
     }
 
     getData();
@@ -28,7 +29,7 @@ export default function Profile(props: { params: { id: number } }) {
       <ProfileComp user={user} />
       <FakeSelector
         selected="Posts"
-        options={["Posts", "Replies" ,"Likes"]}
+        options={["Posts", "Replies", "Likes"]}
         urls={[
           `/profile/${props.params.id}`,
           `/profile/${props.params.id}/replies`,

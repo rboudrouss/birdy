@@ -9,7 +9,7 @@ export const fetchWrapper = {
 };
 
 async function get<T>(url: string) {
-  console.log("getting ", url);
+  console.info("getting ", url);
   const requestOptions = {
     method: "GET",
   };
@@ -18,7 +18,7 @@ async function get<T>(url: string) {
 }
 
 async function post<T>(url: string, body: any) {
-  console.log("posting ", url);
+  console.info("posting ", url);
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -29,7 +29,7 @@ async function post<T>(url: string, body: any) {
 }
 
 async function put<T>(url: string, body: any) {
-  console.log("putting ", url);
+  console.info("putting ", url);
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -41,7 +41,7 @@ async function put<T>(url: string, body: any) {
 
 // prefixed with underscored because delete is a reserved word in javascript
 async function _delete<T>(url: string) {
-  console.log("deleting ", url);
+  console.info("deleting ", url);
   const requestOptions = {
     method: "DELETE",
   };
@@ -68,8 +68,10 @@ async function handleResponse<T>(
     ) {
       // if we are in the browser
       // auto logout if 401 response returned from api
-      console.log(error);
-      alert("You are not authorized to do this action");
+      alert(error);
+      console.error(error);
+      alert("401/403 error, logging out")
+
       userService.logout();
       window.location.href = "/login";
     } else {

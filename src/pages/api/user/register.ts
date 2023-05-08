@@ -43,7 +43,7 @@ export async function registerHandler(
   }
 
   if (old) {
-    let code = HttpCodes.UNAUTHORIZED;
+    let code = HttpCodes.BAD_REQUEST;
     res
       .status(code)
       .json({ isError: true, status: code, message: "email already used" });

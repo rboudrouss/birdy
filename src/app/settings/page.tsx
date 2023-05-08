@@ -20,7 +20,7 @@ export default function SettingsPage() {
         <ChangeProfileImg className={styles.profilePicture} type="pp" />
       </Dropdown>
 
-      <Dropdown label="Change profile cover">
+      <Dropdown label="Change profile cover // TODO">
         <ChangeProfileImg className={styles.profilePicture} type="cover" />
       </Dropdown>
 

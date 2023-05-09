@@ -24,10 +24,10 @@ export default function PostForm(props: {
   const post = async (e: any) => {
     e.preventDefault();
     if (posting) return;
-    setPosting(true);
     if (!props.user) return alert("You need to be connected to post something");
-
     if (!content || content.length > 256) return;
+
+    setPosting(true);
 
     if (props.parentPost) {
       let post = await props.parentPost.reply(
@@ -40,6 +40,7 @@ export default function PostForm(props: {
     }
 
     await userService.createPost(content, (props.user as APIUser).id);
+    setPosting(false);
   };
 
   return (

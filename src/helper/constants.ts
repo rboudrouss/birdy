@@ -44,7 +44,7 @@ export const conditions: { [key: string]: (x: any) => boolean } = {
   email: (s) => typeof s === "string" && s.length <= 256 && s.length > 0,
   password: (s) => typeof s === "string" && s.length > 3,
   bio: (s) => typeof s === "string" && s.length <= 256,
-  content: (s) => typeof s === "string" && s.length <= 256,
+  content: (s) => typeof s === "string" && s.length <= 256 && s.trim().length > 0,
   author: Number.isInteger,
   images: (x) =>
     typeof x === "undefined" ||

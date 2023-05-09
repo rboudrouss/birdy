@@ -55,7 +55,7 @@ export default function PostForm(props: {
       </a>
       <div className={styles.form}>
         <textarea
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => setContent(e.target.value.trim())}
           name="content"
           placeholder="What's on your mind?"
           className={styles.textarea}

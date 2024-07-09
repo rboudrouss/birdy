@@ -39,8 +39,5 @@ next-env.d.ts
 # vscode config
 .vscode
 
-# Database migrations (don't do this in production)
-prisma/migrations
-
 # client uploads
 /public/uploads/

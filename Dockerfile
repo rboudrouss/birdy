@@ -14,8 +14,6 @@ ENV PORT=${PORT}
 FROM base AS deps
 
 RUN apt-get add --no-cache -y tzdata sqlite 
-RUN apt-get autoremove
-RUN apt-get autoclean
 
 RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
 ENV TZ="Europe/Paris"

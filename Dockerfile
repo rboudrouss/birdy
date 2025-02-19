@@ -1,4 +1,4 @@
-FROM node:20.10-alpine AS base
+FROM node:20.10 AS base
 
 ARG NODE_ENV="production"
 ARG MAIN_URL="http://localhost:3000"
@@ -8,14 +8,20 @@ ENV NODE_ENV=${NODE_ENV}
 ENV MAIN_URL=${MAIN_URL}
 ENV PORT=${PORT}
 
+
+
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+
+RUN apk update && apk upgrade && apk add --no-cache tzdata sqlite
+RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
+ENV TZ="Europe/Paris"
+
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
+RUN npm install --cpu=x64 --os=linux --libc=glibc sharp
 RUN npm i
 
 FROM base AS dev
@@ -74,9 +80,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 USER root
 
 
-RUN apk update && apk upgrade && apk add --no-cache tzdata sqlite
-RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
-ENV TZ="Europe/Paris"
 
 USER nextjs
 

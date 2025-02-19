@@ -13,8 +13,6 @@ ENV PORT=${PORT}
 # Install dependencies only when needed
 FROM base AS deps
 
-RUN apt-get install -y tzdata sqlite3
-
 RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
 ENV TZ="Europe/Paris"
 

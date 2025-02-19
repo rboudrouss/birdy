@@ -13,7 +13,12 @@ ENV PORT=${PORT}
 # Install dependencies only when needed
 FROM base AS deps
 
-RUN apk update && apk upgrade && apk add --no-cache tzdata sqlite
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get add --no-cache -y tzdata sqlite 
+RUN apt-get autoremove
+RUN apt-get autoclean
+
 RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
 ENV TZ="Europe/Paris"
 
